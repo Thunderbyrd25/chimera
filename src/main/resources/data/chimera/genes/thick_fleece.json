@@ -1,0 +1,18 @@
+{
+  "tier": 1,
+  "effects": [
+    {
+      "type": "attribute_modifier",
+      "attribute": "minecraft:generic.armor",
+      "modifier": {
+        "id": "chimera:thick_fleece_armor",
+        "amount": 1.0,
+        "operation": "add_value"
+      }
+    },
+    {
+      "type": "behavior",
+      "behavior_id": "freeze_immunity"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "tier": 1,
+  "genes": [
+    { "gene": "chimera:thick_fleece", "weight": 100 }
+  ]
+}

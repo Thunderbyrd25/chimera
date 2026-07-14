@@ -3,6 +3,8 @@ package com.chimera;
 import org.slf4j.Logger;
 
 import com.chimera.datagen.ChimeraDataGenerators;
+import com.chimera.gene.GenePoolRegistry;
+import com.chimera.gene.GeneRegistry;
 import com.mojang.logging.LogUtils;
 
 import net.minecraft.core.registries.Registries;
@@ -14,6 +16,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -56,5 +60,10 @@ public class ChimeraMod {
         ChimeraDataComponents.DATA_COMPONENTS.register(modEventBus);
 
         modEventBus.addListener(ChimeraDataGenerators::gatherData);
+
+        NeoForge.EVENT_BUS.addListener((AddReloadListenerEvent event) -> {
+            event.addListener(new GeneRegistry());
+            event.addListener(new GenePoolRegistry());
+        });
     }
 }

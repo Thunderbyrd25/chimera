@@ -1,0 +1,6 @@
+{
+  "tier": 1,
+  "genes": [
+    { "gene": "chimera:ruminant_gut", "weight": 100 }
+  ]
+}

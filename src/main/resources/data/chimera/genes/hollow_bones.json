@@ -1,0 +1,9 @@
+{
+  "tier": 1,
+  "effects": [
+    {
+      "type": "behavior",
+      "behavior_id": "hollow_bones"
+    }
+  ]
+}

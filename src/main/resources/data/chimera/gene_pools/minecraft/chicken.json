@@ -1,0 +1,6 @@
+{
+  "tier": 1,
+  "genes": [
+    { "gene": "chimera:hollow_bones", "weight": 100 }
+  ]
+}

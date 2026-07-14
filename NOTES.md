@@ -54,3 +54,26 @@ Running log of API gotchas, version quirks, and things that surprised us during 
   Register providers via `event.addProvider(provider)` guarded by `event.includeClient()` /
   `event.includeServer()`, or `event.createProvider(Provider::new)` for the common
   `(PackOutput)` / `(PackOutput, CompletableFuture<HolderLookup.Provider>)` constructor shapes.
+
+## Gene registry / gene pools (Phase 3)
+
+- Genes and gene pools are both plain `SimpleJsonResourceReloadListener`s, not formal
+  `net.minecraft.core.Registry` datapack registries. A real datapack registry (via
+  `DataPackRegistryEvent.NewRegistry`) was considered for genes since CLAUDE.md rule #1 says
+  "genes should be a registry", but its folder path is
+  `data/<pack_ns>/<registry_ns>/<registry_path>/` (from `CommonHooks.prefixNamespace`) - for
+  our own registry key `chimera:genes` authored under our own pack namespace, that's the
+  doubled `data/chimera/chimera/genes/*.json`. Went with the simpler reload-listener approach
+  (flat `data/chimera/genes/*.json`) instead to avoid that surprise; "registry" here means
+  "loaded from data, looked up by id," not the formal vanilla Registry type.
+- Gene pool IDs are **not** the mob's own entity type id. `SimpleJsonResourceReloadListener`
+  keeps the file's pack namespace (e.g. `chimera`, since we author under
+  `data/chimera/gene_pools/...`) and only strips the reload folder prefix from the path, so
+  `data/chimera/gene_pools/minecraft/cow.json` loads under the key `chimera:minecraft/cow`,
+  not `minecraft:cow`. `GenePoolRegistry.get(EntityType)` reconstructs this key from the
+  entity's own id so callers don't need to know the convention. Verified by extracting
+  `FileToIdConverter.java` and reading `fileToId()` directly rather than assuming.
+- Confirmed end-to-end via `./gradlew runServer` (headless dev server) rather than asking for
+  a manual client check - `AddReloadListenerEvent`/datapack reload only fires when a
+  world/server actually starts, not at the client main menu, but a full GUI client isn't
+  needed to trigger it.

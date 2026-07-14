@@ -1,0 +1,14 @@
+{
+  "tier": 1,
+  "effects": [
+    {
+      "type": "attribute_modifier",
+      "attribute": "minecraft:generic.max_health",
+      "modifier": {
+        "id": "chimera:bovine_vigor",
+        "amount": 2.0,
+        "operation": "add_value"
+      }
+    }
+  ]
+}

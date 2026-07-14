@@ -1,0 +1,6 @@
+{
+  "tier": 1,
+  "genes": [
+    { "gene": "chimera:bovine_vigor", "weight": 100 }
+  ]
+}
