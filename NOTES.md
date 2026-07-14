@@ -34,3 +34,23 @@ Running log of API gotchas, version quirks, and things that surprised us during 
   `build/moddev/artifacts/neoforge-21.1.235-sources.jar` after a guessed name failed to
   compile — that jar is the fastest way to check a registry/class name for this version
   when in doubt, faster than searching docs.
+
+## Sampling / datagen (Phase 2)
+
+- `DataComponentType.Builder` method is `networkSynchronized` (past tense), not
+  `networkSynchronizer` — easy to typo from memory.
+- `DeferredRegister.createDataComponents(String modid)` is deprecated as of 1.21.1 in favor
+  of `createDataComponents(ResourceKey<Registry<DataComponentType<?>>>, String)` — use the
+  two-arg form with `Registries.DATA_COMPONENT_TYPE`.
+- `ItemModelProvider`'s `basicItem`/`handheldItem` go through NeoForge's `ExistingFileHelper`,
+  which does a **hard validation** at datagen time that the referenced texture PNG actually
+  exists on disk — unlike a missing item model at runtime (Phase 1), which just logs a warning
+  and renders the missing-texture checkerboard. `./gradlew runData` throws
+  `IllegalArgumentException: Texture ... does not exist in any known resource pack` if the
+  PNG isn't there yet. Generated flat-color 16x16 placeholders to unblock this; real art is
+  still needed before ship.
+- `net.neoforged.neoforge.data.event.GatherDataEvent` (not `...api.distmarker.GatherDataEvent`
+  — a WebFetch summary of the docs got this package wrong). Verified against the sources jar.
+  Register providers via `event.addProvider(provider)` guarded by `event.includeClient()` /
+  `event.includeServer()`, or `event.createProvider(Provider::new)` for the common
+  `(PackOutput)` / `(PackOutput, CompletableFuture<HolderLookup.Provider>)` constructor shapes.
