@@ -3,6 +3,7 @@ package com.chimera;
 import org.slf4j.Logger;
 
 import com.chimera.datagen.ChimeraDataGenerators;
+import com.chimera.gene.GeneEffectHandlers;
 import com.chimera.gene.GenePoolRegistry;
 import com.chimera.gene.GeneRegistry;
 import com.mojang.logging.LogUtils;
@@ -13,9 +14,11 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -30,8 +33,9 @@ public class ChimeraMod {
 
     // Every registrable type goes through a DeferredRegister. See CLAUDE.md architecture rule #3.
     // Each kind of registrable owns its DeferredRegister in its own class (ChimeraItems,
-    // ChimeraBlocks, ChimeraBlockEntities, ChimeraMenus, ChimeraDataComponents); this class
-    // just wires them all up, plus the creative tab that ties everything together.
+    // ChimeraBlocks, ChimeraBlockEntities, ChimeraMenus, ChimeraDataComponents,
+    // ChimeraAttachments); this class just wires them all up, plus the creative tab that ties
+    // everything together.
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
@@ -52,6 +56,7 @@ public class ChimeraMod {
                         output.accept(ChimeraItems.MUTAGEN.get());
                         output.accept(ChimeraItems.BLANK_GENE_CASSETTE.get());
                         output.accept(ChimeraItems.GENE_CASSETTE.get());
+                        output.accept(ChimeraItems.SPLICE_CORE.get());
                         output.accept(ChimeraItems.GENE_SEQUENCER.get());
                         output.accept(ChimeraItems.GENOME_ANALYZER.get());
                         output.accept(ChimeraItems.GENE_EXTRACTOR.get());
@@ -64,6 +69,7 @@ public class ChimeraMod {
         CREATIVE_MODE_TABS.register(modEventBus);
         ChimeraItems.ITEMS.register(modEventBus);
         ChimeraDataComponents.DATA_COMPONENTS.register(modEventBus);
+        ChimeraAttachments.ATTACHMENT_TYPES.register(modEventBus);
 
         modEventBus.addListener(ChimeraDataGenerators::gatherData);
 
@@ -79,6 +85,18 @@ public class ChimeraMod {
         NeoForge.EVENT_BUS.addListener((AddReloadListenerEvent event) -> {
             event.addListener(new GeneRegistry());
             event.addListener(new GenePoolRegistry());
+        });
+
+        NeoForge.EVENT_BUS.register(new GeneEffectHandlers());
+
+        // Deferred to common setup so registries are populated before ChimeraCuriosCompat
+        // calls ChimeraItems.SPLICE_CORE.get() - Curios is a soft dependency (CLAUDE.md
+        // architecture rule #5): only touch its classes if it's actually loaded, and only
+        // from this one gated call site.
+        modEventBus.addListener((FMLCommonSetupEvent event) -> {
+            if (ModList.get().isLoaded("curios")) {
+                com.chimera.curios.ChimeraCuriosCompat.register();
+            }
         });
     }
 }

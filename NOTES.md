@@ -80,6 +80,44 @@ Running log of API gotchas, version quirks, and things that surprised us during 
   completely unaffected (this is a pure rendering bug, not a game-logic one). Caught this from
   a screenshot showing item icons rendering offset from the drawn slot boxes.
 
+## Player attachment, GUI item, Curios integration (Phase 6)
+
+- `AttachmentType.Builder#copyOnDeath()` is the entire "handle the copy-on-death case
+  explicitly" mechanism (architecture rule #4) - requires `.serialize(codec)` first, throws
+  `IllegalStateException` otherwise. No manual `PlayerEvent.Clone` handling needed for the
+  common case.
+- Curios' recommended soft-dependency pattern is `CuriosApi.registerCurio(Item, ICurioItem)`,
+  **not** `Item implements ICurioItem` directly - the latter would fail to resolve
+  `ICurioItem`'s class at verification time the moment `SpliceCoreItem` is loaded, which
+  happens unconditionally during item registration, before any mod-loaded check could run.
+  Confirmed by extracting the actual `curios-neoforge-*-api.jar`, which ships full `.java`
+  sources, not just compiled classes - much faster to check than searching docs.
+- Curios slot registration is two datapack files plus a tag, not one:
+  `data/chimera/curios/slots/splice_core.json` (`{"size": 1}`) defines the slot type;
+  `data/chimera/curios/entities/player.json` (`{"entities": [...], "slots": [...]}`) assigns
+  it to players; `data/curios/tags/item/splice_core.json` (note: **`curios` namespace, not
+  `chimera`** - tags are a shared merge point keyed by the tag's own id) marks which items
+  are valid for it. `SlotTypePreset`/IMC-based registration is deprecated in favor of this.
+- Curios' `getAttributeModifiers()` callback means attribute-modifier traits (Bovine Vigor,
+  the armor half of Thick Fleece) need **no manual add/remove/persistence code at all** -
+  Curios re-derives the modifier from the equipped stack's own data every time it's needed,
+  the same way vanilla item attribute modifiers work. This sidesteps the classic
+  stacking/duplication failure mode by construction rather than by careful bookkeeping.
+- Real bug caught by the headless server test, not compilation: called
+  `ChimeraCuriosCompat.register()` (which does `ChimeraItems.SPLICE_CORE.get()`) directly in
+  `ChimeraMod`'s constructor. `DeferredItem`s aren't bound until the registry-fill event runs
+  *after* mod construction, so this threw `NullPointerException: Trying to access unbound
+  value` at startup. Fix: defer the whole Curios-gated call to `FMLCommonSetupEvent`. The
+  creative tab's own `ChimeraItems.X.get()` calls were fine because `.icon()`/`.displayItems()`
+  take lazy suppliers that aren't invoked until well after registration.
+- The Splice Core's insert/remove GUI is a **held-item** menu, not a block one: `MenuType`
+  extra data is the `InteractionHand` (via `IContainerFactory` + `buf.writeEnum(hand)`/
+  `player.openMenu(MenuProvider, Consumer<RegistryFriendlyByteBuf>)`) instead of a `BlockPos`.
+  The transient 1-slot container is seeded from the core's `INSTALLED_TRAIT` component on
+  open and written back via an `AbstractContainerMenu#broadcastChanges()` override - a single
+  catch-all sync point, since `Slot#remove(int)` (used by vanilla's pickup/drag click handling)
+  bypasses `Slot#setChanged()` entirely, so hooking individual Slot methods would miss cases.
+
 ## Sampling / datagen (Phase 2)
 
 - `DataComponentType.Builder` method is `networkSynchronized` (past tense), not

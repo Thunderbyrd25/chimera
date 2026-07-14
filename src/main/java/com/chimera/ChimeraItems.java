@@ -2,6 +2,7 @@ package com.chimera;
 
 import com.chimera.item.GeneCassetteItem;
 import com.chimera.item.SequencedGenomeItem;
+import com.chimera.item.SpliceCoreItem;
 import com.chimera.item.TissueSampleItem;
 import com.chimera.item.TissueScraperItem;
 
@@ -49,4 +50,7 @@ public class ChimeraItems {
 
     public static final DeferredItem<Item> GENE_CASSETTE = ITEMS.register("gene_cassette",
             () -> new GeneCassetteItem(new Item.Properties()));
+
+    public static final DeferredItem<Item> SPLICE_CORE = ITEMS.register("splice_core",
+            () -> new SpliceCoreItem(new Item.Properties().stacksTo(1)));
 }

@@ -6,8 +6,10 @@ import com.chimera.machine.GeneSequencerBlockEntity;
 import com.chimera.machine.GeneSequencerMenu;
 import com.chimera.machine.GenomeAnalyzerBlockEntity;
 import com.chimera.machine.GenomeAnalyzerMenu;
+import com.chimera.splice.SpliceCoreMenu;
 
 import net.minecraft.core.registries.Registries;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.neoforge.network.IContainerFactory;
@@ -35,5 +37,11 @@ public class ChimeraMenus {
             MENU_TYPES.register("gene_extractor", () -> new MenuType<>((IContainerFactory<GeneExtractorMenu>) (containerId, inventory, buf) -> {
                 GeneExtractorBlockEntity blockEntity = (GeneExtractorBlockEntity) inventory.player.level().getBlockEntity(buf.readBlockPos());
                 return new GeneExtractorMenu(containerId, inventory, blockEntity);
+            }, FeatureFlags.VANILLA_SET));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<SpliceCoreMenu>> SPLICE_CORE =
+            MENU_TYPES.register("splice_core", () -> new MenuType<>((IContainerFactory<SpliceCoreMenu>) (containerId, inventory, buf) -> {
+                InteractionHand hand = buf.readEnum(InteractionHand.class);
+                return new SpliceCoreMenu(containerId, inventory, hand);
             }, FeatureFlags.VANILLA_SET));
 }

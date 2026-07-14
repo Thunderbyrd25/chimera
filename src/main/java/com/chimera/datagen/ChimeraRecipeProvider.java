@@ -70,5 +70,14 @@ public class ChimeraRecipeProvider extends RecipeProvider {
                 .define('R', Items.REDSTONE)
                 .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
                 .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ChimeraItems.SPLICE_CORE.get())
+                .pattern("III")
+                .pattern("IGI")
+                .pattern("III")
+                .define('I', Items.IRON_INGOT)
+                .define('G', Items.GOLD_INGOT)
+                .unlockedBy("has_gold_ingot", has(Items.GOLD_INGOT))
+                .save(output);
     }
 }

@@ -25,5 +25,6 @@ public class ChimeraItemModelProvider extends ItemModelProvider {
         basicItem(ChimeraItems.MUTAGEN.get());
         basicItem(ChimeraItems.BLANK_GENE_CASSETTE.get());
         basicItem(ChimeraItems.GENE_CASSETTE.get());
+        basicItem(ChimeraItems.SPLICE_CORE.get());
     }
 }

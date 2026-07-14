@@ -40,4 +40,10 @@ public class ChimeraDataComponents {
             DATA_COMPONENTS.registerComponentType("inert", builder -> builder
                     .persistent(Codec.BOOL)
                     .networkSynchronized(ByteBufCodecs.BOOL));
+
+    // The trait id of the Gene Cassette currently installed in a Splice Core, or absent if empty.
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceLocation>> INSTALLED_TRAIT =
+            DATA_COMPONENTS.registerComponentType("installed_trait", builder -> builder
+                    .persistent(ResourceLocation.CODEC)
+                    .networkSynchronized(ResourceLocation.STREAM_CODEC));
 }

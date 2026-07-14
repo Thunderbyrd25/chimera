@@ -27,6 +27,7 @@ public class ChimeraLanguageProvider extends LanguageProvider {
         addItem(ChimeraItems.MUTAGEN, "Mutagen");
         addItem(ChimeraItems.BLANK_GENE_CASSETTE, "Blank Gene Cassette");
         addItem(ChimeraItems.GENE_CASSETTE, "Gene Cassette");
+        addItem(ChimeraItems.SPLICE_CORE, "Splice Core");
 
         addBlock(ChimeraBlocks.GENE_SEQUENCER, "Gene Sequencer");
         addBlock(ChimeraBlocks.GENOME_ANALYZER, "Genome Analyzer");
@@ -35,6 +36,7 @@ public class ChimeraLanguageProvider extends LanguageProvider {
         add("tooltip.chimera.species", "Species: %s");
         add("tooltip.chimera.unidentified", "Unidentified");
         add("item.chimera.gene_cassette.named", "Gene Cassette: %s");
+        add("item.chimera.splice_core.named", "Splice Core: %s");
 
         // Gene display names, keyed by gene id (see data/chimera/genes/*.json) - shown on
         // identified genomes and, later, gene cassettes.
