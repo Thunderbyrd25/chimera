@@ -44,5 +44,31 @@ public class ChimeraRecipeProvider extends RecipeProvider {
                 .define('R', Items.REDSTONE)
                 .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
                 .save(output);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ChimeraItems.BLANK_GENE_CASSETTE.get())
+                .requires(Items.IRON_INGOT)
+                .requires(Items.PAPER)
+                .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
+                .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ChimeraItems.GENOME_ANALYZER.get())
+                .pattern("GGG")
+                .pattern("GIG")
+                .pattern("GRG")
+                .define('G', Items.GLASS)
+                .define('I', Items.IRON_INGOT)
+                .define('R', Items.REDSTONE)
+                .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
+                .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ChimeraItems.GENE_EXTRACTOR.get())
+                .pattern("III")
+                .pattern("IHI")
+                .pattern("IRI")
+                .define('I', Items.IRON_INGOT)
+                .define('H', Items.HOPPER)
+                .define('R', Items.REDSTONE)
+                .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
+                .save(output);
     }
 }

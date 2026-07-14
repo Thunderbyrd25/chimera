@@ -7,19 +7,19 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class GeneSequencerBlock extends AbstractMachineBlock {
+public class GenomeAnalyzerBlock extends AbstractMachineBlock {
 
-    public GeneSequencerBlock(Properties properties) {
+    public GenomeAnalyzerBlock(Properties properties) {
         super(properties);
     }
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new GeneSequencerBlockEntity(pos, state);
+        return new GenomeAnalyzerBlockEntity(pos, state);
     }
 
     @Override
     protected BlockEntityType<? extends AbstractMachineBlockEntity> blockEntityType() {
-        return ChimeraBlockEntities.GENE_SEQUENCER.get();
+        return ChimeraBlockEntities.GENOME_ANALYZER.get();
     }
 }

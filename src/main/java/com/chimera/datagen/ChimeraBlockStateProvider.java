@@ -16,5 +16,7 @@ public class ChimeraBlockStateProvider extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         simpleBlockWithItem(ChimeraBlocks.GENE_SEQUENCER.get(), cubeAll(ChimeraBlocks.GENE_SEQUENCER.get()));
+        simpleBlockWithItem(ChimeraBlocks.GENOME_ANALYZER.get(), cubeAll(ChimeraBlocks.GENOME_ANALYZER.get()));
+        simpleBlockWithItem(ChimeraBlocks.GENE_EXTRACTOR.get(), cubeAll(ChimeraBlocks.GENE_EXTRACTOR.get()));
     }
 }

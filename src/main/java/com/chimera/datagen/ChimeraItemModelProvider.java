@@ -23,5 +23,7 @@ public class ChimeraItemModelProvider extends ItemModelProvider {
         basicItem(ChimeraItems.NUCLEOTIDE_SLURRY.get());
         basicItem(ChimeraItems.CHROMATIN_STRAND.get());
         basicItem(ChimeraItems.MUTAGEN.get());
+        basicItem(ChimeraItems.BLANK_GENE_CASSETTE.get());
+        basicItem(ChimeraItems.GENE_CASSETTE.get());
     }
 }

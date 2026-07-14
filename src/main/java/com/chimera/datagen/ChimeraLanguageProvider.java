@@ -25,11 +25,16 @@ public class ChimeraLanguageProvider extends LanguageProvider {
         addItem(ChimeraItems.NUCLEOTIDE_SLURRY, "Nucleotide Slurry");
         addItem(ChimeraItems.CHROMATIN_STRAND, "Chromatin Strand");
         addItem(ChimeraItems.MUTAGEN, "Mutagen");
+        addItem(ChimeraItems.BLANK_GENE_CASSETTE, "Blank Gene Cassette");
+        addItem(ChimeraItems.GENE_CASSETTE, "Gene Cassette");
 
         addBlock(ChimeraBlocks.GENE_SEQUENCER, "Gene Sequencer");
+        addBlock(ChimeraBlocks.GENOME_ANALYZER, "Genome Analyzer");
+        addBlock(ChimeraBlocks.GENE_EXTRACTOR, "Gene Extractor");
 
         add("tooltip.chimera.species", "Species: %s");
         add("tooltip.chimera.unidentified", "Unidentified");
+        add("item.chimera.gene_cassette.named", "Gene Cassette: %s");
 
         // Gene display names, keyed by gene id (see data/chimera/genes/*.json) - shown on
         // identified genomes and, later, gene cassettes.

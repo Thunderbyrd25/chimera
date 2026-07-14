@@ -50,7 +50,11 @@ public class ChimeraMod {
                         output.accept(ChimeraItems.NUCLEOTIDE_SLURRY.get());
                         output.accept(ChimeraItems.CHROMATIN_STRAND.get());
                         output.accept(ChimeraItems.MUTAGEN.get());
+                        output.accept(ChimeraItems.BLANK_GENE_CASSETTE.get());
+                        output.accept(ChimeraItems.GENE_CASSETTE.get());
                         output.accept(ChimeraItems.GENE_SEQUENCER.get());
+                        output.accept(ChimeraItems.GENOME_ANALYZER.get());
+                        output.accept(ChimeraItems.GENE_EXTRACTOR.get());
                     }).build());
 
     public ChimeraMod(IEventBus modEventBus, ModContainer modContainer) {
@@ -65,6 +69,10 @@ public class ChimeraMod {
 
         modEventBus.addListener((RegisterCapabilitiesEvent event) -> {
             event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ChimeraBlockEntities.GENE_SEQUENCER.get(),
+                    (blockEntity, side) -> blockEntity.getInventory());
+            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ChimeraBlockEntities.GENOME_ANALYZER.get(),
+                    (blockEntity, side) -> blockEntity.getInventory());
+            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ChimeraBlockEntities.GENE_EXTRACTOR.get(),
                     (blockEntity, side) -> blockEntity.getInventory());
         });
 

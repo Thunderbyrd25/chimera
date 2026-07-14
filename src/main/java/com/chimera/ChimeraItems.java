@@ -1,5 +1,6 @@
 package com.chimera;
 
+import com.chimera.item.GeneCassetteItem;
 import com.chimera.item.SequencedGenomeItem;
 import com.chimera.item.TissueSampleItem;
 import com.chimera.item.TissueScraperItem;
@@ -14,6 +15,8 @@ public class ChimeraItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(ChimeraMod.MODID);
 
     public static final DeferredItem<BlockItem> GENE_SEQUENCER = ITEMS.registerSimpleBlockItem(ChimeraBlocks.GENE_SEQUENCER);
+    public static final DeferredItem<BlockItem> GENOME_ANALYZER = ITEMS.registerSimpleBlockItem(ChimeraBlocks.GENOME_ANALYZER);
+    public static final DeferredItem<BlockItem> GENE_EXTRACTOR = ITEMS.registerSimpleBlockItem(ChimeraBlocks.GENE_EXTRACTOR);
 
     public static final DeferredItem<Item> TISSUE_SCRAPER = ITEMS.register("tissue_scraper",
             () -> new TissueScraperItem(new Item.Properties().durability(32)));
@@ -40,4 +43,10 @@ public class ChimeraItems {
 
     public static final DeferredItem<Item> MUTAGEN = ITEMS.register("mutagen",
             () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> BLANK_GENE_CASSETTE = ITEMS.register("blank_gene_cassette",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> GENE_CASSETTE = ITEMS.register("gene_cassette",
+            () -> new GeneCassetteItem(new Item.Properties()));
 }
