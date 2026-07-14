@@ -1,5 +1,6 @@
 package com.chimera.curios;
 
+import java.util.List;
 import java.util.Objects;
 
 import com.chimera.ChimeraAttachments;
@@ -32,7 +33,10 @@ public final class ChimeraCuriosCompat {
     private ChimeraCuriosCompat() {}
 
     public static void register() {
-        CuriosApi.registerCurio(ChimeraItems.SPLICE_CORE.get(), new SpliceCoreCurio());
+        SpliceCoreCurio curio = new SpliceCoreCurio();
+        CuriosApi.registerCurio(ChimeraItems.SPLICE_CORE.get(), curio);
+        CuriosApi.registerCurio(ChimeraItems.SPLICE_CORE_MK2.get(), curio);
+        CuriosApi.registerCurio(ChimeraItems.SPLICE_CORE_MK3.get(), curio);
     }
 
     private static class SpliceCoreCurio implements ICurioItem {
@@ -40,13 +44,15 @@ public final class ChimeraCuriosCompat {
         @Override
         public Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiers(SlotContext slotContext, ResourceLocation id, ItemStack stack) {
             Multimap<Holder<Attribute>, AttributeModifier> modifiers = HashMultimap.create();
-            Gene gene = geneOf(stack);
-            if (gene == null) {
-                return modifiers;
-            }
-            for (GeneEffect effect : gene.effects()) {
-                if (effect instanceof AttributeModifierGeneEffect attributeEffect) {
-                    modifiers.put(attributeEffect.attribute(), attributeEffect.modifier());
+            for (ResourceLocation trait : installedTraits(stack)) {
+                Gene gene = GeneRegistry.get(trait);
+                if (gene == null) {
+                    continue;
+                }
+                for (GeneEffect effect : gene.effects()) {
+                    if (effect instanceof AttributeModifierGeneEffect attributeEffect) {
+                        modifiers.put(attributeEffect.attribute(), attributeEffect.modifier());
+                    }
                 }
             }
             return modifiers;
@@ -68,25 +74,29 @@ public final class ChimeraCuriosCompat {
                 return;
             }
 
-            ResourceLocation oldTrait = oldStack.get(ChimeraDataComponents.INSTALLED_TRAIT.get());
-            ResourceLocation newTrait = newStack.get(ChimeraDataComponents.INSTALLED_TRAIT.get());
-            if (Objects.equals(oldTrait, newTrait)) {
+            List<ResourceLocation> oldTraits = installedTraits(oldStack);
+            List<ResourceLocation> newTraits = installedTraits(newStack);
+            if (Objects.equals(oldTraits, newTraits)) {
                 return;
             }
 
             PlayerGeneData data = player.getData(ChimeraAttachments.PLAYER_GENE_DATA.get());
-            if (oldTrait != null) {
-                data = data.withGeneRemoved(oldTrait);
+            for (ResourceLocation trait : oldTraits) {
+                if (!newTraits.contains(trait)) {
+                    data = data.withGeneRemoved(trait);
+                }
             }
-            if (newTrait != null) {
-                data = data.withGeneAdded(newTrait);
+            for (ResourceLocation trait : newTraits) {
+                if (!oldTraits.contains(trait)) {
+                    data = data.withGeneAdded(trait);
+                }
             }
             player.setData(ChimeraAttachments.PLAYER_GENE_DATA.get(), data);
         }
 
-        private Gene geneOf(ItemStack stack) {
-            ResourceLocation trait = stack.get(ChimeraDataComponents.INSTALLED_TRAIT.get());
-            return trait != null ? GeneRegistry.get(trait) : null;
+        private List<ResourceLocation> installedTraits(ItemStack stack) {
+            List<ResourceLocation> traits = stack.get(ChimeraDataComponents.TRAITS.get());
+            return traits != null ? traits : List.of();
         }
     }
 }

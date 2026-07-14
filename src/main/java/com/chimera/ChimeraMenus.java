@@ -6,12 +6,14 @@ import com.chimera.machine.GeneSequencerBlockEntity;
 import com.chimera.machine.GeneSequencerMenu;
 import com.chimera.machine.GenomeAnalyzerBlockEntity;
 import com.chimera.machine.GenomeAnalyzerMenu;
+import com.chimera.item.SpliceCoreItem;
 import com.chimera.splice.SpliceCoreMenu;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.IContainerFactory;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -42,6 +44,8 @@ public class ChimeraMenus {
     public static final DeferredHolder<MenuType<?>, MenuType<SpliceCoreMenu>> SPLICE_CORE =
             MENU_TYPES.register("splice_core", () -> new MenuType<>((IContainerFactory<SpliceCoreMenu>) (containerId, inventory, buf) -> {
                 InteractionHand hand = buf.readEnum(InteractionHand.class);
-                return new SpliceCoreMenu(containerId, inventory, hand);
+                ItemStack coreStack = inventory.player.getItemInHand(hand);
+                int slotCount = coreStack.getItem() instanceof SpliceCoreItem spliceCore ? spliceCore.getSlotCount() : 1;
+                return new SpliceCoreMenu(containerId, inventory, hand, slotCount);
             }, FeatureFlags.VANILLA_SET));
 }

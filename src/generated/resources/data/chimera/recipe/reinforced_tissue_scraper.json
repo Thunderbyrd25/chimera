@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": {
+      "item": "chimera:cell_culture"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "S": {
+      "item": "minecraft:stone"
+    }
+  },
+  "pattern": [
+    "I",
+    "C",
+    "S"
+  ],
+  "result": {
+    "count": 1,
+    "id": "chimera:reinforced_tissue_scraper"
+  }
+}

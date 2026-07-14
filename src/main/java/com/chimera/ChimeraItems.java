@@ -1,6 +1,7 @@
 package com.chimera;
 
 import com.chimera.item.GeneCassetteItem;
+import com.chimera.item.ReinforcedTissueScraperItem;
 import com.chimera.item.SequencedGenomeItem;
 import com.chimera.item.SpliceCoreItem;
 import com.chimera.item.TissueSampleItem;
@@ -22,6 +23,9 @@ public class ChimeraItems {
     public static final DeferredItem<Item> TISSUE_SCRAPER = ITEMS.register("tissue_scraper",
             () -> new TissueScraperItem(new Item.Properties().durability(32)));
 
+    public static final DeferredItem<Item> REINFORCED_TISSUE_SCRAPER = ITEMS.register("reinforced_tissue_scraper",
+            () -> new ReinforcedTissueScraperItem(new Item.Properties().durability(96)));
+
     public static final DeferredItem<Item> TISSUE_SAMPLE = ITEMS.register("tissue_sample",
             () -> new TissueSampleItem(new Item.Properties()));
 
@@ -31,8 +35,10 @@ public class ChimeraItems {
     public static final DeferredItem<Item> NUTRIENT_AGAR = ITEMS.register("nutrient_agar",
             () -> new Item(new Item.Properties()));
 
-    // Sequencer byproducts. cell_culture/nucleotide_slurry/chromatin_strand and mutagen are
-    // plain items with no use yet - mutagen is intentionally inert in v0.1 (see CLAUDE.md Phase 4).
+    // Sequencer byproducts. cell_culture/chromatin_strand and mutagen are plain items with no
+    // use yet beyond crafting ingredients - mutagen is intentionally inert in v0.1 (see
+    // CLAUDE.md Phase 4). nucleotide_slurry refines back into nutrient_agar (Phase 7),
+    // closing the fuel loop.
     public static final DeferredItem<Item> CELL_CULTURE = ITEMS.register("cell_culture",
             () -> new Item(new Item.Properties()));
 
@@ -52,5 +58,11 @@ public class ChimeraItems {
             () -> new GeneCassetteItem(new Item.Properties()));
 
     public static final DeferredItem<Item> SPLICE_CORE = ITEMS.register("splice_core",
-            () -> new SpliceCoreItem(new Item.Properties().stacksTo(1)));
+            () -> new SpliceCoreItem(new Item.Properties().stacksTo(1), 1));
+
+    public static final DeferredItem<Item> SPLICE_CORE_MK2 = ITEMS.register("splice_core_mk2",
+            () -> new SpliceCoreItem(new Item.Properties().stacksTo(1), 2));
+
+    public static final DeferredItem<Item> SPLICE_CORE_MK3 = ITEMS.register("splice_core_mk3",
+            () -> new SpliceCoreItem(new Item.Properties().stacksTo(1), 3));
 }

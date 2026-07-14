@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "chimera:nucleotide_slurry"
+    },
+    {
+      "item": "chimera:nucleotide_slurry"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "chimera:nutrient_agar"
+  }
+}

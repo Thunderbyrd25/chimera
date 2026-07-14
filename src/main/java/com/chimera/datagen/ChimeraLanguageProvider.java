@@ -18,6 +18,7 @@ public class ChimeraLanguageProvider extends LanguageProvider {
         add("itemGroup.chimera", "Chimera");
 
         addItem(ChimeraItems.TISSUE_SCRAPER, "Tissue Scraper");
+        addItem(ChimeraItems.REINFORCED_TISSUE_SCRAPER, "Reinforced Tissue Scraper");
         addItem(ChimeraItems.TISSUE_SAMPLE, "Tissue Sample");
         addItem(ChimeraItems.SEQUENCED_GENOME, "Sequenced Genome");
         addItem(ChimeraItems.NUTRIENT_AGAR, "Nutrient Agar");
@@ -28,6 +29,8 @@ public class ChimeraLanguageProvider extends LanguageProvider {
         addItem(ChimeraItems.BLANK_GENE_CASSETTE, "Blank Gene Cassette");
         addItem(ChimeraItems.GENE_CASSETTE, "Gene Cassette");
         addItem(ChimeraItems.SPLICE_CORE, "Splice Core");
+        addItem(ChimeraItems.SPLICE_CORE_MK2, "Splice Core Mk2");
+        addItem(ChimeraItems.SPLICE_CORE_MK3, "Splice Core Mk3");
 
         addBlock(ChimeraBlocks.GENE_SEQUENCER, "Gene Sequencer");
         addBlock(ChimeraBlocks.GENOME_ANALYZER, "Genome Analyzer");
@@ -37,6 +40,7 @@ public class ChimeraLanguageProvider extends LanguageProvider {
         add("tooltip.chimera.unidentified", "Unidentified");
         add("item.chimera.gene_cassette.named", "Gene Cassette: %s");
         add("item.chimera.splice_core.named", "Splice Core: %s");
+        add("tooltip.chimera.splice_core.slots", "%s / %s gene slots filled");
 
         // Gene display names, keyed by gene id (see data/chimera/genes/*.json) - shown on
         // identified genomes and, later, gene cassettes.

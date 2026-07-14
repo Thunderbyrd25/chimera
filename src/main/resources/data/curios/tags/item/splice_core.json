@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
-    "chimera:splice_core"
+    "chimera:splice_core",
+    "chimera:splice_core_mk2",
+    "chimera:splice_core_mk3"
   ]
 }

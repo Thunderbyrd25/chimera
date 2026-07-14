@@ -80,6 +80,21 @@ Running log of API gotchas, version quirks, and things that surprised us during 
   completely unaffected (this is a pure rendering bug, not a game-logic one). Caught this from
   a screenshot showing item icons rendering offset from the drawn slot boxes.
 
+## The loop (Phase 7)
+
+- `RecipeBuilder#save(RecipeOutput, String id)` resolves the string via `ResourceLocation.parse(id)`,
+  which defaults to the **`minecraft` namespace** when the string has no `:` in it - it does
+  *not* infer the current mod's namespace from context. Used a plain `"nutrient_agar_from_slurry"`
+  id for the alternate nutrient-agar recipe (needed since two recipes produce the same result
+  item) and got `data/minecraft/recipe/nutrient_agar_from_slurry.json` instead of
+  `data/chimera/...`. Fix: always pass the fully-qualified `"chimera:nutrient_agar_from_slurry"`.
+- Splice Core's installed-trait storage was refactored from a single `INSTALLED_TRAIT`
+  component to reusing the existing `TRAITS` list component (same one genomes and cassettes
+  use) once Mk2/Mk3 needed more than one slot - avoided having two components doing
+  effectively the same job. Known limitation, not fixed: installing the *same* trait twice in
+  a Mk2/Mk3 core relies on the vanilla attribute system's own per-id dedup rather than
+  anything explicit in our code; untested edge case.
+
 ## Player attachment, GUI item, Curios integration (Phase 6)
 
 - `AttachmentType.Builder#copyOnDeath()` is the entire "handle the copy-on-death case

@@ -28,7 +28,9 @@ public class ChimeraDataComponents {
                     .persistent(Codec.BOOL)
                     .networkSynchronized(ByteBufCodecs.BOOL));
 
-    // The gene ids revealed on an identified Sequenced Genome. Unused until Phase 3/5.
+    // The gene ids carried by an item: revealed traits on an identified Sequenced Genome, the
+    // one trait on a Gene Cassette, or the traits currently installed in a Splice Core
+    // (0..slotCount entries depending on Mk1/Mk2/Mk3).
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ResourceLocation>>> TRAITS =
             DATA_COMPONENTS.registerComponentType("traits", builder -> builder
                     .persistent(ResourceLocation.CODEC.listOf())
@@ -40,10 +42,4 @@ public class ChimeraDataComponents {
             DATA_COMPONENTS.registerComponentType("inert", builder -> builder
                     .persistent(Codec.BOOL)
                     .networkSynchronized(ByteBufCodecs.BOOL));
-
-    // The trait id of the Gene Cassette currently installed in a Splice Core, or absent if empty.
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceLocation>> INSTALLED_TRAIT =
-            DATA_COMPONENTS.registerComponentType("installed_trait", builder -> builder
-                    .persistent(ResourceLocation.CODEC)
-                    .networkSynchronized(ResourceLocation.STREAM_CODEC));
 }

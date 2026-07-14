@@ -14,12 +14,16 @@
   "item.chimera.mutagen": "Mutagen",
   "item.chimera.nucleotide_slurry": "Nucleotide Slurry",
   "item.chimera.nutrient_agar": "Nutrient Agar",
+  "item.chimera.reinforced_tissue_scraper": "Reinforced Tissue Scraper",
   "item.chimera.sequenced_genome": "Sequenced Genome",
   "item.chimera.splice_core": "Splice Core",
   "item.chimera.splice_core.named": "Splice Core: %s",
+  "item.chimera.splice_core_mk2": "Splice Core Mk2",
+  "item.chimera.splice_core_mk3": "Splice Core Mk3",
   "item.chimera.tissue_sample": "Tissue Sample",
   "item.chimera.tissue_scraper": "Tissue Scraper",
   "itemGroup.chimera": "Chimera",
   "tooltip.chimera.species": "Species: %s",
+  "tooltip.chimera.splice_core.slots": "%s / %s gene slots filled",
   "tooltip.chimera.unidentified": "Unidentified"
 }

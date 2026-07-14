@@ -79,5 +79,43 @@ public class ChimeraRecipeProvider extends RecipeProvider {
                 .define('G', Items.GOLD_INGOT)
                 .unlockedBy("has_gold_ingot", has(Items.GOLD_INGOT))
                 .save(output);
+
+        // Phase 7: the loop. Reinforced scraper trades sequencer byproducts for a better tool,
+        // splice core tiers trade byproducts for more gene slots, and nucleotide slurry refines
+        // back into fuel - all reasons to keep sequencing after the first gene.
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ChimeraItems.REINFORCED_TISSUE_SCRAPER.get())
+                .pattern("I")
+                .pattern("C")
+                .pattern("S")
+                .define('I', Items.IRON_INGOT)
+                .define('C', ChimeraItems.CELL_CULTURE.get())
+                .define('S', Items.STONE)
+                .unlockedBy("has_cell_culture", has(ChimeraItems.CELL_CULTURE.get()))
+                .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ChimeraItems.SPLICE_CORE_MK2.get())
+                .pattern("CIC")
+                .pattern("IGI")
+                .pattern("CIC")
+                .define('I', Items.IRON_INGOT)
+                .define('C', ChimeraItems.CHROMATIN_STRAND.get())
+                .define('G', Items.GOLD_INGOT)
+                .unlockedBy("has_chromatin_strand", has(ChimeraItems.CHROMATIN_STRAND.get()))
+                .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ChimeraItems.SPLICE_CORE_MK3.get())
+                .pattern("CCC")
+                .pattern("CGC")
+                .pattern("CCC")
+                .define('C', ChimeraItems.CHROMATIN_STRAND.get())
+                .define('G', Items.GOLD_INGOT)
+                .unlockedBy("has_chromatin_strand", has(ChimeraItems.CHROMATIN_STRAND.get()))
+                .save(output);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ChimeraItems.NUTRIENT_AGAR.get(), 1)
+                .requires(ChimeraItems.NUCLEOTIDE_SLURRY.get())
+                .requires(ChimeraItems.NUCLEOTIDE_SLURRY.get())
+                .unlockedBy("has_nucleotide_slurry", has(ChimeraItems.NUCLEOTIDE_SLURRY.get()))
+                .save(output, "chimera:nutrient_agar_from_slurry");
     }
 }

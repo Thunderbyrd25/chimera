@@ -1,5 +1,6 @@
 package com.chimera.splice;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -16,46 +17,57 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-// A held-item GUI rather than a block one: the "container" is a transient one-slot
-// SimpleContainer seeded from the Splice Core's own INSTALLED_TRAIT component, written back
-// on every broadcastChanges() tick - a single catch-all interception point instead of chasing
-// every Slot mutation path (set/remove/quickMove all funnel through it eventually).
+// A held-item GUI rather than a block one: the "container" is a transient SimpleContainer
+// (1-3 slots depending on Mk1/Mk2/Mk3) seeded from the Splice Core's own TRAITS component,
+// written back on every broadcastChanges() tick - a single catch-all interception point
+// instead of chasing every Slot mutation path (set/remove/quickMove all funnel through it
+// eventually, but Slot#remove(int) skips setChanged()).
 public class SpliceCoreMenu extends AbstractContainerMenu {
 
-    private static final int SLOT_COUNT = 1;
-    private static final int PLAYER_INV_START = SLOT_COUNT;
-    private static final int PLAYER_INV_END = SLOT_COUNT + 27;
-    private static final int HOTBAR_END = PLAYER_INV_END + 9;
+    private final int slotCount;
+    private final int playerInvStart;
+    private final int playerInvEnd;
+    private final int hotbarEnd;
 
     private final Player player;
     private final InteractionHand hand;
-    private final SimpleContainer container = new SimpleContainer(1);
+    private final SimpleContainer container;
 
-    public SpliceCoreMenu(int containerId, Inventory playerInventory, InteractionHand hand) {
+    public SpliceCoreMenu(int containerId, Inventory playerInventory, InteractionHand hand, int slotCount) {
         super(ChimeraMenus.SPLICE_CORE.get(), containerId);
         this.player = playerInventory.player;
         this.hand = hand;
+        this.slotCount = slotCount;
+        this.playerInvStart = slotCount;
+        this.playerInvEnd = slotCount + 27;
+        this.hotbarEnd = playerInvEnd + 9;
+        this.container = new SimpleContainer(slotCount);
 
         ItemStack coreStack = player.getItemInHand(hand);
-        ResourceLocation trait = coreStack.get(ChimeraDataComponents.INSTALLED_TRAIT.get());
-        if (trait != null) {
-            ItemStack cassette = new ItemStack(ChimeraItems.GENE_CASSETTE.get());
-            cassette.set(ChimeraDataComponents.TRAITS.get(), List.of(trait));
-            cassette.set(ChimeraDataComponents.INERT.get(), false);
-            container.setItem(0, cassette);
+        List<ResourceLocation> traits = coreStack.get(ChimeraDataComponents.TRAITS.get());
+        if (traits != null) {
+            for (int i = 0; i < traits.size() && i < slotCount; i++) {
+                ItemStack cassette = new ItemStack(ChimeraItems.GENE_CASSETTE.get());
+                cassette.set(ChimeraDataComponents.TRAITS.get(), List.of(traits.get(i)));
+                cassette.set(ChimeraDataComponents.INERT.get(), false);
+                container.setItem(i, cassette);
+            }
         }
 
-        addSlot(new Slot(container, 0, 80, 35) {
-            @Override
-            public boolean mayPlace(ItemStack stack) {
-                return stack.is(ChimeraItems.GENE_CASSETTE.get());
-            }
+        int startX = 80 - (slotCount - 1) * 9;
+        for (int i = 0; i < slotCount; i++) {
+            addSlot(new Slot(container, i, startX + i * 18, 35) {
+                @Override
+                public boolean mayPlace(ItemStack stack) {
+                    return stack.is(ChimeraItems.GENE_CASSETTE.get());
+                }
 
-            @Override
-            public int getMaxStackSize() {
-                return 1;
-            }
-        });
+                @Override
+                public int getMaxStackSize() {
+                    return 1;
+                }
+            });
+        }
 
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 9; col++) {
@@ -70,37 +82,43 @@ public class SpliceCoreMenu extends AbstractContainerMenu {
     @Override
     public void broadcastChanges() {
         super.broadcastChanges();
-        syncCassetteToCore();
+        syncCassettesToCore();
     }
 
-    private void syncCassetteToCore() {
+    private void syncCassettesToCore() {
         ItemStack coreStack = player.getItemInHand(hand);
-        if (!coreStack.is(ChimeraItems.SPLICE_CORE.get())) {
+        if (!(coreStack.getItem() instanceof com.chimera.item.SpliceCoreItem)) {
             return;
         }
 
-        ItemStack cassette = container.getItem(0);
-        ResourceLocation newTrait = null;
-        if (!cassette.isEmpty()) {
-            List<ResourceLocation> traits = cassette.get(ChimeraDataComponents.TRAITS.get());
-            if (traits != null && !traits.isEmpty()) {
-                newTrait = traits.get(0);
+        List<ResourceLocation> newTraits = new ArrayList<>();
+        for (int i = 0; i < slotCount; i++) {
+            ItemStack cassette = container.getItem(i);
+            if (cassette.isEmpty()) {
+                continue;
+            }
+            List<ResourceLocation> cassetteTraits = cassette.get(ChimeraDataComponents.TRAITS.get());
+            if (cassetteTraits != null && !cassetteTraits.isEmpty()) {
+                newTraits.add(cassetteTraits.get(0));
             }
         }
 
-        ResourceLocation currentTrait = coreStack.get(ChimeraDataComponents.INSTALLED_TRAIT.get());
-        if (!Objects.equals(currentTrait, newTrait)) {
-            if (newTrait == null) {
-                coreStack.remove(ChimeraDataComponents.INSTALLED_TRAIT.get());
+        List<ResourceLocation> currentTraits = coreStack.get(ChimeraDataComponents.TRAITS.get());
+        if (currentTraits == null) {
+            currentTraits = List.of();
+        }
+        if (!Objects.equals(currentTraits, newTraits)) {
+            if (newTraits.isEmpty()) {
+                coreStack.remove(ChimeraDataComponents.TRAITS.get());
             } else {
-                coreStack.set(ChimeraDataComponents.INSTALLED_TRAIT.get(), newTrait);
+                coreStack.set(ChimeraDataComponents.TRAITS.get(), List.copyOf(newTraits));
             }
         }
     }
 
     @Override
     public boolean stillValid(Player player) {
-        return player.getItemInHand(hand).is(ChimeraItems.SPLICE_CORE.get());
+        return player.getItemInHand(hand).getItem() instanceof com.chimera.item.SpliceCoreItem;
     }
 
     @Override
@@ -114,19 +132,19 @@ public class SpliceCoreMenu extends AbstractContainerMenu {
         ItemStack slotStack = slot.getItem();
         result = slotStack.copy();
 
-        if (index < SLOT_COUNT) {
-            if (!this.moveItemStackTo(slotStack, PLAYER_INV_START, HOTBAR_END, true)) {
+        if (index < slotCount) {
+            if (!this.moveItemStackTo(slotStack, playerInvStart, hotbarEnd, true)) {
                 return ItemStack.EMPTY;
             }
         } else if (slotStack.is(ChimeraItems.GENE_CASSETTE.get())) {
-            if (!this.moveItemStackTo(slotStack, 0, SLOT_COUNT, false)) {
+            if (!this.moveItemStackTo(slotStack, 0, slotCount, false)) {
                 return ItemStack.EMPTY;
             }
-        } else if (index < PLAYER_INV_END) {
-            if (!this.moveItemStackTo(slotStack, PLAYER_INV_END, HOTBAR_END, false)) {
+        } else if (index < playerInvEnd) {
+            if (!this.moveItemStackTo(slotStack, playerInvEnd, hotbarEnd, false)) {
                 return ItemStack.EMPTY;
             }
-        } else if (!this.moveItemStackTo(slotStack, PLAYER_INV_START, PLAYER_INV_END, false)) {
+        } else if (!this.moveItemStackTo(slotStack, playerInvStart, playerInvEnd, false)) {
             return ItemStack.EMPTY;
         }
 

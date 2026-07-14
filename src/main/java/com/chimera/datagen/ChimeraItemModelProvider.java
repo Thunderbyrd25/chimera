@@ -16,6 +16,7 @@ public class ChimeraItemModelProvider extends ItemModelProvider {
     @Override
     protected void registerModels() {
         handheldItem(ChimeraItems.TISSUE_SCRAPER.get());
+        handheldItem(ChimeraItems.REINFORCED_TISSUE_SCRAPER.get());
         basicItem(ChimeraItems.TISSUE_SAMPLE.get());
         basicItem(ChimeraItems.SEQUENCED_GENOME.get());
         basicItem(ChimeraItems.NUTRIENT_AGAR.get());
@@ -26,5 +27,7 @@ public class ChimeraItemModelProvider extends ItemModelProvider {
         basicItem(ChimeraItems.BLANK_GENE_CASSETTE.get());
         basicItem(ChimeraItems.GENE_CASSETTE.get());
         basicItem(ChimeraItems.SPLICE_CORE.get());
+        basicItem(ChimeraItems.SPLICE_CORE_MK2.get());
+        basicItem(ChimeraItems.SPLICE_CORE_MK3.get());
     }
 }

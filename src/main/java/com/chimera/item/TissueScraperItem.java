@@ -26,6 +26,11 @@ public class TissueScraperItem extends Item {
         super(properties);
     }
 
+    // Overridden by the reinforced tier for a chance at a bonus sample per scrape.
+    protected float bonusSampleChance() {
+        return 0.0F;
+    }
+
     @Override
     public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity interactionTarget, InteractionHand usedHand) {
         if (!SCRAPABLE_MOBS.contains(interactionTarget.getType())) {
@@ -37,15 +42,22 @@ public class TissueScraperItem extends Item {
             return InteractionResult.SUCCESS;
         }
 
-        ItemStack sample = new ItemStack(ChimeraItems.TISSUE_SAMPLE.get());
-        sample.set(ChimeraDataComponents.SPECIES.get(), EntityType.getKey(interactionTarget.getType()));
-        if (!player.getInventory().add(sample)) {
-            player.drop(sample, false);
+        giveSample(player, interactionTarget);
+        if (level.random.nextFloat() < bonusSampleChance()) {
+            giveSample(player, interactionTarget);
         }
 
         EquipmentSlot slot = usedHand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
         stack.hurtAndBreak(1, player, slot);
 
         return InteractionResult.CONSUME;
+    }
+
+    private void giveSample(Player player, LivingEntity target) {
+        ItemStack sample = new ItemStack(ChimeraItems.TISSUE_SAMPLE.get());
+        sample.set(ChimeraDataComponents.SPECIES.get(), EntityType.getKey(target.getType()));
+        if (!player.getInventory().add(sample)) {
+            player.drop(sample, false);
+        }
     }
 }

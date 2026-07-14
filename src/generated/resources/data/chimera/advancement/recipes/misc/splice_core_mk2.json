@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_chromatin_strand": {
+      "conditions": {
+        "items": [
+          {
+            "items": "chimera:chromatin_strand"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "chimera:splice_core_mk2"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_chromatin_strand"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "chimera:splice_core_mk2"
+    ]
+  }
+}

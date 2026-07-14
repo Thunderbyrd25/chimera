@@ -47,6 +47,7 @@ public class ChimeraMod {
                     .icon(() -> ChimeraItems.TISSUE_SCRAPER.get().getDefaultInstance())
                     .displayItems((parameters, output) -> {
                         output.accept(ChimeraItems.TISSUE_SCRAPER.get());
+                        output.accept(ChimeraItems.REINFORCED_TISSUE_SCRAPER.get());
                         output.accept(ChimeraItems.TISSUE_SAMPLE.get());
                         output.accept(ChimeraItems.SEQUENCED_GENOME.get());
                         output.accept(ChimeraItems.NUTRIENT_AGAR.get());
@@ -57,6 +58,8 @@ public class ChimeraMod {
                         output.accept(ChimeraItems.BLANK_GENE_CASSETTE.get());
                         output.accept(ChimeraItems.GENE_CASSETTE.get());
                         output.accept(ChimeraItems.SPLICE_CORE.get());
+                        output.accept(ChimeraItems.SPLICE_CORE_MK2.get());
+                        output.accept(ChimeraItems.SPLICE_CORE_MK3.get());
                         output.accept(ChimeraItems.GENE_SEQUENCER.get());
                         output.accept(ChimeraItems.GENOME_ANALYZER.get());
                         output.accept(ChimeraItems.GENE_EXTRACTOR.get());
