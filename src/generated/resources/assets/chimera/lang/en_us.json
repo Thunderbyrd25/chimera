@@ -1,0 +1,6 @@
+{
+  "item.chimera.tissue_sample": "Tissue Sample",
+  "item.chimera.tissue_scraper": "Tissue Scraper",
+  "itemGroup.chimera": "Chimera",
+  "tooltip.chimera.species": "Species: %s"
+}
