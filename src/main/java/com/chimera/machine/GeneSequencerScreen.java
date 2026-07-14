@@ -34,7 +34,7 @@ public class GeneSequencerScreen extends AbstractContainerScreen<GeneSequencerMe
         int maxProgress = menu.getMaxProgress();
         int barWidth = (int) (24.0F * progress / maxProgress);
         if (barWidth > 0) {
-            guiGraphics.fill(leftPos + 68, topPos + 48, leftPos + 68 + barWidth, topPos + 52, 0xFF63C43A);
+            guiGraphics.fill(leftPos + 68, topPos + 30, leftPos + 68 + barWidth, topPos + 34, 0xFF63C43A);
         }
     }
 }

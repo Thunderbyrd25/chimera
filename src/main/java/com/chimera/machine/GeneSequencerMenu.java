@@ -28,10 +28,10 @@ public class GeneSequencerMenu extends AbstractContainerMenu {
         this.blockEntity = blockEntity;
         this.data = blockEntity.createContainerData();
 
-        addSlot(new SlotItemHandler(blockEntity.getInventory(), GeneSequencerBlockEntity.SLOT_INPUT, 44, 35));
-        addSlot(new SlotItemHandler(blockEntity.getInventory(), GeneSequencerBlockEntity.SLOT_FUEL, 44, 65));
-        addSlot(new SlotItemHandler(blockEntity.getInventory(), GeneSequencerBlockEntity.SLOT_OUTPUT, 116, 35));
-        addSlot(new SlotItemHandler(blockEntity.getInventory(), GeneSequencerBlockEntity.SLOT_BYPRODUCT, 116, 65));
+        addSlot(new SlotItemHandler(blockEntity.getInventory(), GeneSequencerBlockEntity.SLOT_INPUT, 44, 17));
+        addSlot(new SlotItemHandler(blockEntity.getInventory(), GeneSequencerBlockEntity.SLOT_FUEL, 44, 47));
+        addSlot(new SlotItemHandler(blockEntity.getInventory(), GeneSequencerBlockEntity.SLOT_OUTPUT, 116, 17));
+        addSlot(new SlotItemHandler(blockEntity.getInventory(), GeneSequencerBlockEntity.SLOT_BYPRODUCT, 116, 47));
 
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 9; col++) {
