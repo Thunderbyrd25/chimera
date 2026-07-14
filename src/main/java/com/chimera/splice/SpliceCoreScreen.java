@@ -29,5 +29,17 @@ public class SpliceCoreScreen extends AbstractContainerScreen<SpliceCoreMenu> {
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         guiGraphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+
+        // Cassette slot boxes are drawn here rather than baked into the texture: Mk1/Mk2/Mk3
+        // each use a different slot count and x-spacing (see SpliceCoreMenu), so a single
+        // static image can't have the right boxes for every tier without either shipping three
+        // textures or overlapping unrelated tiers' positions (the previous bug).
+        int startX = menu.getCassetteSlotStartX();
+        for (int i = 0; i < menu.getSlotCount(); i++) {
+            int x = leftPos + startX + i * 18;
+            int y = topPos + 35;
+            guiGraphics.fill(x - 1, y - 1, x + 17, y + 17, 0xFF8B8B8B);
+            guiGraphics.fill(x, y, x + 16, y + 16, 0xFFA2A2A2);
+        }
     }
 }

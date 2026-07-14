@@ -25,6 +25,7 @@ import net.minecraft.world.item.ItemStack;
 public class SpliceCoreMenu extends AbstractContainerMenu {
 
     private final int slotCount;
+    private final int cassetteSlotStartX;
     private final int playerInvStart;
     private final int playerInvEnd;
     private final int hotbarEnd;
@@ -42,6 +43,7 @@ public class SpliceCoreMenu extends AbstractContainerMenu {
         this.playerInvEnd = slotCount + 27;
         this.hotbarEnd = playerInvEnd + 9;
         this.container = new SimpleContainer(slotCount);
+        this.cassetteSlotStartX = 80 - (slotCount - 1) * 9;
 
         ItemStack coreStack = player.getItemInHand(hand);
         List<GeneInstance> traits = coreStack.get(ChimeraDataComponents.TRAITS.get());
@@ -54,9 +56,8 @@ public class SpliceCoreMenu extends AbstractContainerMenu {
             }
         }
 
-        int startX = 80 - (slotCount - 1) * 9;
         for (int i = 0; i < slotCount; i++) {
-            addSlot(new Slot(container, i, startX + i * 18, 35) {
+            addSlot(new Slot(container, i, cassetteSlotStartX + i * 18, 35) {
                 @Override
                 public boolean mayPlace(ItemStack stack) {
                     return stack.is(ChimeraItems.GENE_CASSETTE.get());
@@ -77,6 +78,14 @@ public class SpliceCoreMenu extends AbstractContainerMenu {
         for (int col = 0; col < 9; col++) {
             addSlot(new Slot(playerInventory, col, 8 + col * 18, 142));
         }
+    }
+
+    public int getSlotCount() {
+        return slotCount;
+    }
+
+    public int getCassetteSlotStartX() {
+        return cassetteSlotStartX;
     }
 
     @Override
