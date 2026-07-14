@@ -30,6 +30,6 @@ public class GeneExtractorScreen extends AbstractContainerScreen<GeneExtractorMe
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         guiGraphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
-        MachineScreenUtil.drawProgressBar(guiGraphics, leftPos + 68, topPos + 30, 24, 4, menu.getProgress(), menu.getMaxProgress(), 0xFFC48A3A);
+        MachineScreenUtil.drawProgressBar(guiGraphics, leftPos + 76, topPos + 38, 24, 4, menu.getProgress(), menu.getMaxProgress(), 0xFFC48A3A);
     }
 }
