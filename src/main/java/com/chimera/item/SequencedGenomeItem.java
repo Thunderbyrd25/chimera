@@ -3,6 +3,8 @@ package com.chimera.item;
 import java.util.List;
 
 import com.chimera.ChimeraDataComponents;
+import com.chimera.gene.GeneInstance;
+import com.chimera.gene.TraitDisplay;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -34,10 +36,10 @@ public class SequencedGenomeItem extends Item {
             return;
         }
 
-        List<ResourceLocation> traits = stack.get(ChimeraDataComponents.TRAITS.get());
+        List<GeneInstance> traits = stack.get(ChimeraDataComponents.TRAITS.get());
         if (traits != null) {
-            for (ResourceLocation trait : traits) {
-                tooltipComponents.add(Component.translatable("gene." + trait.getNamespace() + "." + trait.getPath()).withStyle(ChatFormatting.AQUA));
+            for (GeneInstance trait : traits) {
+                tooltipComponents.add(TraitDisplay.traitLine(trait).copy().withStyle(ChatFormatting.AQUA));
             }
         }
     }

@@ -41,6 +41,7 @@ public class ChimeraLanguageProvider extends LanguageProvider {
         add("item.chimera.gene_cassette.named", "Gene Cassette: %s");
         add("item.chimera.splice_core.named", "Splice Core: %s");
         add("tooltip.chimera.splice_core.slots", "%s / %s gene slots filled");
+        add("gui.chimera.genome_analyzer.analyzing", "Analyzing...");
 
         // Gene display names, keyed by gene id (see data/chimera/genes/*.json) - shown on
         // identified genomes and, later, gene cassettes.

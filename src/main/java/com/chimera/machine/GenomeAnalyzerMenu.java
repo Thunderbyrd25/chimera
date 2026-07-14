@@ -51,6 +51,10 @@ public class GenomeAnalyzerMenu extends AbstractContainerMenu {
         return Math.max(data.get(1), 1);
     }
 
+    public ItemStack getOutputStack() {
+        return this.slots.get(GenomeAnalyzerBlockEntity.SLOT_OUTPUT).getItem();
+    }
+
     @Override
     public boolean stillValid(Player player) {
         return stillValid(ContainerLevelAccess.create(blockEntity.getLevel(), blockEntity.getBlockPos()), player, ChimeraBlocks.GENOME_ANALYZER.get());

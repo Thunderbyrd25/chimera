@@ -3,12 +3,13 @@ package com.chimera.item;
 import java.util.List;
 
 import com.chimera.ChimeraDataComponents;
+import com.chimera.gene.GeneInstance;
+import com.chimera.gene.TraitDisplay;
 import com.chimera.splice.SpliceCoreMenu;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
@@ -50,13 +51,13 @@ public class SpliceCoreItem extends Item {
 
     @Override
     public Component getName(ItemStack stack) {
-        List<ResourceLocation> traits = stack.get(ChimeraDataComponents.TRAITS.get());
+        List<GeneInstance> traits = stack.get(ChimeraDataComponents.TRAITS.get());
         if (traits == null || traits.isEmpty()) {
             return super.getName(stack);
         }
         MutableComponent joined = null;
-        for (ResourceLocation trait : traits) {
-            Component traitName = Component.translatable("gene." + trait.getNamespace() + "." + trait.getPath());
+        for (GeneInstance trait : traits) {
+            Component traitName = TraitDisplay.traitName(trait.gene());
             joined = joined == null ? traitName.copy() : joined.append(", ").append(traitName);
         }
         return Component.translatable("item.chimera.splice_core.named", joined);
@@ -64,9 +65,14 @@ public class SpliceCoreItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        List<ResourceLocation> traits = stack.get(ChimeraDataComponents.TRAITS.get());
+        List<GeneInstance> traits = stack.get(ChimeraDataComponents.TRAITS.get());
         int installed = traits != null ? traits.size() : 0;
         tooltipComponents.add(Component.translatable("tooltip.chimera.splice_core.slots", installed, slotCount)
                 .withStyle(ChatFormatting.GRAY));
+        if (traits != null) {
+            for (GeneInstance trait : traits) {
+                tooltipComponents.add(TraitDisplay.traitLine(trait));
+            }
+        }
     }
 }

@@ -9,6 +9,7 @@ import com.chimera.ChimeraItems;
 import com.chimera.gene.AttributeModifierGeneEffect;
 import com.chimera.gene.Gene;
 import com.chimera.gene.GeneEffect;
+import com.chimera.gene.GeneInstance;
 import com.chimera.gene.GeneRegistry;
 import com.chimera.gene.PlayerGeneData;
 import com.google.common.collect.HashMultimap;
@@ -44,14 +45,14 @@ public final class ChimeraCuriosCompat {
         @Override
         public Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiers(SlotContext slotContext, ResourceLocation id, ItemStack stack) {
             Multimap<Holder<Attribute>, AttributeModifier> modifiers = HashMultimap.create();
-            for (ResourceLocation trait : installedTraits(stack)) {
-                Gene gene = GeneRegistry.get(trait);
+            for (GeneInstance trait : installedTraits(stack)) {
+                Gene gene = GeneRegistry.get(trait.gene());
                 if (gene == null) {
                     continue;
                 }
                 for (GeneEffect effect : gene.effects()) {
                     if (effect instanceof AttributeModifierGeneEffect attributeEffect) {
-                        modifiers.put(attributeEffect.attribute(), attributeEffect.modifier());
+                        modifiers.put(attributeEffect.attribute(), attributeEffect.scaledModifier(trait.starLevel()));
                     }
                 }
             }
@@ -74,19 +75,19 @@ public final class ChimeraCuriosCompat {
                 return;
             }
 
-            List<ResourceLocation> oldTraits = installedTraits(oldStack);
-            List<ResourceLocation> newTraits = installedTraits(newStack);
+            List<GeneInstance> oldTraits = installedTraits(oldStack);
+            List<GeneInstance> newTraits = installedTraits(newStack);
             if (Objects.equals(oldTraits, newTraits)) {
                 return;
             }
 
             PlayerGeneData data = player.getData(ChimeraAttachments.PLAYER_GENE_DATA.get());
-            for (ResourceLocation trait : oldTraits) {
+            for (GeneInstance trait : oldTraits) {
                 if (!newTraits.contains(trait)) {
                     data = data.withGeneRemoved(trait);
                 }
             }
-            for (ResourceLocation trait : newTraits) {
+            for (GeneInstance trait : newTraits) {
                 if (!oldTraits.contains(trait)) {
                     data = data.withGeneAdded(trait);
                 }
@@ -94,8 +95,8 @@ public final class ChimeraCuriosCompat {
             player.setData(ChimeraAttachments.PLAYER_GENE_DATA.get(), data);
         }
 
-        private List<ResourceLocation> installedTraits(ItemStack stack) {
-            List<ResourceLocation> traits = stack.get(ChimeraDataComponents.TRAITS.get());
+        private List<GeneInstance> installedTraits(ItemStack stack) {
+            List<GeneInstance> traits = stack.get(ChimeraDataComponents.TRAITS.get());
             return traits != null ? traits : List.of();
         }
     }

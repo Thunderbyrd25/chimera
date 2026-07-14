@@ -5,6 +5,7 @@ import java.util.List;
 import com.chimera.ChimeraBlockEntities;
 import com.chimera.ChimeraDataComponents;
 import com.chimera.ChimeraItems;
+import com.chimera.gene.GeneInstance;
 import com.chimera.gene.GenePool;
 import com.chimera.gene.GenePoolRegistry;
 
@@ -59,7 +60,7 @@ public class GenomeAnalyzerBlockEntity extends AbstractMachineBlockEntity {
         inventory.insertItem(SLOT_OUTPUT, identified, false);
     }
 
-    private List<ResourceLocation> rollTraits(ResourceLocation species) {
+    private List<GeneInstance> rollTraits(ResourceLocation species) {
         if (species == null) {
             return List.of();
         }
@@ -72,8 +73,7 @@ public class GenomeAnalyzerBlockEntity extends AbstractMachineBlockEntity {
             return List.of();
         }
         RandomSource random = this.level != null ? this.level.random : RandomSource.create();
-        ResourceLocation gene = pool.rollGene(random);
-        return gene != null ? List.of(gene) : List.of();
+        return pool.rollGenes(random);
     }
 
     @Override

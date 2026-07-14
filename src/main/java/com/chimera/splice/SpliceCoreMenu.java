@@ -7,8 +7,8 @@ import java.util.Objects;
 import com.chimera.ChimeraDataComponents;
 import com.chimera.ChimeraItems;
 import com.chimera.ChimeraMenus;
+import com.chimera.gene.GeneInstance;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -44,7 +44,7 @@ public class SpliceCoreMenu extends AbstractContainerMenu {
         this.container = new SimpleContainer(slotCount);
 
         ItemStack coreStack = player.getItemInHand(hand);
-        List<ResourceLocation> traits = coreStack.get(ChimeraDataComponents.TRAITS.get());
+        List<GeneInstance> traits = coreStack.get(ChimeraDataComponents.TRAITS.get());
         if (traits != null) {
             for (int i = 0; i < traits.size() && i < slotCount; i++) {
                 ItemStack cassette = new ItemStack(ChimeraItems.GENE_CASSETTE.get());
@@ -91,19 +91,19 @@ public class SpliceCoreMenu extends AbstractContainerMenu {
             return;
         }
 
-        List<ResourceLocation> newTraits = new ArrayList<>();
+        List<GeneInstance> newTraits = new ArrayList<>();
         for (int i = 0; i < slotCount; i++) {
             ItemStack cassette = container.getItem(i);
             if (cassette.isEmpty()) {
                 continue;
             }
-            List<ResourceLocation> cassetteTraits = cassette.get(ChimeraDataComponents.TRAITS.get());
+            List<GeneInstance> cassetteTraits = cassette.get(ChimeraDataComponents.TRAITS.get());
             if (cassetteTraits != null && !cassetteTraits.isEmpty()) {
                 newTraits.add(cassetteTraits.get(0));
             }
         }
 
-        List<ResourceLocation> currentTraits = coreStack.get(ChimeraDataComponents.TRAITS.get());
+        List<GeneInstance> currentTraits = coreStack.get(ChimeraDataComponents.TRAITS.get());
         if (currentTraits == null) {
             currentTraits = List.of();
         }

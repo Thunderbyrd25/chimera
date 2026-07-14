@@ -1,6 +1,6 @@
 {
   "tier": 1,
   "genes": [
-    { "gene": "chimera:ruminant_gut", "weight": 100 }
+    { "gene": "chimera:ruminant_gut", "chance": 1.0, "star_weights": [70, 25, 5] }
   ]
 }

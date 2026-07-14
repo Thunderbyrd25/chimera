@@ -2,7 +2,6 @@ package com.chimera.gene;
 
 import com.chimera.ChimeraAttachments;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 // Shared query helpers so tick/event hooks (Ruminant Gut, Hollow Bones, freeze immunity) don't
@@ -14,8 +13,8 @@ public final class PlayerGeneEffects {
 
     public static boolean hasBehavior(Player player, String behaviorId) {
         PlayerGeneData data = player.getData(ChimeraAttachments.PLAYER_GENE_DATA.get());
-        for (ResourceLocation geneId : data.installedGenes()) {
-            Gene gene = GeneRegistry.get(geneId);
+        for (GeneInstance installed : data.installedGenes()) {
+            Gene gene = GeneRegistry.get(installed.gene());
             if (gene == null) {
                 continue;
             }

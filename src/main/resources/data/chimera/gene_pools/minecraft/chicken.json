@@ -1,6 +1,6 @@
 {
   "tier": 1,
   "genes": [
-    { "gene": "chimera:hollow_bones", "weight": 100 }
+    { "gene": "chimera:hollow_bones", "chance": 1.0, "star_weights": [70, 25, 5] }
   ]
 }

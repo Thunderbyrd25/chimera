@@ -8,7 +8,8 @@
         "id": "chimera:bovine_vigor",
         "amount": 2.0,
         "operation": "add_value"
-      }
+      },
+      "per_level_amount": 4.0
     }
   ]
 }

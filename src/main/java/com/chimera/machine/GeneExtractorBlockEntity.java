@@ -5,9 +5,9 @@ import java.util.List;
 import com.chimera.ChimeraBlockEntities;
 import com.chimera.ChimeraDataComponents;
 import com.chimera.ChimeraItems;
+import com.chimera.gene.GeneInstance;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -15,8 +15,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
-// Identified Sequenced Genome + Blank Gene Cassette -> Gene Cassette holding one trait chosen
-// from the genome's revealed trait list. No fuel.
+// Identified Sequenced Genome + Blank Gene Cassette -> Gene Cassette holding one trait (with
+// its rolled star level preserved) chosen from the genome's revealed trait list. No fuel.
 public class GeneExtractorBlockEntity extends AbstractMachineBlockEntity {
 
     public static final int SLOT_GENOME = 0;
@@ -39,7 +39,7 @@ public class GeneExtractorBlockEntity extends AbstractMachineBlockEntity {
         if (!Boolean.TRUE.equals(genome.get(ChimeraDataComponents.IDENTIFIED.get()))) {
             return false;
         }
-        List<ResourceLocation> traits = genome.get(ChimeraDataComponents.TRAITS.get());
+        List<GeneInstance> traits = genome.get(ChimeraDataComponents.TRAITS.get());
         if (traits == null || traits.isEmpty()) {
             return false;
         }
@@ -51,8 +51,8 @@ public class GeneExtractorBlockEntity extends AbstractMachineBlockEntity {
         ItemStack genome = inventory.extractItem(SLOT_GENOME, 1, false);
         inventory.extractItem(SLOT_CASSETTE_FRAME, 1, false);
 
-        List<ResourceLocation> traits = genome.get(ChimeraDataComponents.TRAITS.get());
-        ResourceLocation chosen = pickTrait(traits);
+        List<GeneInstance> traits = genome.get(ChimeraDataComponents.TRAITS.get());
+        GeneInstance chosen = pickTrait(traits);
         if (chosen == null) {
             return;
         }
@@ -63,7 +63,7 @@ public class GeneExtractorBlockEntity extends AbstractMachineBlockEntity {
         inventory.insertItem(SLOT_OUTPUT, cassette, false);
     }
 
-    private ResourceLocation pickTrait(List<ResourceLocation> traits) {
+    private GeneInstance pickTrait(List<GeneInstance> traits) {
         if (traits == null || traits.isEmpty()) {
             return null;
         }

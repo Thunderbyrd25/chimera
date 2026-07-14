@@ -1,7 +1,7 @@
 package com.chimera.gene;
 
+import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nullable;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -9,37 +9,53 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 
-public record GenePool(int tier, List<GenePool.WeightedGene> genes) {
+public record GenePool(int tier, List<GenePool.Entry> genes) {
 
     public static final Codec<GenePool> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("tier").forGetter(GenePool::tier),
-            WeightedGene.CODEC.listOf().fieldOf("genes").forGetter(GenePool::genes)
+            Entry.CODEC.listOf().fieldOf("genes").forGetter(GenePool::genes)
     ).apply(instance, GenePool::new));
 
-    // Weighted random pick. Every v0.1 pool has exactly one entry at weight 100, but this
-    // stays genuinely weighted so adding a second gene to a pool (pure data change) works
-    // without touching this code.
-    @Nullable
-    public ResourceLocation rollGene(RandomSource random) {
-        int totalWeight = genes.stream().mapToInt(WeightedGene::weight).sum();
+    // Every entry rolls independently (its own inclusion chance), not one exclusive pick among
+    // the pool - a genome can carry 0..N of a pool's traits. If every roll fails, one entry is
+    // forced in anyway so a full Sequencer+Analyzer cycle never comes back empty.
+    public List<GeneInstance> rollGenes(RandomSource random) {
+        List<GeneInstance> rolled = new ArrayList<>();
+        for (Entry entry : genes) {
+            if (random.nextDouble() < entry.chance()) {
+                rolled.add(new GeneInstance(entry.gene(), rollStarLevel(entry.starWeights(), random)));
+            }
+        }
+        if (rolled.isEmpty() && !genes.isEmpty()) {
+            Entry fallback = genes.get(random.nextInt(genes.size()));
+            rolled.add(new GeneInstance(fallback.gene(), rollStarLevel(fallback.starWeights(), random)));
+        }
+        return rolled;
+    }
+
+    private static int rollStarLevel(List<Integer> starWeights, RandomSource random) {
+        int totalWeight = starWeights.stream().mapToInt(Integer::intValue).sum();
         if (totalWeight <= 0) {
-            return null;
+            return 1;
         }
         int roll = random.nextInt(totalWeight);
         int cumulative = 0;
-        for (WeightedGene weighted : genes) {
-            cumulative += weighted.weight();
+        for (int i = 0; i < starWeights.size(); i++) {
+            cumulative += starWeights.get(i);
             if (roll < cumulative) {
-                return weighted.gene();
+                return i + 1;
             }
         }
-        return genes.get(genes.size() - 1).gene();
+        return starWeights.size();
     }
 
-    public record WeightedGene(ResourceLocation gene, int weight) {
-        public static final Codec<WeightedGene> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                ResourceLocation.CODEC.fieldOf("gene").forGetter(WeightedGene::gene),
-                Codec.INT.fieldOf("weight").forGetter(WeightedGene::weight)
-        ).apply(instance, WeightedGene::new));
+    // chance: independent probability (0.0-1.0) this gene is included at all.
+    // starWeights: relative weight per star level (index 0 = 1 star, ..., matching Gene.MAX_STAR_LEVEL entries).
+    public record Entry(ResourceLocation gene, double chance, List<Integer> starWeights) {
+        public static final Codec<Entry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                ResourceLocation.CODEC.fieldOf("gene").forGetter(Entry::gene),
+                Codec.DOUBLE.fieldOf("chance").forGetter(Entry::chance),
+                Codec.INT.listOf().fieldOf("star_weights").forGetter(Entry::starWeights)
+        ).apply(instance, Entry::new));
     }
 }
