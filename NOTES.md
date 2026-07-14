@@ -69,6 +69,16 @@ Running log of API gotchas, version quirks, and things that surprised us during 
 - No real art yet: block/GUI/item textures are flat-color placeholders generated via
   PowerShell `System.Drawing`, not hand-drawn. `ItemModelProvider`'s `ExistingFileHelper`
   validation (see Phase 2 notes) applies to block textures too via `cubeAll()`.
+- Container screen background textures **must be authored on a 256x256 canvas** with the
+  real content (176x166 for a standard single-row-of-slots dialog) drawn in the top-left
+  corner. The 7-arg `GuiGraphics#blit(ResourceLocation, x, y, u, v, width, height)` overload
+  hardcodes `textureWidth=256, textureHeight=256` for its UV math regardless of the actual
+  file's dimensions (confirmed from source: it forwards to the 9-arg overload with `256, 256`
+  baked in). Saving the PNG at the literal 176x166 target size instead makes the whole
+  background (and the fixed-pixel slot coordinates from the Menu) render stretched/misaligned
+  - slots and background no longer line up, even though the underlying inventory logic is
+  completely unaffected (this is a pure rendering bug, not a game-logic one). Caught this from
+  a screenshot showing item icons rendering offset from the drawn slot boxes.
 
 ## Sampling / datagen (Phase 2)
 
