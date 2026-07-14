@@ -30,11 +30,6 @@ public class GeneSequencerScreen extends AbstractContainerScreen<GeneSequencerMe
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         guiGraphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
-        int progress = menu.getProgress();
-        int maxProgress = menu.getMaxProgress();
-        int barWidth = (int) (24.0F * progress / maxProgress);
-        if (barWidth > 0) {
-            guiGraphics.fill(leftPos + 68, topPos + 30, leftPos + 68 + barWidth, topPos + 34, 0xFF63C43A);
-        }
+        MachineScreenUtil.drawProgressBar(guiGraphics, leftPos + 68, topPos + 30, 24, 4, menu.getProgress(), menu.getMaxProgress(), 0xFF63C43A);
     }
 }
