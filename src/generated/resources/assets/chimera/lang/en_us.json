@@ -1,6 +1,18 @@
 {
+  "block.chimera.gene_sequencer": "Gene Sequencer",
+  "gene.chimera.bovine_vigor": "Bovine Vigor",
+  "gene.chimera.hollow_bones": "Hollow Bones",
+  "gene.chimera.ruminant_gut": "Ruminant Gut",
+  "gene.chimera.thick_fleece": "Thick Fleece",
+  "item.chimera.cell_culture": "Cell Culture",
+  "item.chimera.chromatin_strand": "Chromatin Strand",
+  "item.chimera.mutagen": "Mutagen",
+  "item.chimera.nucleotide_slurry": "Nucleotide Slurry",
+  "item.chimera.nutrient_agar": "Nutrient Agar",
+  "item.chimera.sequenced_genome": "Sequenced Genome",
   "item.chimera.tissue_sample": "Tissue Sample",
   "item.chimera.tissue_scraper": "Tissue Scraper",
   "itemGroup.chimera": "Chimera",
-  "tooltip.chimera.species": "Species: %s"
+  "tooltip.chimera.species": "Species: %s",
+  "tooltip.chimera.unidentified": "Unidentified"
 }

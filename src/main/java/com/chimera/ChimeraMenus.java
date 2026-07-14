@@ -1,0 +1,23 @@
+package com.chimera;
+
+import com.chimera.machine.GeneSequencerBlockEntity;
+import com.chimera.machine.GeneSequencerMenu;
+
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.inventory.MenuType;
+import net.neoforged.neoforge.network.IContainerFactory;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
+
+public class ChimeraMenus {
+
+    public static final DeferredRegister<MenuType<?>> MENU_TYPES =
+            DeferredRegister.create(Registries.MENU, ChimeraMod.MODID);
+
+    public static final DeferredHolder<MenuType<?>, MenuType<GeneSequencerMenu>> GENE_SEQUENCER =
+            MENU_TYPES.register("gene_sequencer", () -> new MenuType<>((IContainerFactory<GeneSequencerMenu>) (containerId, inventory, buf) -> {
+                GeneSequencerBlockEntity blockEntity = (GeneSequencerBlockEntity) inventory.player.level().getBlockEntity(buf.readBlockPos());
+                return new GeneSequencerMenu(containerId, inventory, blockEntity);
+            }, FeatureFlags.VANILLA_SET));
+}

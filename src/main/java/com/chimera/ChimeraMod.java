@@ -9,13 +9,13 @@ import com.mojang.logging.LogUtils;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -29,14 +29,9 @@ public class ChimeraMod {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     // Every registrable type goes through a DeferredRegister. See CLAUDE.md architecture rule #3.
-    // Items and data components own their own DeferredRegister in their respective classes
-    // (ChimeraItems, ChimeraDataComponents); this class holds the registries with nothing to
-    // move out yet, plus the ones - like the creative tab - that tie everything together.
-    public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
-    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES =
-            DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, MODID);
-    public static final DeferredRegister<MenuType<?>> MENU_TYPES =
-            DeferredRegister.create(Registries.MENU, MODID);
+    // Each kind of registrable owns its DeferredRegister in its own class (ChimeraItems,
+    // ChimeraBlocks, ChimeraBlockEntities, ChimeraMenus, ChimeraDataComponents); this class
+    // just wires them all up, plus the creative tab that ties everything together.
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
@@ -49,17 +44,29 @@ public class ChimeraMod {
                     .displayItems((parameters, output) -> {
                         output.accept(ChimeraItems.TISSUE_SCRAPER.get());
                         output.accept(ChimeraItems.TISSUE_SAMPLE.get());
+                        output.accept(ChimeraItems.SEQUENCED_GENOME.get());
+                        output.accept(ChimeraItems.NUTRIENT_AGAR.get());
+                        output.accept(ChimeraItems.CELL_CULTURE.get());
+                        output.accept(ChimeraItems.NUCLEOTIDE_SLURRY.get());
+                        output.accept(ChimeraItems.CHROMATIN_STRAND.get());
+                        output.accept(ChimeraItems.MUTAGEN.get());
+                        output.accept(ChimeraItems.GENE_SEQUENCER.get());
                     }).build());
 
     public ChimeraMod(IEventBus modEventBus, ModContainer modContainer) {
-        BLOCKS.register(modEventBus);
-        BLOCK_ENTITY_TYPES.register(modEventBus);
-        MENU_TYPES.register(modEventBus);
+        ChimeraBlocks.BLOCKS.register(modEventBus);
+        ChimeraBlockEntities.BLOCK_ENTITY_TYPES.register(modEventBus);
+        ChimeraMenus.MENU_TYPES.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
         ChimeraItems.ITEMS.register(modEventBus);
         ChimeraDataComponents.DATA_COMPONENTS.register(modEventBus);
 
         modEventBus.addListener(ChimeraDataGenerators::gatherData);
+
+        modEventBus.addListener((RegisterCapabilitiesEvent event) -> {
+            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ChimeraBlockEntities.GENE_SEQUENCER.get(),
+                    (blockEntity, side) -> blockEntity.getInventory());
+        });
 
         NeoForge.EVENT_BUS.addListener((AddReloadListenerEvent event) -> {
             event.addListener(new GeneRegistry());

@@ -10,6 +10,7 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.world.item.Items;
 
 public class ChimeraRecipeProvider extends RecipeProvider {
@@ -25,6 +26,22 @@ public class ChimeraRecipeProvider extends RecipeProvider {
                 .pattern("S")
                 .define('I', Items.IRON_INGOT)
                 .define('S', Items.STONE)
+                .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
+                .save(output);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ChimeraItems.NUTRIENT_AGAR.get())
+                .requires(Items.WHEAT)
+                .requires(Items.SUGAR)
+                .unlockedBy("has_wheat", has(Items.WHEAT))
+                .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ChimeraItems.GENE_SEQUENCER.get())
+                .pattern("III")
+                .pattern("IFI")
+                .pattern("IRI")
+                .define('I', Items.IRON_INGOT)
+                .define('F', Items.FURNACE)
+                .define('R', Items.REDSTONE)
                 .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
                 .save(output);
     }

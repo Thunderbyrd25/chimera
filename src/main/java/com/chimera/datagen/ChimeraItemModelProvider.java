@@ -17,5 +17,11 @@ public class ChimeraItemModelProvider extends ItemModelProvider {
     protected void registerModels() {
         handheldItem(ChimeraItems.TISSUE_SCRAPER.get());
         basicItem(ChimeraItems.TISSUE_SAMPLE.get());
+        basicItem(ChimeraItems.SEQUENCED_GENOME.get());
+        basicItem(ChimeraItems.NUTRIENT_AGAR.get());
+        basicItem(ChimeraItems.CELL_CULTURE.get());
+        basicItem(ChimeraItems.NUCLEOTIDE_SLURRY.get());
+        basicItem(ChimeraItems.CHROMATIN_STRAND.get());
+        basicItem(ChimeraItems.MUTAGEN.get());
     }
 }

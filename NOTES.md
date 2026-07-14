@@ -35,6 +35,41 @@ Running log of API gotchas, version quirks, and things that surprised us during 
   compile — that jar is the fastest way to check a registry/class name for this version
   when in doubt, faster than searching docs.
 
+## Machines (Phase 4)
+
+- `Registries.MENU`/`MenuScreens.register` are documented as deprecated in favor of the
+  event-based `net.neoforged.neoforge.client.event.RegisterMenuScreensEvent` - used that
+  instead of the static registration shown in a lot of older tutorials.
+- `MenuType.MenuSupplier` doesn't carry extra data (like the machine's BlockPos) to the
+  client by itself. Implement the factory as `net.neoforged.neoforge.network.IContainerFactory`
+  instead (it extends `MenuSupplier`), which receives a `RegistryFriendlyByteBuf`; pair with
+  `Player#openMenu(MenuProvider, BlockPos)` (an `IPlayerExtension` default method) on the
+  server, which automatically writes the `BlockPos` for you.
+- Modeled the abstract machine base (`AbstractMachineBlockEntity`) on vanilla's
+  `AbstractFurnaceBlockEntity` for the overall shape (progress via `ContainerData`,
+  `saveAdditional`/`loadAdditional`), but used NeoForge's `ItemStackHandler` +
+  `SlotItemHandler` for item storage instead of vanilla's `Container`/`WorldlyContainer` -
+  simpler to reuse across three differently-shaped machines, and gets capability-based
+  automation (hoppers etc.) via `RegisterCapabilitiesEvent`/`Capabilities.ItemHandler.BLOCK`
+  for free instead of needing separate `WorldlyContainer` side logic.
+- `Block#codec()` is **not** abstract on the base `Block` class (defaults to
+  `simpleCodec(Block::new)`) - only `AbstractFurnaceBlock` re-declares it abstract because
+  *it* has multiple concrete subclasses. A single concrete block subclass (like
+  `GeneSequencerBlock`) doesn't need to override it at all.
+- `BlockLootSubProvider#getKnownBlocks()` defaults to **`BuiltInRegistries.BLOCK`** - every
+  block in the game, not just yours. Its `generate()` wrapper validates that every enabled
+  block returned by `getKnownBlocks()` has a table in `this.map`, so without overriding it,
+  `runData` fails with `Missing loottable 'minecraft:blocks/stone' for 'minecraft:stone'`
+  (or whatever vanilla block sorts first) even though you never touched stone. Fix: override
+  `getKnownBlocks()` to return only your own mod's blocks.
+- The Gene Sequencer's fuel is consumed once per completed cycle rather than burning down
+  independently like a vanilla furnace (no separate lit-time countdown). Simpler to reason
+  about for v0.1; revisit if a more furnace-like "pre-lit, keeps burning without fuel present"
+  feel is wanted later.
+- No real art yet: block/GUI/item textures are flat-color placeholders generated via
+  PowerShell `System.Drawing`, not hand-drawn. `ItemModelProvider`'s `ExistingFileHelper`
+  validation (see Phase 2 notes) applies to block textures too via `cubeAll()`.
+
 ## Sampling / datagen (Phase 2)
 
 - `DataComponentType.Builder` method is `networkSynchronized` (past tense), not
