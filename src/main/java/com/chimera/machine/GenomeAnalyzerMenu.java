@@ -51,6 +51,10 @@ public class GenomeAnalyzerMenu extends AbstractContainerMenu {
         return Math.max(data.get(1), 1);
     }
 
+    public ItemStack getInputStack() {
+        return this.slots.get(GenomeAnalyzerBlockEntity.SLOT_INPUT).getItem();
+    }
+
     public ItemStack getOutputStack() {
         return this.slots.get(GenomeAnalyzerBlockEntity.SLOT_OUTPUT).getItem();
     }

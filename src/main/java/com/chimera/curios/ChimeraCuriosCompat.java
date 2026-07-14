@@ -45,7 +45,7 @@ public final class ChimeraCuriosCompat {
         @Override
         public Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiers(SlotContext slotContext, ResourceLocation id, ItemStack stack) {
             Multimap<Holder<Attribute>, AttributeModifier> modifiers = HashMultimap.create();
-            for (GeneInstance trait : installedTraits(stack)) {
+            for (GeneInstance trait : GeneInstance.highestPerGene(installedTraits(stack))) {
                 Gene gene = GeneRegistry.get(trait.gene());
                 if (gene == null) {
                     continue;

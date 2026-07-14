@@ -17,20 +17,20 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-// "Helix": once the output genome is identified, its rolled traits render as a double-helix
-// style column between the input/output slots (alternating left/right, star pips + name).
-// Trait count isn't knowable until the Analyzer actually finishes rolling, so while the
-// genome is still unidentified this just shows a placeholder instead of guessing a slot count.
+// "Helix": once the output genome is identified, its rolled traits render as a stack of
+// star-pip + name lines under the output slot (where the result actually is). Trait count
+// isn't knowable until the Analyzer actually finishes rolling, so before that it just shows a
+// placeholder - and nothing at all while the machine is completely idle.
 @OnlyIn(Dist.CLIENT)
 public class GenomeAnalyzerScreen extends AbstractContainerScreen<GenomeAnalyzerMenu> {
 
     private static final ResourceLocation TEXTURE =
             ResourceLocation.fromNamespaceAndPath(ChimeraMod.MODID, "textures/gui/container/genome_analyzer.png");
 
-    private static final int HELIX_CENTER_X = 88;
+    // Output slot is at x=116, 16px wide - its horizontal center.
+    private static final int OUTPUT_CENTER_X = 124;
     private static final int HELIX_FIRST_ROW_Y = 52;
-    private static final int HELIX_ROW_HEIGHT = 8;
-    private static final int HELIX_SIDE_OFFSET = 4;
+    private static final int HELIX_ROW_HEIGHT = 9;
 
     public GenomeAnalyzerScreen(GenomeAnalyzerMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -52,13 +52,16 @@ public class GenomeAnalyzerScreen extends AbstractContainerScreen<GenomeAnalyzer
     }
 
     private void renderHelix(GuiGraphics guiGraphics) {
+        ItemStack input = menu.getInputStack();
         ItemStack output = menu.getOutputStack();
-        boolean identified = !output.isEmpty() && Boolean.TRUE.equals(output.get(ChimeraDataComponents.IDENTIFIED.get()));
+        if (input.isEmpty() && output.isEmpty()) {
+            return;
+        }
 
+        boolean identified = !output.isEmpty() && Boolean.TRUE.equals(output.get(ChimeraDataComponents.IDENTIFIED.get()));
         if (!identified) {
             Component placeholder = Component.translatable("gui.chimera.genome_analyzer.analyzing").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
-            int width = font.width(placeholder);
-            guiGraphics.drawString(font, placeholder, leftPos + HELIX_CENTER_X - width / 2, topPos + HELIX_FIRST_ROW_Y, 0x404040, false);
+            drawCentered(guiGraphics, placeholder, HELIX_FIRST_ROW_Y);
             return;
         }
 
@@ -68,12 +71,17 @@ public class GenomeAnalyzerScreen extends AbstractContainerScreen<GenomeAnalyzer
         }
 
         for (int i = 0; i < traits.size(); i++) {
-            Component line = TraitDisplay.traitLine(traits.get(i));
-            int width = font.width(line);
-            boolean leftSide = i % 2 == 0;
-            int x = leftSide ? leftPos + HELIX_CENTER_X - HELIX_SIDE_OFFSET - width : leftPos + HELIX_CENTER_X + HELIX_SIDE_OFFSET;
-            int y = topPos + HELIX_FIRST_ROW_Y + i * HELIX_ROW_HEIGHT;
-            guiGraphics.drawString(font, line, x, y, 0x404040, false);
+            drawCentered(guiGraphics, TraitDisplay.traitLine(traits.get(i)), HELIX_FIRST_ROW_Y + i * HELIX_ROW_HEIGHT);
         }
+    }
+
+    // Centers on the output slot, clamped so long trait names can't run off either edge of the
+    // 176px-wide panel.
+    private void drawCentered(GuiGraphics guiGraphics, Component text, int relativeY) {
+        int width = font.width(text);
+        int x = leftPos + OUTPUT_CENTER_X - width / 2;
+        x = Math.min(x, leftPos + imageWidth - 4 - width);
+        x = Math.max(x, leftPos + 4);
+        guiGraphics.drawString(font, text, x, topPos + relativeY, 0x404040, false);
     }
 }

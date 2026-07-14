@@ -1,5 +1,9 @@
 package com.chimera.gene;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -22,4 +26,15 @@ public record GeneInstance(ResourceLocation gene, int starLevel) {
             ResourceLocation.STREAM_CODEC, GeneInstance::gene,
             ByteBufCodecs.VAR_INT, GeneInstance::starLevel,
             GeneInstance::new);
+
+    // If the same gene is installed more than once (e.g. two Bovine Vigor cassettes in a
+    // Mk2/Mk3 core), only the highest star level should actually take effect - installing a
+    // second, weaker copy shouldn't be able to downgrade an already-installed stronger one.
+    public static List<GeneInstance> highestPerGene(List<GeneInstance> instances) {
+        Map<ResourceLocation, GeneInstance> best = new LinkedHashMap<>();
+        for (GeneInstance instance : instances) {
+            best.merge(instance.gene(), instance, (a, b) -> a.starLevel() >= b.starLevel() ? a : b);
+        }
+        return List.copyOf(best.values());
+    }
 }
