@@ -1,5 +1,6 @@
 package com.chimera.curios;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,6 +22,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
@@ -96,8 +98,18 @@ public final class ChimeraCuriosCompat {
         }
 
         private List<GeneInstance> installedTraits(ItemStack stack) {
-            List<GeneInstance> traits = stack.get(ChimeraDataComponents.TRAITS.get());
-            return traits != null ? traits : List.of();
+            ItemContainerContents contents = stack.get(ChimeraDataComponents.INSTALLED_CASSETTES.get());
+            if (contents == null) {
+                return List.of();
+            }
+            List<GeneInstance> traits = new ArrayList<>();
+            for (ItemStack cassette : contents.nonEmptyItemsCopy()) {
+                List<GeneInstance> cassetteTraits = cassette.get(ChimeraDataComponents.TRAITS.get());
+                if (cassetteTraits != null) {
+                    traits.addAll(cassetteTraits);
+                }
+            }
+            return traits;
         }
     }
 }

@@ -1,9 +1,9 @@
 package com.chimera.item;
 
-import java.util.Set;
-
 import com.chimera.ChimeraDataComponents;
 import com.chimera.ChimeraItems;
+import com.chimera.gene.GenePool;
+import com.chimera.gene.GenePoolRegistry;
 
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -17,11 +17,6 @@ import net.minecraft.world.level.Level;
 
 public class TissueScraperItem extends Item {
 
-    // v0.1 hardcodes the scrapable species here. Phase 3 introduces datapack-driven gene pools
-    // (see CLAUDE.md architecture rule #1); once that registry exists, this should be replaced by
-    // "does a gene pool exist for this entity type" so adding a mob never touches this class again.
-    private static final Set<EntityType<?>> SCRAPABLE_MOBS = Set.of(EntityType.COW, EntityType.PIG, EntityType.CHICKEN, EntityType.SHEEP);
-
     public TissueScraperItem(Properties properties) {
         super(properties);
     }
@@ -31,9 +26,17 @@ public class TissueScraperItem extends Item {
         return 0.0F;
     }
 
+    // Overridden by the Apex tier to unlock tier-2 mobs (horse/zombie/skeleton/spider). A mob is
+    // scrapable purely by having a gene pool at or below this tier - no hardcoded mob list, so
+    // adding a new mob (at any tier) never touches this class (CLAUDE.md architecture rule #1).
+    protected int maxTier() {
+        return 1;
+    }
+
     @Override
     public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity interactionTarget, InteractionHand usedHand) {
-        if (!SCRAPABLE_MOBS.contains(interactionTarget.getType())) {
+        GenePool pool = GenePoolRegistry.get(interactionTarget.getType());
+        if (pool == null || pool.tier() > maxTier()) {
             return InteractionResult.PASS;
         }
 

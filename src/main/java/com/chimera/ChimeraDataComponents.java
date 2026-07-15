@@ -9,6 +9,7 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -43,4 +44,13 @@ public class ChimeraDataComponents {
             DATA_COMPONENTS.registerComponentType("inert", builder -> builder
                     .persistent(Codec.BOOL)
                     .networkSynchronized(ByteBufCodecs.BOOL));
+
+    // The actual Gene Cassette ItemStacks plugged into a Splice Core, indexed by slot. Reuses
+    // vanilla's own container-in-item type (same one shulker boxes/bundles use) instead of a
+    // flattened trait list, so a cassette carrying multiple traits (see GeneExtractorBlockEntity)
+    // keeps its per-slot identity across GUI reopen instead of being re-split by trait count.
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ItemContainerContents>> INSTALLED_CASSETTES =
+            DATA_COMPONENTS.registerComponentType("installed_cassettes", builder -> builder
+                    .persistent(ItemContainerContents.CODEC)
+                    .networkSynchronized(ItemContainerContents.STREAM_CODEC));
 }

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "chimera:yield_upgrade_2"
+    },
+    {
+      "item": "chimera:yield_upgrade_2"
+    },
+    {
+      "item": "chimera:refined_culture"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "chimera:yield_upgrade_3"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "chimera:speed_upgrade_1"
+    },
+    {
+      "item": "chimera:speed_upgrade_1"
+    },
+    {
+      "item": "chimera:chromatin_strand"
+    },
+    {
+      "item": "minecraft:redstone"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "chimera:speed_upgrade_2"
+  }
+}

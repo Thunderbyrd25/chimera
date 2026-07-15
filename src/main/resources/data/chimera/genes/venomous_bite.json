@@ -1,0 +1,15 @@
+{
+  "tier": 2,
+  "effects": [
+    {
+      "type": "attribute_modifier",
+      "attribute": "minecraft:generic.attack_damage",
+      "modifier": {
+        "id": "chimera:venomous_bite",
+        "amount": 1.0,
+        "operation": "add_value"
+      },
+      "per_level_amount": 1.0
+    }
+  ]
+}

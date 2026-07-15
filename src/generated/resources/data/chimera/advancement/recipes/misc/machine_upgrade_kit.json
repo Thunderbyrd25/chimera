@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_nucleotide_slurry": {
+    "has_refined_culture": {
       "conditions": {
         "items": [
           {
-            "items": "chimera:nucleotide_slurry"
+            "items": "chimera:refined_culture"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "chimera:nutrient_agar_from_slurry"
+        "recipe": "chimera:machine_upgrade_kit"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_nucleotide_slurry"
+      "has_refined_culture"
     ]
   ],
   "rewards": {
     "recipes": [
-      "chimera:nutrient_agar_from_slurry"
+      "chimera:machine_upgrade_kit"
     ]
   }
 }

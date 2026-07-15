@@ -29,10 +29,10 @@ public class ChimeraRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
                 .save(output);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ChimeraItems.NUTRIENT_AGAR.get())
-                .requires(Items.WHEAT)
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ChimeraItems.BIOMASS.get())
+                .requires(Items.ROTTEN_FLESH)
                 .requires(Items.SUGAR)
-                .unlockedBy("has_wheat", has(Items.WHEAT))
+                .unlockedBy("has_rotten_flesh", has(Items.ROTTEN_FLESH))
                 .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ChimeraItems.GENE_SEQUENCER.get())
@@ -69,6 +69,34 @@ public class ChimeraRecipeProvider extends RecipeProvider {
                 .define('H', Items.HOPPER)
                 .define('R', Items.REDSTONE)
                 .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
+                .save(output);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ChimeraItems.BLANK_GENOME.get())
+                .requires(Items.GLASS_BOTTLE)
+                .requires(Items.PAPER)
+                .unlockedBy("has_paper", has(Items.PAPER))
+                .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ChimeraItems.CENTRIFUGE.get())
+                .pattern("ICI")
+                .pattern("IHI")
+                .pattern("IRI")
+                .define('I', Items.IRON_INGOT)
+                .define('C', Items.COPPER_INGOT)
+                .define('H', Items.HOPPER)
+                .define('R', Items.REDSTONE)
+                .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
+                .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ChimeraItems.GENOME_SPLICER.get())
+                .pattern("III")
+                .pattern("GHG")
+                .pattern("IRI")
+                .define('I', Items.IRON_INGOT)
+                .define('G', Items.GOLD_INGOT)
+                .define('H', Items.HOPPER)
+                .define('R', Items.REDSTONE)
+                .unlockedBy("has_gold_ingot", has(Items.GOLD_INGOT))
                 .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ChimeraItems.SPLICE_CORE.get())
@@ -112,10 +140,87 @@ public class ChimeraRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_chromatin_strand", has(ChimeraItems.CHROMATIN_STRAND.get()))
                 .save(output);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ChimeraItems.NUTRIENT_AGAR.get(), 1)
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ChimeraItems.BIOMASS.get(), 1)
                 .requires(ChimeraItems.NUCLEOTIDE_SLURRY.get())
                 .requires(ChimeraItems.NUCLEOTIDE_SLURRY.get())
                 .unlockedBy("has_nucleotide_slurry", has(ChimeraItems.NUCLEOTIDE_SLURRY.get()))
-                .save(output, "chimera:nutrient_agar_from_slurry");
+                .save(output, "chimera:biomass_from_slurry");
+
+        // Tiered progression (v0.2): the Bioreactor turns one of each Sequencer byproduct into
+        // Refined Culture, which then crafts the tier-2 Apex Tissue Scraper.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ChimeraItems.BIOREACTOR.get())
+                .pattern("DID")
+                .pattern("IHI")
+                .pattern("DRD")
+                .define('D', Items.DIAMOND)
+                .define('I', Items.IRON_INGOT)
+                .define('H', Items.HOPPER)
+                .define('R', Items.REDSTONE)
+                .unlockedBy("has_diamond", has(Items.DIAMOND))
+                .save(output);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.TOOLS, ChimeraItems.APEX_TISSUE_SCRAPER.get())
+                .requires(ChimeraItems.REFINED_CULTURE.get())
+                .requires(ChimeraItems.REFINED_CULTURE.get())
+                .requires(Items.DIAMOND)
+                .requires(Items.IRON_INGOT)
+                .unlockedBy("has_refined_culture", has(ChimeraItems.REFINED_CULTURE.get()))
+                .save(output);
+
+        // Machine upgrades (v0.2): kit grows a machine's upgrade slot count; Speed/Yield each
+        // build up through 3 tiers, every tier consuming 2 of the previous one plus more raw
+        // material, ending in Refined Culture - same "each tier consumes the last" shape
+        // Splice Core Mk2/Mk3 already use.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ChimeraItems.MACHINE_UPGRADE_KIT.get())
+                .requires(ChimeraItems.REFINED_CULTURE.get())
+                .requires(ChimeraItems.CHROMATIN_STRAND.get())
+                .requires(ChimeraItems.CHROMATIN_STRAND.get())
+                .requires(Items.GOLD_INGOT)
+                .unlockedBy("has_refined_culture", has(ChimeraItems.REFINED_CULTURE.get()))
+                .save(output);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ChimeraItems.SPEED_UPGRADE_1.get())
+                .requires(ChimeraItems.CHROMATIN_STRAND.get())
+                .requires(Items.REDSTONE)
+                .requires(Items.REDSTONE)
+                .unlockedBy("has_chromatin_strand", has(ChimeraItems.CHROMATIN_STRAND.get()))
+                .save(output);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ChimeraItems.SPEED_UPGRADE_2.get())
+                .requires(ChimeraItems.SPEED_UPGRADE_1.get())
+                .requires(ChimeraItems.SPEED_UPGRADE_1.get())
+                .requires(ChimeraItems.CHROMATIN_STRAND.get())
+                .requires(Items.REDSTONE)
+                .unlockedBy("has_speed_upgrade_1", has(ChimeraItems.SPEED_UPGRADE_1.get()))
+                .save(output);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ChimeraItems.SPEED_UPGRADE_3.get())
+                .requires(ChimeraItems.SPEED_UPGRADE_2.get())
+                .requires(ChimeraItems.SPEED_UPGRADE_2.get())
+                .requires(ChimeraItems.REFINED_CULTURE.get())
+                .unlockedBy("has_speed_upgrade_2", has(ChimeraItems.SPEED_UPGRADE_2.get()))
+                .save(output);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ChimeraItems.YIELD_UPGRADE_1.get())
+                .requires(ChimeraItems.CHROMATIN_STRAND.get())
+                .requires(Items.GLOWSTONE_DUST)
+                .requires(Items.GLOWSTONE_DUST)
+                .unlockedBy("has_chromatin_strand", has(ChimeraItems.CHROMATIN_STRAND.get()))
+                .save(output);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ChimeraItems.YIELD_UPGRADE_2.get())
+                .requires(ChimeraItems.YIELD_UPGRADE_1.get())
+                .requires(ChimeraItems.YIELD_UPGRADE_1.get())
+                .requires(ChimeraItems.CHROMATIN_STRAND.get())
+                .requires(Items.GLOWSTONE_DUST)
+                .unlockedBy("has_yield_upgrade_1", has(ChimeraItems.YIELD_UPGRADE_1.get()))
+                .save(output);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ChimeraItems.YIELD_UPGRADE_3.get())
+                .requires(ChimeraItems.YIELD_UPGRADE_2.get())
+                .requires(ChimeraItems.YIELD_UPGRADE_2.get())
+                .requires(ChimeraItems.REFINED_CULTURE.get())
+                .unlockedBy("has_yield_upgrade_2", has(ChimeraItems.YIELD_UPGRADE_2.get()))
+                .save(output);
     }
 }

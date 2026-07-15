@@ -31,5 +31,7 @@ public class GeneSequencerScreen extends AbstractContainerScreen<GeneSequencerMe
         guiGraphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
         MachineScreenUtil.drawProgressBar(guiGraphics, leftPos + 76, topPos + 38, 24, 4, menu.getProgress(), menu.getMaxProgress(), 0xFF63C43A);
+        MachineScreenUtil.drawSlotBox(guiGraphics, leftPos + GeneSequencerMenu.FUEL_X, topPos + GeneSequencerMenu.FUEL_Y);
+        MachineScreenUtil.drawUpgradeRail(guiGraphics, leftPos, topPos, menu.getUpgradeSlotCount());
     }
 }

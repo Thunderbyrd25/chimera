@@ -1,8 +1,11 @@
 package com.chimera;
 
+import com.chimera.machine.BioreactorBlockEntity;
+import com.chimera.machine.CentrifugeBlockEntity;
 import com.chimera.machine.GeneExtractorBlockEntity;
 import com.chimera.machine.GeneSequencerBlockEntity;
 import com.chimera.machine.GenomeAnalyzerBlockEntity;
+import com.chimera.machine.GenomeSplicerBlockEntity;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -25,4 +28,16 @@ public class ChimeraBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<GeneExtractorBlockEntity>> GENE_EXTRACTOR =
             BLOCK_ENTITY_TYPES.register("gene_extractor", () -> BlockEntityType.Builder.of(
                     GeneExtractorBlockEntity::new, ChimeraBlocks.GENE_EXTRACTOR.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CentrifugeBlockEntity>> CENTRIFUGE =
+            BLOCK_ENTITY_TYPES.register("centrifuge", () -> BlockEntityType.Builder.of(
+                    CentrifugeBlockEntity::new, ChimeraBlocks.CENTRIFUGE.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<GenomeSplicerBlockEntity>> GENOME_SPLICER =
+            BLOCK_ENTITY_TYPES.register("genome_splicer", () -> BlockEntityType.Builder.of(
+                    GenomeSplicerBlockEntity::new, ChimeraBlocks.GENOME_SPLICER.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BioreactorBlockEntity>> BIOREACTOR =
+            BLOCK_ENTITY_TYPES.register("bioreactor", () -> BlockEntityType.Builder.of(
+                    BioreactorBlockEntity::new, ChimeraBlocks.BIOREACTOR.get()).build(null));
 }

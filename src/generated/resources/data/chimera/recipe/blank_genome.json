@@ -3,14 +3,14 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "chimera:nucleotide_slurry"
+      "item": "minecraft:glass_bottle"
     },
     {
-      "item": "chimera:nucleotide_slurry"
+      "item": "minecraft:paper"
     }
   ],
   "result": {
     "count": 1,
-    "id": "chimera:nutrient_agar"
+    "id": "chimera:blank_genome"
   }
 }

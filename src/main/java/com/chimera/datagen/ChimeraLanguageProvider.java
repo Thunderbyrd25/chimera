@@ -19,22 +19,35 @@ public class ChimeraLanguageProvider extends LanguageProvider {
 
         addItem(ChimeraItems.TISSUE_SCRAPER, "Tissue Scraper");
         addItem(ChimeraItems.REINFORCED_TISSUE_SCRAPER, "Reinforced Tissue Scraper");
+        addItem(ChimeraItems.APEX_TISSUE_SCRAPER, "Apex Tissue Scraper");
         addItem(ChimeraItems.TISSUE_SAMPLE, "Tissue Sample");
         addItem(ChimeraItems.SEQUENCED_GENOME, "Sequenced Genome");
-        addItem(ChimeraItems.NUTRIENT_AGAR, "Nutrient Agar");
+        addItem(ChimeraItems.BIOMASS, "Biomass");
         addItem(ChimeraItems.CELL_CULTURE, "Cell Culture");
         addItem(ChimeraItems.NUCLEOTIDE_SLURRY, "Nucleotide Slurry");
         addItem(ChimeraItems.CHROMATIN_STRAND, "Chromatin Strand");
         addItem(ChimeraItems.MUTAGEN, "Mutagen");
+        addItem(ChimeraItems.REFINED_CULTURE, "Refined Culture");
         addItem(ChimeraItems.BLANK_GENE_CASSETTE, "Blank Gene Cassette");
         addItem(ChimeraItems.GENE_CASSETTE, "Gene Cassette");
+        addItem(ChimeraItems.BLANK_GENOME, "Blank Genome");
         addItem(ChimeraItems.SPLICE_CORE, "Splice Core");
         addItem(ChimeraItems.SPLICE_CORE_MK2, "Splice Core Mk2");
         addItem(ChimeraItems.SPLICE_CORE_MK3, "Splice Core Mk3");
+        addItem(ChimeraItems.MACHINE_UPGRADE_KIT, "Machine Upgrade Kit");
+        addItem(ChimeraItems.SPEED_UPGRADE_1, "Speed Upgrade I");
+        addItem(ChimeraItems.SPEED_UPGRADE_2, "Speed Upgrade II");
+        addItem(ChimeraItems.SPEED_UPGRADE_3, "Speed Upgrade III");
+        addItem(ChimeraItems.YIELD_UPGRADE_1, "Yield Upgrade I");
+        addItem(ChimeraItems.YIELD_UPGRADE_2, "Yield Upgrade II");
+        addItem(ChimeraItems.YIELD_UPGRADE_3, "Yield Upgrade III");
 
         addBlock(ChimeraBlocks.GENE_SEQUENCER, "Gene Sequencer");
         addBlock(ChimeraBlocks.GENOME_ANALYZER, "Genome Analyzer");
         addBlock(ChimeraBlocks.GENE_EXTRACTOR, "Gene Extractor");
+        addBlock(ChimeraBlocks.CENTRIFUGE, "Centrifuge");
+        addBlock(ChimeraBlocks.GENOME_SPLICER, "Genome Splicer");
+        addBlock(ChimeraBlocks.BIOREACTOR, "Bioreactor");
 
         add("tooltip.chimera.species", "Species: %s");
         add("tooltip.chimera.unidentified", "Unidentified");
@@ -49,5 +62,14 @@ public class ChimeraLanguageProvider extends LanguageProvider {
         add("gene.chimera.ruminant_gut", "Ruminant Gut");
         add("gene.chimera.hollow_bones", "Hollow Bones");
         add("gene.chimera.thick_fleece", "Thick Fleece");
+        add("gene.chimera.grass_fed", "Grass Fed");
+        add("gene.chimera.raging_bull", "Raging Bull");
+        add("gene.chimera.swift_stride", "Swift Stride");
+        add("gene.chimera.undead_resilience", "Undead Resilience");
+        add("gene.chimera.steady_stance", "Steady Stance");
+        add("gene.chimera.venomous_bite", "Venomous Bite");
+
+        add("key.categories.chimera", "Chimera");
+        add("key.chimera.grass_fed", "Grass Fed Ability");
     }
 }

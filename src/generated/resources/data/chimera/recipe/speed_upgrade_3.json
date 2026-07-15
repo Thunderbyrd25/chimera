@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "chimera:speed_upgrade_2"
+    },
+    {
+      "item": "chimera:speed_upgrade_2"
+    },
+    {
+      "item": "chimera:refined_culture"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "chimera:speed_upgrade_3"
+  }
+}

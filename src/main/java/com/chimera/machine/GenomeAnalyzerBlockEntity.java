@@ -78,6 +78,6 @@ public class GenomeAnalyzerBlockEntity extends AbstractMachineBlockEntity {
 
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
-        return new GenomeAnalyzerMenu(containerId, playerInventory, this);
+        return new GenomeAnalyzerMenu(containerId, playerInventory, this, getUpgradeSlotCount());
     }
 }

@@ -47,6 +47,8 @@ public class GenomeAnalyzerScreen extends AbstractContainerScreen<GenomeAnalyzer
         guiGraphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
         MachineScreenUtil.drawProgressBar(guiGraphics, leftPos + 76, topPos + 38, 24, 4, menu.getProgress(), menu.getMaxProgress(), 0xFF4A9BD6);
+        MachineScreenUtil.drawSlotBox(guiGraphics, leftPos + GenomeAnalyzerMenu.FUEL_X, topPos + GenomeAnalyzerMenu.FUEL_Y);
+        MachineScreenUtil.drawUpgradeRail(guiGraphics, leftPos, topPos, menu.getUpgradeSlotCount());
 
         renderHelix(guiGraphics);
     }
@@ -60,8 +62,14 @@ public class GenomeAnalyzerScreen extends AbstractContainerScreen<GenomeAnalyzer
 
         boolean identified = !output.isEmpty() && Boolean.TRUE.equals(output.get(ChimeraDataComponents.IDENTIFIED.get()));
         if (!identified) {
-            Component placeholder = Component.translatable("gui.chimera.genome_analyzer.analyzing").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
-            drawCentered(guiGraphics, placeholder, HELIX_FIRST_ROW_Y);
+            // Progress only ticks up while canProcess() && fuel is present (see
+            // AbstractMachineBlockEntity#tick), so this is a reliable "actually working right
+            // now" signal - a genome just sitting in the input slot with no fuel shouldn't
+            // claim to be analyzing.
+            if (menu.getProgress() > 0) {
+                Component placeholder = Component.translatable("gui.chimera.genome_analyzer.analyzing").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
+                drawCentered(guiGraphics, placeholder, HELIX_FIRST_ROW_Y);
+            }
             return;
         }
 

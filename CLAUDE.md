@@ -39,9 +39,12 @@ equip them via a Curios accessory for permanent-feeling player buffs.
 ## Explicit non-goals for v0.1
 
 No souls, Anima, rituals, altars, corruption mechanics, mythical creatures, gestation vats,
-chimera synthesis, DNA splicing/recombination, mob tiers beyond tier 1, hostile-mob sampling,
-permanent gene integration, RF/FE energy, or a lore/guide book. If a milestone seems to need
-one of these, stop and ask before building it.
+chimera synthesis, permanent gene integration, RF/FE energy, or a lore/guide book. If a
+milestone seems to need one of these, stop and ask before building it.
+
+(DNA splicing/recombination, mob tiers beyond tier 1, and hostile-mob sampling all moved from
+non-goal to in-progress/shipped v0.2 features: Centrifuge + Genome Splicer, and tiered
+progression via the Bioreactor + Apex Tissue Scraper.)
 
 ## Working agreement
 

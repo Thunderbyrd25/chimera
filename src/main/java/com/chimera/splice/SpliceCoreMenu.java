@@ -7,8 +7,8 @@ import java.util.Objects;
 import com.chimera.ChimeraDataComponents;
 import com.chimera.ChimeraItems;
 import com.chimera.ChimeraMenus;
-import com.chimera.gene.GeneInstance;
 
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -16,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 
 // A held-item GUI rather than a block one: the "container" is a transient SimpleContainer
 // (1-3 slots depending on Mk1/Mk2/Mk3) seeded from the Splice Core's own TRAITS component,
@@ -46,13 +47,12 @@ public class SpliceCoreMenu extends AbstractContainerMenu {
         this.cassetteSlotStartX = 80 - (slotCount - 1) * 9;
 
         ItemStack coreStack = player.getItemInHand(hand);
-        List<GeneInstance> traits = coreStack.get(ChimeraDataComponents.TRAITS.get());
-        if (traits != null) {
-            for (int i = 0; i < traits.size() && i < slotCount; i++) {
-                ItemStack cassette = new ItemStack(ChimeraItems.GENE_CASSETTE.get());
-                cassette.set(ChimeraDataComponents.TRAITS.get(), List.of(traits.get(i)));
-                cassette.set(ChimeraDataComponents.INERT.get(), false);
-                container.setItem(i, cassette);
+        ItemContainerContents installed = coreStack.get(ChimeraDataComponents.INSTALLED_CASSETTES.get());
+        if (installed != null) {
+            NonNullList<ItemStack> seeded = NonNullList.withSize(slotCount, ItemStack.EMPTY);
+            installed.copyInto(seeded);
+            for (int i = 0; i < slotCount; i++) {
+                container.setItem(i, seeded.get(i));
             }
         }
 
@@ -100,27 +100,21 @@ public class SpliceCoreMenu extends AbstractContainerMenu {
             return;
         }
 
-        List<GeneInstance> newTraits = new ArrayList<>();
+        List<ItemStack> slotItems = new ArrayList<>(slotCount);
         for (int i = 0; i < slotCount; i++) {
-            ItemStack cassette = container.getItem(i);
-            if (cassette.isEmpty()) {
-                continue;
-            }
-            List<GeneInstance> cassetteTraits = cassette.get(ChimeraDataComponents.TRAITS.get());
-            if (cassetteTraits != null && !cassetteTraits.isEmpty()) {
-                newTraits.add(cassetteTraits.get(0));
-            }
+            slotItems.add(container.getItem(i));
         }
+        ItemContainerContents newContents = ItemContainerContents.fromItems(slotItems);
 
-        List<GeneInstance> currentTraits = coreStack.get(ChimeraDataComponents.TRAITS.get());
-        if (currentTraits == null) {
-            currentTraits = List.of();
+        ItemContainerContents currentContents = coreStack.get(ChimeraDataComponents.INSTALLED_CASSETTES.get());
+        if (currentContents == null) {
+            currentContents = ItemContainerContents.EMPTY;
         }
-        if (!Objects.equals(currentTraits, newTraits)) {
-            if (newTraits.isEmpty()) {
-                coreStack.remove(ChimeraDataComponents.TRAITS.get());
+        if (!Objects.equals(currentContents, newContents)) {
+            if (newContents.equals(ItemContainerContents.EMPTY)) {
+                coreStack.remove(ChimeraDataComponents.INSTALLED_CASSETTES.get());
             } else {
-                coreStack.set(ChimeraDataComponents.TRAITS.get(), List.copyOf(newTraits));
+                coreStack.set(ChimeraDataComponents.INSTALLED_CASSETTES.get(), newContents);
             }
         }
     }

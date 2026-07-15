@@ -15,22 +15,48 @@ import net.neoforged.neoforge.items.SlotItemHandler;
 
 public class GeneExtractorMenu extends AbstractContainerMenu {
 
-    private static final int SLOT_COUNT = 3;
-    private static final int PLAYER_INV_START = SLOT_COUNT;
-    private static final int PLAYER_INV_END = SLOT_COUNT + 27;
-    private static final int HOTBAR_END = PLAYER_INV_END + 9;
+    // Genome + frame sit with real space between them (not touching), shifted left to clear the
+    // progress bar. Fuel sits below, centered on the gap between them. All Y positions land in
+    // the gap between the input row (ends y=34) and vanilla's "Inventory" label (starts y=72).
+    static final int GENOME_X = 20;
+    static final int FRAME_X = 56;
+    static final int PROGRESS_X = 82;
+    static final int FUEL_X = 38;
+    static final int FUEL_Y = 44;
+
+    private static final int MAIN_SLOT_COUNT = 3;
+
+    private final int fuelSlot;
+    private final int upgradeSlotCount;
+    private final int slotCount;
+    private final int playerInvStart;
+    private final int playerInvEnd;
+    private final int hotbarEnd;
 
     private final GeneExtractorBlockEntity blockEntity;
     private final ContainerData data;
 
-    public GeneExtractorMenu(int containerId, Inventory playerInventory, GeneExtractorBlockEntity blockEntity) {
+    public GeneExtractorMenu(int containerId, Inventory playerInventory, GeneExtractorBlockEntity blockEntity, int upgradeSlotCount) {
         super(ChimeraMenus.GENE_EXTRACTOR.get(), containerId);
         this.blockEntity = blockEntity;
         this.data = blockEntity.createContainerData();
 
-        addSlot(new SlotItemHandler(blockEntity.getInventory(), GeneExtractorBlockEntity.SLOT_GENOME, 44, 17));
-        addSlot(new SlotItemHandler(blockEntity.getInventory(), GeneExtractorBlockEntity.SLOT_CASSETTE_FRAME, 44, 47));
-        addSlot(new SlotItemHandler(blockEntity.getInventory(), GeneExtractorBlockEntity.SLOT_OUTPUT, 116, 32));
+        this.upgradeSlotCount = upgradeSlotCount;
+        this.fuelSlot = MAIN_SLOT_COUNT;
+        this.slotCount = MAIN_SLOT_COUNT + 1 + upgradeSlotCount;
+        this.playerInvStart = slotCount;
+        this.playerInvEnd = slotCount + 27;
+        this.hotbarEnd = playerInvEnd + 9;
+
+        addSlot(new SlotItemHandler(blockEntity.getInventory(), GeneExtractorBlockEntity.SLOT_GENOME, GENOME_X, 17));
+        addSlot(new SlotItemHandler(blockEntity.getInventory(), GeneExtractorBlockEntity.SLOT_CASSETTE_FRAME, FRAME_X, 17));
+        addSlot(new SlotItemHandler(blockEntity.getInventory(), GeneExtractorBlockEntity.SLOT_OUTPUT, 116, 17));
+
+        addSlot(new SlotItemHandler(blockEntity.getFuelInventory(), 0, FUEL_X, FUEL_Y));
+        for (int i = 0; i < upgradeSlotCount; i++) {
+            addSlot(new SlotItemHandler(blockEntity.getUpgradeInventory(), i,
+                    MachineScreenUtil.UPGRADE_RAIL_X, MachineScreenUtil.UPGRADE_RAIL_Y + i * MachineScreenUtil.UPGRADE_RAIL_SPACING));
+        }
 
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 9; col++) {
@@ -52,6 +78,10 @@ public class GeneExtractorMenu extends AbstractContainerMenu {
         return Math.max(data.get(1), 1);
     }
 
+    public int getUpgradeSlotCount() {
+        return upgradeSlotCount;
+    }
+
     @Override
     public boolean stillValid(Player player) {
         return stillValid(ContainerLevelAccess.create(blockEntity.getLevel(), blockEntity.getBlockPos()), player, ChimeraBlocks.GENE_EXTRACTOR.get());
@@ -68,8 +98,8 @@ public class GeneExtractorMenu extends AbstractContainerMenu {
         ItemStack slotStack = slot.getItem();
         result = slotStack.copy();
 
-        if (index < SLOT_COUNT) {
-            if (!this.moveItemStackTo(slotStack, PLAYER_INV_START, HOTBAR_END, true)) {
+        if (index < slotCount) {
+            if (!this.moveItemStackTo(slotStack, playerInvStart, hotbarEnd, true)) {
                 return ItemStack.EMPTY;
             }
         } else if (slotStack.is(ChimeraItems.SEQUENCED_GENOME.get())) {
@@ -80,11 +110,15 @@ public class GeneExtractorMenu extends AbstractContainerMenu {
             if (!this.moveItemStackTo(slotStack, GeneExtractorBlockEntity.SLOT_CASSETTE_FRAME, GeneExtractorBlockEntity.SLOT_CASSETTE_FRAME + 1, false)) {
                 return ItemStack.EMPTY;
             }
-        } else if (index < PLAYER_INV_END) {
-            if (!this.moveItemStackTo(slotStack, PLAYER_INV_END, HOTBAR_END, false)) {
+        } else if (slotStack.is(ChimeraItems.BIOMASS.get())) {
+            if (!this.moveItemStackTo(slotStack, fuelSlot, fuelSlot + 1, false)) {
                 return ItemStack.EMPTY;
             }
-        } else if (!this.moveItemStackTo(slotStack, PLAYER_INV_START, PLAYER_INV_END, false)) {
+        } else if (index < playerInvEnd) {
+            if (!this.moveItemStackTo(slotStack, playerInvEnd, hotbarEnd, false)) {
+                return ItemStack.EMPTY;
+            }
+        } else if (!this.moveItemStackTo(slotStack, playerInvStart, playerInvEnd, false)) {
             return ItemStack.EMPTY;
         }
 

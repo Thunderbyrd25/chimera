@@ -15,21 +15,44 @@ import net.neoforged.neoforge.items.SlotItemHandler;
 
 public class GenomeAnalyzerMenu extends AbstractContainerMenu {
 
-    private static final int SLOT_COUNT = 2;
-    private static final int PLAYER_INV_START = SLOT_COUNT;
-    private static final int PLAYER_INV_END = SLOT_COUNT + 27;
-    private static final int HOTBAR_END = PLAYER_INV_END + 9;
+    // Below the input slot, left side - decoupled from the upgrade rail entirely. Y is centered
+    // in the gap between the input slot (ends y=49) and vanilla's "Inventory" label (starts
+    // y=72, AbstractContainerScreen's default imageHeight-94), so it doesn't overlap either.
+    static final int FUEL_X = 44;
+    static final int FUEL_Y = 52;
+
+    private static final int MAIN_SLOT_COUNT = 2;
+
+    private final int fuelSlot;
+    private final int upgradeSlotCount;
+    private final int slotCount;
+    private final int playerInvStart;
+    private final int playerInvEnd;
+    private final int hotbarEnd;
 
     private final GenomeAnalyzerBlockEntity blockEntity;
     private final ContainerData data;
 
-    public GenomeAnalyzerMenu(int containerId, Inventory playerInventory, GenomeAnalyzerBlockEntity blockEntity) {
+    public GenomeAnalyzerMenu(int containerId, Inventory playerInventory, GenomeAnalyzerBlockEntity blockEntity, int upgradeSlotCount) {
         super(ChimeraMenus.GENOME_ANALYZER.get(), containerId);
         this.blockEntity = blockEntity;
         this.data = blockEntity.createContainerData();
 
+        this.upgradeSlotCount = upgradeSlotCount;
+        this.fuelSlot = MAIN_SLOT_COUNT;
+        this.slotCount = MAIN_SLOT_COUNT + 1 + upgradeSlotCount;
+        this.playerInvStart = slotCount;
+        this.playerInvEnd = slotCount + 27;
+        this.hotbarEnd = playerInvEnd + 9;
+
         addSlot(new SlotItemHandler(blockEntity.getInventory(), GenomeAnalyzerBlockEntity.SLOT_INPUT, 44, 32));
         addSlot(new SlotItemHandler(blockEntity.getInventory(), GenomeAnalyzerBlockEntity.SLOT_OUTPUT, 116, 32));
+
+        addSlot(new SlotItemHandler(blockEntity.getFuelInventory(), 0, FUEL_X, FUEL_Y));
+        for (int i = 0; i < upgradeSlotCount; i++) {
+            addSlot(new SlotItemHandler(blockEntity.getUpgradeInventory(), i,
+                    MachineScreenUtil.UPGRADE_RAIL_X, MachineScreenUtil.UPGRADE_RAIL_Y + i * MachineScreenUtil.UPGRADE_RAIL_SPACING));
+        }
 
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 9; col++) {
@@ -49,6 +72,10 @@ public class GenomeAnalyzerMenu extends AbstractContainerMenu {
 
     public int getMaxProgress() {
         return Math.max(data.get(1), 1);
+    }
+
+    public int getUpgradeSlotCount() {
+        return upgradeSlotCount;
     }
 
     public ItemStack getInputStack() {
@@ -75,19 +102,23 @@ public class GenomeAnalyzerMenu extends AbstractContainerMenu {
         ItemStack slotStack = slot.getItem();
         result = slotStack.copy();
 
-        if (index < SLOT_COUNT) {
-            if (!this.moveItemStackTo(slotStack, PLAYER_INV_START, HOTBAR_END, true)) {
+        if (index < slotCount) {
+            if (!this.moveItemStackTo(slotStack, playerInvStart, hotbarEnd, true)) {
                 return ItemStack.EMPTY;
             }
         } else if (slotStack.is(ChimeraItems.SEQUENCED_GENOME.get())) {
             if (!this.moveItemStackTo(slotStack, GenomeAnalyzerBlockEntity.SLOT_INPUT, GenomeAnalyzerBlockEntity.SLOT_INPUT + 1, false)) {
                 return ItemStack.EMPTY;
             }
-        } else if (index < PLAYER_INV_END) {
-            if (!this.moveItemStackTo(slotStack, PLAYER_INV_END, HOTBAR_END, false)) {
+        } else if (slotStack.is(ChimeraItems.BIOMASS.get())) {
+            if (!this.moveItemStackTo(slotStack, fuelSlot, fuelSlot + 1, false)) {
                 return ItemStack.EMPTY;
             }
-        } else if (!this.moveItemStackTo(slotStack, PLAYER_INV_START, PLAYER_INV_END, false)) {
+        } else if (index < playerInvEnd) {
+            if (!this.moveItemStackTo(slotStack, playerInvEnd, hotbarEnd, false)) {
+                return ItemStack.EMPTY;
+            }
+        } else if (!this.moveItemStackTo(slotStack, playerInvStart, playerInvEnd, false)) {
             return ItemStack.EMPTY;
         }
 

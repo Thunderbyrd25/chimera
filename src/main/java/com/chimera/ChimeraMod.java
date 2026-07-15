@@ -6,6 +6,7 @@ import com.chimera.datagen.ChimeraDataGenerators;
 import com.chimera.gene.GeneEffectHandlers;
 import com.chimera.gene.GenePoolRegistry;
 import com.chimera.gene.GeneRegistry;
+import com.chimera.network.ChimeraPayloads;
 import com.mojang.logging.LogUtils;
 
 import net.minecraft.core.registries.Registries;
@@ -48,21 +49,34 @@ public class ChimeraMod {
                     .displayItems((parameters, output) -> {
                         output.accept(ChimeraItems.TISSUE_SCRAPER.get());
                         output.accept(ChimeraItems.REINFORCED_TISSUE_SCRAPER.get());
+                        output.accept(ChimeraItems.APEX_TISSUE_SCRAPER.get());
                         output.accept(ChimeraItems.TISSUE_SAMPLE.get());
                         output.accept(ChimeraItems.SEQUENCED_GENOME.get());
-                        output.accept(ChimeraItems.NUTRIENT_AGAR.get());
+                        output.accept(ChimeraItems.BIOMASS.get());
                         output.accept(ChimeraItems.CELL_CULTURE.get());
                         output.accept(ChimeraItems.NUCLEOTIDE_SLURRY.get());
                         output.accept(ChimeraItems.CHROMATIN_STRAND.get());
                         output.accept(ChimeraItems.MUTAGEN.get());
+                        output.accept(ChimeraItems.REFINED_CULTURE.get());
                         output.accept(ChimeraItems.BLANK_GENE_CASSETTE.get());
                         output.accept(ChimeraItems.GENE_CASSETTE.get());
+                        output.accept(ChimeraItems.BLANK_GENOME.get());
                         output.accept(ChimeraItems.SPLICE_CORE.get());
                         output.accept(ChimeraItems.SPLICE_CORE_MK2.get());
                         output.accept(ChimeraItems.SPLICE_CORE_MK3.get());
                         output.accept(ChimeraItems.GENE_SEQUENCER.get());
                         output.accept(ChimeraItems.GENOME_ANALYZER.get());
                         output.accept(ChimeraItems.GENE_EXTRACTOR.get());
+                        output.accept(ChimeraItems.CENTRIFUGE.get());
+                        output.accept(ChimeraItems.GENOME_SPLICER.get());
+                        output.accept(ChimeraItems.BIOREACTOR.get());
+                        output.accept(ChimeraItems.MACHINE_UPGRADE_KIT.get());
+                        output.accept(ChimeraItems.SPEED_UPGRADE_1.get());
+                        output.accept(ChimeraItems.SPEED_UPGRADE_2.get());
+                        output.accept(ChimeraItems.SPEED_UPGRADE_3.get());
+                        output.accept(ChimeraItems.YIELD_UPGRADE_1.get());
+                        output.accept(ChimeraItems.YIELD_UPGRADE_2.get());
+                        output.accept(ChimeraItems.YIELD_UPGRADE_3.get());
                     }).build());
 
     public ChimeraMod(IEventBus modEventBus, ModContainer modContainer) {
@@ -75,6 +89,7 @@ public class ChimeraMod {
         ChimeraAttachments.ATTACHMENT_TYPES.register(modEventBus);
 
         modEventBus.addListener(ChimeraDataGenerators::gatherData);
+        modEventBus.addListener(ChimeraPayloads::register);
 
         modEventBus.addListener((RegisterCapabilitiesEvent event) -> {
             event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ChimeraBlockEntities.GENE_SEQUENCER.get(),
@@ -82,6 +97,12 @@ public class ChimeraMod {
             event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ChimeraBlockEntities.GENOME_ANALYZER.get(),
                     (blockEntity, side) -> blockEntity.getInventory());
             event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ChimeraBlockEntities.GENE_EXTRACTOR.get(),
+                    (blockEntity, side) -> blockEntity.getInventory());
+            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ChimeraBlockEntities.CENTRIFUGE.get(),
+                    (blockEntity, side) -> blockEntity.getInventory());
+            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ChimeraBlockEntities.GENOME_SPLICER.get(),
+                    (blockEntity, side) -> blockEntity.getInventory());
+            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ChimeraBlockEntities.BIOREACTOR.get(),
                     (blockEntity, side) -> blockEntity.getInventory());
         });
 

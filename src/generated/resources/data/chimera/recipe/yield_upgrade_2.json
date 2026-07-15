@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "chimera:yield_upgrade_1"
+    },
+    {
+      "item": "chimera:yield_upgrade_1"
+    },
+    {
+      "item": "chimera:chromatin_strand"
+    },
+    {
+      "item": "minecraft:glowstone_dust"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "chimera:yield_upgrade_2"
+  }
+}

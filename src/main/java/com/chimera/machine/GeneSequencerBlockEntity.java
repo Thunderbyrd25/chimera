@@ -15,27 +15,25 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.registries.DeferredItem;
 
-// Tissue Sample + Nutrient Agar -> unidentified Sequenced Genome + a weighted random byproduct.
-// Fuel is consumed once per completed cycle (not a separate burn-timer like a furnace) - simplest
-// design that still matches "consumes sample + fuel" from the pipeline description. See NOTES.md.
+// Tissue Sample -> unidentified Sequenced Genome + a weighted random byproduct. Fuel (Nutrient
+// Agar) is handled generically by AbstractMachineBlockEntity now that every machine requires
+// it - this class only needs its own input/output/byproduct slots.
 public class GeneSequencerBlockEntity extends AbstractMachineBlockEntity {
 
     public static final int SLOT_INPUT = 0;
-    public static final int SLOT_FUEL = 1;
-    public static final int SLOT_OUTPUT = 2;
-    public static final int SLOT_BYPRODUCT = 3;
+    public static final int SLOT_OUTPUT = 1;
+    public static final int SLOT_BYPRODUCT = 2;
 
     private static final int PROCESS_TIME = 100;
 
     public GeneSequencerBlockEntity(BlockPos pos, BlockState state) {
-        super(ChimeraBlockEntities.GENE_SEQUENCER.get(), pos, state, 4, PROCESS_TIME);
+        super(ChimeraBlockEntities.GENE_SEQUENCER.get(), pos, state, 3, PROCESS_TIME);
     }
 
     @Override
     protected boolean canProcess() {
         ItemStack input = inventory.getStackInSlot(SLOT_INPUT);
-        ItemStack fuel = inventory.getStackInSlot(SLOT_FUEL);
-        if (!input.is(ChimeraItems.TISSUE_SAMPLE.get()) || !fuel.is(ChimeraItems.NUTRIENT_AGAR.get())) {
+        if (!input.is(ChimeraItems.TISSUE_SAMPLE.get())) {
             return false;
         }
         ItemStack genome = new ItemStack(ChimeraItems.SEQUENCED_GENOME.get());
@@ -45,7 +43,6 @@ public class GeneSequencerBlockEntity extends AbstractMachineBlockEntity {
     @Override
     protected void process() {
         ItemStack input = inventory.extractItem(SLOT_INPUT, 1, false);
-        inventory.extractItem(SLOT_FUEL, 1, false);
 
         ItemStack genome = new ItemStack(ChimeraItems.SEQUENCED_GENOME.get());
         ResourceLocation species = input.get(ChimeraDataComponents.SPECIES.get());
@@ -62,7 +59,9 @@ public class GeneSequencerBlockEntity extends AbstractMachineBlockEntity {
 
     private ItemStack rollByproduct() {
         RandomSource random = this.level != null ? this.level.random : RandomSource.create();
-        int roll = random.nextInt(100);
+        // Installed Yield Upgrades bias the roll toward the rarer branches below (lower roll =
+        // more likely Mutagen/Chromatin Strand) - the only machine-specific use of yieldBias().
+        int roll = Math.max(0, random.nextInt(100) - yieldBias());
         DeferredItem<Item> chosen;
         if (roll < 5) {
             chosen = ChimeraItems.MUTAGEN;
@@ -78,6 +77,6 @@ public class GeneSequencerBlockEntity extends AbstractMachineBlockEntity {
 
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
-        return new GeneSequencerMenu(containerId, playerInventory, this);
+        return new GeneSequencerMenu(containerId, playerInventory, this, getUpgradeSlotCount());
     }
 }

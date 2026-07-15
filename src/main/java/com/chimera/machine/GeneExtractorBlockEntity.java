@@ -8,15 +8,16 @@ import com.chimera.ChimeraItems;
 import com.chimera.gene.GeneInstance;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
-// Identified Sequenced Genome + Blank Gene Cassette -> Gene Cassette holding one trait (with
-// its rolled star level preserved) chosen from the genome's revealed trait list. No fuel.
+// Identified Sequenced Genome + Blank Gene Cassette -> Gene Cassette holding *all* of the
+// genome's revealed traits (with their rolled star levels preserved), not a random single pick -
+// letting the extractor drop traits on the floor made getting a specific one a double-RNG
+// gamble (the genome's roll, then this machine's pick). No fuel.
 public class GeneExtractorBlockEntity extends AbstractMachineBlockEntity {
 
     public static final int SLOT_GENOME = 0;
@@ -52,30 +53,18 @@ public class GeneExtractorBlockEntity extends AbstractMachineBlockEntity {
         inventory.extractItem(SLOT_CASSETTE_FRAME, 1, false);
 
         List<GeneInstance> traits = genome.get(ChimeraDataComponents.TRAITS.get());
-        GeneInstance chosen = pickTrait(traits);
-        if (chosen == null) {
+        if (traits == null || traits.isEmpty()) {
             return;
         }
 
         ItemStack cassette = new ItemStack(ChimeraItems.GENE_CASSETTE.get());
-        cassette.set(ChimeraDataComponents.TRAITS.get(), List.of(chosen));
+        cassette.set(ChimeraDataComponents.TRAITS.get(), List.copyOf(traits));
         cassette.set(ChimeraDataComponents.INERT.get(), false);
         inventory.insertItem(SLOT_OUTPUT, cassette, false);
     }
 
-    private GeneInstance pickTrait(List<GeneInstance> traits) {
-        if (traits == null || traits.isEmpty()) {
-            return null;
-        }
-        if (traits.size() == 1) {
-            return traits.get(0);
-        }
-        RandomSource random = this.level != null ? this.level.random : RandomSource.create();
-        return traits.get(random.nextInt(traits.size()));
-    }
-
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
-        return new GeneExtractorMenu(containerId, playerInventory, this);
+        return new GeneExtractorMenu(containerId, playerInventory, this, getUpgradeSlotCount());
     }
 }

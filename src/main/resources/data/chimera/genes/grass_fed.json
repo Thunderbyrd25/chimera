@@ -1,0 +1,12 @@
+{
+  "tier": 1,
+  "effects": [
+    {
+      "type": "behavior",
+      "behavior_id": "grass_fed",
+      "base_value": 4.0,
+      "per_level_value": 2.0,
+      "cooldown_ticks": 600
+    }
+  ]
+}

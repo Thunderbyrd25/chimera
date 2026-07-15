@@ -1,8 +1,11 @@
 package com.chimera;
 
+import com.chimera.machine.BioreactorBlock;
+import com.chimera.machine.CentrifugeBlock;
 import com.chimera.machine.GeneExtractorBlock;
 import com.chimera.machine.GeneSequencerBlock;
 import com.chimera.machine.GenomeAnalyzerBlock;
+import com.chimera.machine.GenomeSplicerBlock;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -22,4 +25,13 @@ public class ChimeraBlocks {
 
     public static final DeferredBlock<Block> GENE_EXTRACTOR = BLOCKS.register("gene_extractor",
             () -> new GeneExtractorBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.5F).requiresCorrectToolForDrops()));
+
+    public static final DeferredBlock<Block> CENTRIFUGE = BLOCKS.register("centrifuge",
+            () -> new CentrifugeBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.5F).requiresCorrectToolForDrops()));
+
+    public static final DeferredBlock<Block> GENOME_SPLICER = BLOCKS.register("genome_splicer",
+            () -> new GenomeSplicerBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.5F).requiresCorrectToolForDrops()));
+
+    public static final DeferredBlock<Block> BIOREACTOR = BLOCKS.register("bioreactor",
+            () -> new BioreactorBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.5F).requiresCorrectToolForDrops()));
 }

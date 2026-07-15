@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "chimera:refined_culture"
+    },
+    {
+      "item": "chimera:chromatin_strand"
+    },
+    {
+      "item": "chimera:chromatin_strand"
+    },
+    {
+      "item": "minecraft:gold_ingot"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "chimera:machine_upgrade_kit"
+  }
+}
