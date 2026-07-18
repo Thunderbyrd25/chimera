@@ -196,3 +196,51 @@ Running log of API gotchas, version quirks, and things that surprised us during 
   from data alone. A literal `%s` in the text is replaced with the star-scaled value via plain
   `String#replace`, not `String.format` - avoids forcing gene authors to escape literal `%`
   characters in flavor text (e.g. "Reduces fall damage by half").
+- Default convention going forward (post-user-feedback on the T2 batch): drawbacks should
+  **ease toward 0 at 3-star** ("mastery") unless a trait has a specific narrative reason to be
+  a power-gamble ("worsen", like Bovine Vigor - more bull, less human, the bigger you get the
+  clumsier you get). "Ease to exactly 0 at 3-star" is the default shape: pick `base_value`/
+  `per_level_value` (or the attribute equivalent) so `base + per_level * 2 == 0`.
+
+## Tier 2 mob kits (v0.2, Milestone 2)
+
+- **Wall climbing** (`arachnid_climb`): `LivingEntity#onClimbable()` isn't overridable for
+  `Player` without Mixins, so this is reimplemented directly in the tick handler - if
+  `player.horizontalCollision` is true and the player is airborne, set a small upward
+  `deltaMovement.y` and call `resetFallDistance()`. No block-type check, unlike vanilla ladders -
+  works against any wall, matching "spider climbs anything" flavor.
+- **Sunlight weakness** (`undying_hunger_sunburn`): `Mob#isSunBurnTick()` is protected and
+  `Mob`-only, but every piece of its logic is public on `Entity`/`Level`
+  (`isInWaterRainOrBubble()`, `isInPowderSnow`/`wasInPowderSnow`, `getLightLevelDependentMagicValue()`,
+  `Level#canSeeSky()`) - manually replicated in `GeneEffectHandlers.tryUndyingHungerSunburn`.
+  `Entity#getLightLevelDependentMagicValue()` is `@Deprecated` but is exactly what vanilla's own
+  check calls - there's no non-deprecated equivalent, the warning is expected and harmless.
+- **Damage scaling** (bow bonus, magic vulnerability, pack bonus): `LivingIncomingDamageEvent`
+  (pre-finalization, `setAmount()`) keyed on `DamageSource#is(DamageTypes.ARROW)`/
+  `DamageTypes.MAGIC` - verified `PoisonMobEffect` itself calls `hurt(damageSources().magic(), 1.0F)`,
+  so "poison vulnerability" is honestly "vulnerability to magic-type damage" (vanilla has no
+  poison-specific damage type). `DamageSource#getEntity()` returns the *causing* entity (the
+  shooter, for arrows) not the direct entity (the arrow itself) - `getDirectEntity()` is the arrow.
+- **Post-hit mechanics** (lifesteal, poison-on-hit): `LivingDamageEvent.Post` (post-finalization,
+  `getNewDamage()`) rather than the pre-finalization event, so they trigger off the real dealt
+  damage, not the pre-armor amount.
+- **Horse scraping gotcha (the big one):** `TissueScraperItem` originally relied purely on
+  `Item#interactLivingEntity`, which works fine for most mobs (via `Player.interactOn`'s own
+  fallback call when `Entity#interact()` returns PASS). It structurally *should* also work for
+  horses - `AbstractHorse#mobInteract()` tries the held item first and only falls through to
+  `doPlayerRide()` if the item didn't consume the action, confirmed by reading the decompiled
+  source directly. In practice it didn't: right-clicking a horse with the (correct-tier) Apex
+  Scraper never invoked our item at all and mounted the horse instead. Root cause (per NeoForge's
+  own interaction docs): NeoForge patches the whole `Entity#interact()` + `Item#interactLivingEntity()`
+  sequence behind a single cancelable `PlayerInteractEvent.EntityInteract`, and explicitly
+  recommends hooking that event directly for reliable entity interception rather than depending
+  on a given vanilla entity's own `mobInteract` override cooperating. **Fix:** added
+  `TissueScraperEventHandler`, a `PlayerInteractEvent.EntityInteract` listener that tries the
+  scraper itself and cancels the event outright on success, running before any vanilla
+  per-entity logic (mounting, GUIs, etc.) gets a chance to fire. This is the correct general
+  pattern for any future "reliably intercept right-click regardless of the target's own special
+  behavior" need - don't rely on `Item#interactLivingEntity` alone for entities with nontrivial
+  `mobInteract` overrides. Diagnosed by adding a temporary log line in the item's own method
+  (proved it was never being called for horses despite 20+ seconds of confirmed right-clicks,
+  while the exact same click worked instantly on a skeleton) before finding the real mechanism -
+  don't skip straight to guessing when static tracing and empirical behavior disagree.

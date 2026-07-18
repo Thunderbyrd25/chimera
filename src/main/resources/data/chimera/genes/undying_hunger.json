@@ -1,0 +1,18 @@
+{
+  "tier": 2,
+  "effects": [
+    {
+      "type": "behavior",
+      "behavior_id": "undying_hunger_lifesteal",
+      "base_value": 20.0,
+      "per_level_value": 10.0,
+      "description": "Heals %s%% of melee damage dealt"
+    },
+    {
+      "type": "behavior",
+      "behavior_id": "undying_hunger_sunburn",
+      "description": "Weakened in direct sunlight",
+      "drawback": true
+    }
+  ]
+}

@@ -2,7 +2,7 @@
 
 > Open this first each modding session to reorient. It tracks three things: **where the build actually is**, **what work orders are queued and what they depend on**, and **the locked design decisions** that live across many conversations and would otherwise evaporate. Update the "Current state" section whenever a milestone commits.
 
-_Last updated: after Tier 2 Milestone 1 (drawback system) was implemented + smoke-tested, awaiting in-game verification._
+_Last updated: after Tier 2 Milestone 2 (mob kits) was hands-on verified and committed._
 
 ---
 
@@ -22,8 +22,8 @@ _Last updated: after Tier 2 Milestone 1 (drawback system) was implemented + smok
 - **v0.2** — star-level traits + Helix Analyzer; cow's full kit (Bovine Vigor / Grass Fed / Raging Bull); Centrifuge + Genome Splicer (split/recombine genomes); Extractor fixed to copy all traits; tiered progression (real tier check + Bioreactor → Refined Culture → Apex Scraper for T1→T2); universal fuel (Biomass) + machine upgrade slots across all six machines; GUI layout pass; procedural pixel-art placeholders.
 
 **In flight — Tier 2 work order (`chimera-v0.2-tier2-spec`):**
-- ✅ **Milestone 1 — drawback system.** Implemented, headless smoke-tested clean. **NOT yet committed** — awaiting hands-on in-game verification (tooltip colors, upside+downside both apply/scale/remove cleanly, star direction: Bovine Vigor slowness worsens at 3★, Hollow Bones frailty eases toward 0 at 3★, nothing lingers on unequip). Commit only after that check passes.
-- ⬜ **Milestone 2 — Tier 2 mob kits** (horse/zombie/skeleton/spider/wolf/goat/fox/cave spider/creeper; creeper allowed to slip to its own mini-milestone). Not started.
+- ✅ **Milestone 1 — drawback system.** Committed (`8d76abe`). Hands-on verified: tooltip colors, upside+downside both apply/scale/remove cleanly, star direction confirmed (Bovine Vigor slowness worsens at 3★, Hollow Bones frailty eases toward 0 at 3★), nothing lingers on unequip.
+- ✅ **Milestone 2 — Tier 2 mob kits.** Horse/zombie/skeleton/spider/wolf/goat/fox/cave spider shipped (`equine_gait`, `undying_hunger`, `steady_aim`, `arachnid_climb`, `pack_instinct`, `ramming_charge`, `silent_step`, `venom_glands`); creeper's `volatile_cells` deferred to its own mini-milestone per the spec's own allowance. Hands-on verified: horse/skeleton/cave spider spot-checked, wall-climb confirmed. Drawback direction convention refined mid-milestone (default is now "ease to 0 at 3★" unless a trait has a specific power-gamble reason to worsen, like Bovine Vigor - see NOTES.md). Also fixed a real bug found during verification: `TissueScraperItem` relied on `Item#interactLivingEntity` alone, which doesn't reliably win against vanilla entities with nontrivial `mobInteract` overrides (horses mounting instead of being scraped) - fixed via a `PlayerInteractEvent.EntityInteract` listener that intercepts before any vanilla per-entity logic runs (see NOTES.md for the full mechanism).
 - ⬜ **Milestone 3 — the Hunt gate** (Stress Plasma from combat-sampling → Combat Stimulant → unlocks T3 scraping). Not started.
 
 **Note:** most recent real-world time has gone to the day job, not the mod. Design has run ahead of implementation on purpose — the orders below are *drafts pending reality*, not final. Each assumes the ones before it are in; reread an order before starting it to check its assumptions survived.
@@ -34,7 +34,7 @@ _Last updated: after Tier 2 Milestone 1 (drawback system) was implemented + smok
 
 | # | Work order | Status | Depends on | File |
 |---|---|---|---|---|
-| 1 | Tier 2 kits + drawbacks + hunt gate | **in flight (M1 done, uncommitted)** | v0.2 | `chimera-v0.2-tier2-spec` |
+| 1 | Tier 2 kits + drawbacks + hunt gate | **in flight (M1, M2 done)** | v0.2 | `chimera-v0.2-tier2-spec` |
 | 2 | Biopedia + The Oath | queued | #1's drawback system (hedged — degrades gracefully if absent) | `chimera-biopedia-oath-spec` |
 | 3 | Byproduct economy | **not yet written** | #1 (mob roster), ideally #2 | — |
 | 4 | The Vat cluster (spliced mobs + DNA eggs + multiblock Gestation Vat) | not yet written | #1, #3 | — |

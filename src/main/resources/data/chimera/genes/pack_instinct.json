@@ -1,0 +1,12 @@
+{
+  "tier": 2,
+  "effects": [
+    {
+      "type": "behavior",
+      "behavior_id": "pack_instinct",
+      "base_value": 15.0,
+      "per_level_value": 10.0,
+      "description": "Deals %s%% more melee damage near a tamed wolf"
+    }
+  ]
+}

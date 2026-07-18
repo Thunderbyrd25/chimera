@@ -1,0 +1,23 @@
+{
+  "tier": 2,
+  "effects": [
+    {
+      "type": "behavior",
+      "behavior_id": "steady_aim_bow",
+      "base_value": 25.0,
+      "per_level_value": 15.0,
+      "description": "Bow shots deal %s%% more damage"
+    },
+    {
+      "type": "attribute_modifier",
+      "attribute": "minecraft:generic.attack_damage",
+      "modifier": {
+        "id": "chimera:steady_aim_melee_penalty",
+        "amount": -2.0,
+        "operation": "add_value"
+      },
+      "per_level_amount": 1.0,
+      "drawback": true
+    }
+  ]
+}

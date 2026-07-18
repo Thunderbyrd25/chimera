@@ -1,6 +1,6 @@
 {
   "tier": 2,
   "genes": [
-    { "gene": "chimera:steady_stance", "chance": 1.0, "star_weights": [70, 25, 5] }
+    { "gene": "chimera:steady_aim", "chance": 1.0, "star_weights": [70, 25, 5] }
   ]
 }

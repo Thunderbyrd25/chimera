@@ -1,0 +1,10 @@
+{
+  "tier": 2,
+  "effects": [
+    {
+      "type": "behavior",
+      "behavior_id": "silent_step",
+      "description": "Lands silently and takes no fall damage"
+    }
+  ]
+}

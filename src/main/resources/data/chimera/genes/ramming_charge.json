@@ -1,0 +1,19 @@
+{
+  "tier": 2,
+  "effects": [
+    {
+      "type": "behavior",
+      "behavior_id": "ramming_charge",
+      "base_value": 4.0,
+      "per_level_value": 2.0,
+      "cooldown_ticks": 10,
+      "description": "Sprint-slamming a target deals %s bonus damage and knocks it back"
+    },
+    {
+      "type": "behavior",
+      "behavior_id": "ramming_charge_stagger",
+      "description": "Also staggers you briefly",
+      "drawback": true
+    }
+  ]
+}

@@ -6,6 +6,7 @@ import com.chimera.datagen.ChimeraDataGenerators;
 import com.chimera.gene.GeneEffectHandlers;
 import com.chimera.gene.GenePoolRegistry;
 import com.chimera.gene.GeneRegistry;
+import com.chimera.item.TissueScraperEventHandler;
 import com.chimera.network.ChimeraPayloads;
 import com.mojang.logging.LogUtils;
 
@@ -112,6 +113,7 @@ public class ChimeraMod {
         });
 
         NeoForge.EVENT_BUS.register(new GeneEffectHandlers());
+        NeoForge.EVENT_BUS.register(new TissueScraperEventHandler());
 
         // Deferred to common setup so registries are populated before ChimeraCuriosCompat
         // calls ChimeraItems.SPLICE_CORE.get() - Curios is a soft dependency (CLAUDE.md

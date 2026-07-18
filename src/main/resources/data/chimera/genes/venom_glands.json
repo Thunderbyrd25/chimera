@@ -1,0 +1,23 @@
+{
+  "tier": 2,
+  "effects": [
+    {
+      "type": "behavior",
+      "behavior_id": "venom_glands",
+      "base_value": 3.0,
+      "per_level_value": 2.0,
+      "description": "Melee hits poison the target for %s seconds"
+    },
+    {
+      "type": "attribute_modifier",
+      "attribute": "minecraft:generic.max_health",
+      "modifier": {
+        "id": "chimera:venom_glands_frailty",
+        "amount": -2.0,
+        "operation": "add_value"
+      },
+      "per_level_amount": 1.0,
+      "drawback": true
+    }
+  ]
+}

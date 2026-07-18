@@ -64,10 +64,14 @@ public class ChimeraLanguageProvider extends LanguageProvider {
         add("gene.chimera.thick_fleece", "Thick Fleece");
         add("gene.chimera.grass_fed", "Grass Fed");
         add("gene.chimera.raging_bull", "Raging Bull");
-        add("gene.chimera.swift_stride", "Swift Stride");
-        add("gene.chimera.undead_resilience", "Undead Resilience");
-        add("gene.chimera.steady_stance", "Steady Stance");
-        add("gene.chimera.venomous_bite", "Venomous Bite");
+        add("gene.chimera.equine_gait", "Equine Gait");
+        add("gene.chimera.undying_hunger", "Undying Hunger");
+        add("gene.chimera.steady_aim", "Steady Aim");
+        add("gene.chimera.arachnid_climb", "Arachnid Climb");
+        add("gene.chimera.pack_instinct", "Pack Instinct");
+        add("gene.chimera.ramming_charge", "Ramming Charge");
+        add("gene.chimera.silent_step", "Silent Step");
+        add("gene.chimera.venom_glands", "Venom Glands");
 
         add("key.categories.chimera", "Chimera");
         add("key.chimera.grass_fed", "Grass Fed Ability");

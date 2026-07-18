@@ -1,0 +1,6 @@
+{
+  "tier": 2,
+  "genes": [
+    { "gene": "chimera:ramming_charge", "chance": 1.0, "star_weights": [70, 25, 5] }
+  ]
+}

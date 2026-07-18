@@ -1,0 +1,23 @@
+{
+  "tier": 2,
+  "effects": [
+    {
+      "type": "attribute_modifier",
+      "attribute": "minecraft:generic.movement_speed",
+      "modifier": {
+        "id": "chimera:equine_gait",
+        "amount": 0.15,
+        "operation": "add_multiplied_base"
+      },
+      "per_level_amount": 0.05
+    },
+    {
+      "type": "behavior",
+      "behavior_id": "equine_gait_hunger",
+      "base_value": 30.0,
+      "per_level_value": -15.0,
+      "description": "Increases hunger consumption by %s%%",
+      "drawback": true
+    }
+  ]
+}
