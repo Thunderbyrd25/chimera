@@ -41,6 +41,7 @@ public class GeneCassetteItem extends Item {
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         for (GeneInstance trait : installedTraits(stack)) {
             tooltipComponents.add(TraitDisplay.traitLine(trait));
+            tooltipComponents.addAll(TraitDisplay.effectDescriptionLines(trait));
         }
     }
 

@@ -73,6 +73,7 @@ public class SpliceCoreItem extends Item {
                 .withStyle(ChatFormatting.GRAY));
         for (GeneInstance trait : traits) {
             tooltipComponents.add(TraitDisplay.traitLine(trait));
+            tooltipComponents.addAll(TraitDisplay.effectDescriptionLines(trait));
         }
     }
 

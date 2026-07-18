@@ -40,6 +40,7 @@ public class SequencedGenomeItem extends Item {
         if (traits != null) {
             for (GeneInstance trait : traits) {
                 tooltipComponents.add(TraitDisplay.traitLine(trait).copy().withStyle(ChatFormatting.AQUA));
+                tooltipComponents.addAll(TraitDisplay.effectDescriptionLines(trait));
             }
         }
     }

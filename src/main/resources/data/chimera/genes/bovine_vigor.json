@@ -10,6 +10,17 @@
         "operation": "add_value"
       },
       "per_level_amount": 4.0
+    },
+    {
+      "type": "attribute_modifier",
+      "attribute": "minecraft:generic.movement_speed",
+      "modifier": {
+        "id": "chimera:bovine_vigor_slowness",
+        "amount": -0.03,
+        "operation": "add_multiplied_base"
+      },
+      "per_level_amount": -0.03,
+      "drawback": true
     }
   ]
 }

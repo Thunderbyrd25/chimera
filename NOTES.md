@@ -175,3 +175,24 @@ Running log of API gotchas, version quirks, and things that surprised us during 
   a manual client check - `AddReloadListenerEvent`/datapack reload only fires when a
   world/server actually starts, not at the client main menu, but a full GUI client isn't
   needed to trigger it.
+
+## Drawback system (v0.2, Milestone 1)
+
+- A drawback is just a normal `GeneEffect` entry in a gene's existing `effects` list with
+  `"drawback": true` set - not a separate top-level field. Since attribute-modifier effects are
+  already derived fresh from the equipped stack every time (`ChimeraCuriosCompat`) and behavior
+  effects are already read live off `PlayerGeneData` every tick (`PlayerGeneEffects`), a
+  negative-amount drawback needed **zero** new application/removal code - only tooltip
+  rendering (`TraitDisplay.effectDescriptionLines`) checks the flag, to color it red.
+- No `drawback_scaling` field exists or is needed. Since scaling is already
+  `base + perLevel * (starLevel - 1)`, the direction is just the **sign** of `per_level_amount`/
+  `per_level_value` relative to the base amount: a per-level value with the *same* sign as the
+  base makes the effect stronger (better upside or worse downside) at higher stars ("worsen");
+  the *opposite* sign pulls it back toward zero at higher stars ("ease"). Bovine Vigor's new
+  slowness drawback worsens (both negative); Hollow Bones' new frailty drawback eases (base
+  -2.0, per-level +1.0, so a 3-star roll ends at -0.0 net penalty).
+- `BehaviorGeneEffect` gained an optional `"description"` string for tooltips, since behaviors
+  are opaque hardcoded Java (matched by `behavior_id`) with no way to generate a description
+  from data alone. A literal `%s` in the text is replaced with the star-scaled value via plain
+  `String#replace`, not `String.format` - avoids forcing gene authors to escape literal `%`
+  characters in flavor text (e.g. "Reduces fall damage by half").

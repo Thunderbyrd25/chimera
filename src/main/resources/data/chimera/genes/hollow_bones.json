@@ -3,7 +3,19 @@
   "effects": [
     {
       "type": "behavior",
-      "behavior_id": "hollow_bones"
+      "behavior_id": "hollow_bones",
+      "description": "Reduces fall damage by half"
+    },
+    {
+      "type": "attribute_modifier",
+      "attribute": "minecraft:generic.max_health",
+      "modifier": {
+        "id": "chimera:hollow_bones_frailty",
+        "amount": -2.0,
+        "operation": "add_value"
+      },
+      "per_level_amount": 1.0,
+      "drawback": true
     }
   ]
 }
