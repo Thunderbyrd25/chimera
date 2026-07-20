@@ -14,6 +14,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.alchemy.Potions;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
@@ -23,6 +24,7 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.brewing.RegisterBrewingRecipesEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -51,7 +53,11 @@ public class ChimeraMod {
                         output.accept(ChimeraItems.TISSUE_SCRAPER.get());
                         output.accept(ChimeraItems.REINFORCED_TISSUE_SCRAPER.get());
                         output.accept(ChimeraItems.APEX_TISSUE_SCRAPER.get());
+                        output.accept(ChimeraItems.PREDATOR_TISSUE_SCRAPER.get());
                         output.accept(ChimeraItems.TISSUE_SAMPLE.get());
+                        output.accept(ChimeraItems.STRESS_PLASMA.get());
+                        output.accept(ChimeraItems.COMBAT_STIMULANT.get());
+                        output.accept(ChimeraItems.ADRENAL_EXTRACT.get());
                         output.accept(ChimeraItems.SEQUENCED_GENOME.get());
                         output.accept(ChimeraItems.BIOMASS.get());
                         output.accept(ChimeraItems.CELL_CULTURE.get());
@@ -88,6 +94,8 @@ public class ChimeraMod {
         ChimeraItems.ITEMS.register(modEventBus);
         ChimeraDataComponents.DATA_COMPONENTS.register(modEventBus);
         ChimeraAttachments.ATTACHMENT_TYPES.register(modEventBus);
+        ChimeraMobEffects.MOB_EFFECTS.register(modEventBus);
+        ChimeraPotions.POTIONS.register(modEventBus);
 
         modEventBus.addListener(ChimeraDataGenerators::gatherData);
         modEventBus.addListener(ChimeraPayloads::register);
@@ -114,6 +122,12 @@ public class ChimeraMod {
 
         NeoForge.EVENT_BUS.register(new GeneEffectHandlers());
         NeoForge.EVENT_BUS.register(new TissueScraperEventHandler());
+
+        // Hunt gate (v0.2 tier-2 work order Milestone 3): Awkward Potion + Adrenal Extract ->
+        // Potion of Stress. Splash/Lingering variants come free from vanilla's own generic
+        // container-upgrade recipes - no extra registration needed for those.
+        NeoForge.EVENT_BUS.addListener((RegisterBrewingRecipesEvent event) ->
+                event.getBuilder().addMix(Potions.AWKWARD, ChimeraItems.ADRENAL_EXTRACT.get(), ChimeraPotions.STRESS));
 
         // Deferred to common setup so registries are populated before ChimeraCuriosCompat
         // calls ChimeraItems.SPLICE_CORE.get() - Curios is a soft dependency (CLAUDE.md

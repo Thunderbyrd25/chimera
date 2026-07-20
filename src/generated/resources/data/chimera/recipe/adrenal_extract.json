@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "chimera:cell_culture"
+    },
+    {
+      "item": "chimera:cell_culture"
+    },
+    {
+      "item": "chimera:nucleotide_slurry"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "chimera:adrenal_extract"
+  }
+}

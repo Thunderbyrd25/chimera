@@ -244,3 +244,57 @@ Running log of API gotchas, version quirks, and things that surprised us during 
   (proved it was never being called for horses despite 20+ seconds of confirmed right-clicks,
   while the exact same click worked instantly on a skeleton) before finding the real mechanism -
   don't skip straight to guessing when static tracing and empirical behavior disagree.
+
+## The Hunt gate (v0.2, Milestone 3)
+
+- The tier gate's "static per-tool-subclass `maxTier()` override" pattern (base=1, Reinforced=1,
+  Apex=2) turned out to generalize cleanly to a "combat-unlocked" tier without any new mutable
+  state. `ApexTissueScraperItem`'s real recipe is a plain standalone shapeless craft (2x Refined
+  Culture + Diamond + Iron Ingot - it doesn't consume the Reinforced Scraper as an ingredient),
+  so Tier 3 is just another scraper subclass (`PredatorTissueScraperItem`, `maxTier() = 3`)
+  crafted the same standalone way from Combat Stimulant. No ItemStack-level Data Component, no
+  threading `ItemStack` through `maxTier()` - worth remembering before reaching for mutable
+  per-item state when a static class-hierarchy tier already exists and a work order says
+  "mirror the existing pattern."
+- `Mob#getTarget()` (public) is the live "is this mob currently aggro'd on X" check.
+  `LivingEntity#getLastHurtByMob()`/`getLastHurtByMobTimestamp()` (public) track the last
+  attacker, and - useful, easy to miss - **vanilla already ages this out itself**:
+  `LivingEntity`'s own tick logic nulls `lastHurtByMob` once
+  `tickCount - lastHurtByMobTimestamp > 100`. A "was this recently hurt by the player" check
+  doesn't need its own timestamp/window bookkeeping - `getLastHurtByMob() == player` alone is
+  already scoped to the last ~5 seconds. **Superseded** - the first pass used this aggro/low-HP
+  check for Stress Plasma eligibility, but it was too permissive (most hostiles aggro without
+  ever being attacked) and got replaced by the Potion of Stress marker below before commit. The
+  API facts above are still true, just not what the shipped code uses.
+- Bioreactor's recipe logic (`canProcess()`/`process()`) is hardcoded to one fixed 4-slot
+  recipe, not a generic recipe-lookup system - there's no clean way to add a second recipe to it
+  without restructuring. Since Apex Scraper already proves a "refined" item doesn't need a
+  machine step at all, Combat Stimulant is a plain crafting-table recipe too - sidesteps the
+  work order's "no new machine if possible" guardrail rather than negotiating around Bioreactor's
+  fixed shape.
+- **Custom MobEffect/Potion/brewing recipe (all new territory for this mod):**
+  - `MobEffect`'s constructor (`MobEffect(MobEffectCategory, int color)`) is `protected` - it's
+    meant to be subclassed, even for a pure marker effect with no attribute modifiers or tick
+    behavior. `new MobEffect(category, color) {}` (empty anonymous subclass) is the minimal fix;
+    a plain `new MobEffect(...)` doesn't compile.
+  - `DeferredHolder<R, T extends R> implements Holder<R>` - pass the `DeferredHolder` itself
+    (e.g. `ChimeraMobEffects.STRESSED`, no `.get()`) anywhere a `Holder<T>` is expected
+    (`MobEffectInstance`'s constructor, `LivingEntity#hasEffect(Holder<MobEffect>)`). Calling
+    `.get()` first gives the raw unwrapped object, which is the wrong type for those APIs.
+  - Brewing recipes are **not** static `PotionBrewing.addMix(...)` calls anymore - register a
+    `RegisterBrewingRecipesEvent` listener on `NeoForge.EVENT_BUS` and call
+    `event.getBuilder().addMix(Holder<Potion> input, Item ingredient, Holder<Potion> output)`.
+    Splash/Lingering variants need no separate registration - vanilla's own
+    `PotionBrewing.bootstrap` already registers generic container-upgrade recipes
+    (Potion+Gunpowder->Splash, Splash+Dragon's Breath->Lingering) that apply to every potion
+    type automatically, ours included.
+  - A custom potion's item display name is **not** a `chimera:`-namespaced key. `Potion.getName()`
+    builds the key from the *container item's* own description id (`item.minecraft.potion`,
+    `.splash_potion`, `.lingering_potion`) plus `.effect.<potion_registry_path>` - so a potion
+    registered as `chimera:stress` needs lang entries at `item.minecraft.potion.effect.stress`
+    (and the splash/lingering variants), not `item.chimera.stress`.
+  - NeoForge Data Attachments are entity-agnostic, not player-specific, despite every existing
+    use in this codebase being on `Player` - `IAttachmentHolder` is mixed into the base `Entity`
+    class. The exact same `entity.getData(...)`/`.setData(...)` calls already used for
+    `PlayerGeneData` work unchanged on any `LivingEntity` (used here for a per-mob scrape
+    cooldown attached to the scraped mob itself, not the player).

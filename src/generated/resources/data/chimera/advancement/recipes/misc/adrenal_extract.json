@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_cell_culture": {
+      "conditions": {
+        "items": [
+          {
+            "items": "chimera:cell_culture"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "chimera:adrenal_extract"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_cell_culture"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "chimera:adrenal_extract"
+    ]
+  }
+}

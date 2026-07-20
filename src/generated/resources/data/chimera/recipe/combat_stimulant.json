@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "chimera:stress_plasma"
+    },
+    {
+      "item": "chimera:stress_plasma"
+    },
+    {
+      "item": "chimera:stress_plasma"
+    },
+    {
+      "item": "chimera:refined_culture"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "chimera:combat_stimulant"
+  }
+}

@@ -1,10 +1,13 @@
 package com.chimera.item;
 
+import com.chimera.ChimeraAttachments;
 import com.chimera.ChimeraDataComponents;
 import com.chimera.ChimeraItems;
+import com.chimera.ChimeraMobEffects;
 import com.chimera.gene.GenePool;
 import com.chimera.gene.GenePoolRegistry;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
@@ -17,11 +20,15 @@ import net.minecraft.world.level.Level;
 
 public class TissueScraperItem extends Item {
 
+    // Hunt gate (v0.2 tier-2 work order Milestone 3): a mob scraped within the last day yields
+    // nothing at all, regardless of scraper tier - pacing, not a tier gate.
+    private static final long SCRAPE_COOLDOWN_TICKS = 24000L;
+
     public TissueScraperItem(Properties properties) {
         super(properties);
     }
 
-    // Overridden by the reinforced tier for a chance at a bonus sample per scrape.
+    // Overridden by higher tiers for a chance at a bonus sample/Stress Plasma per scrape.
     protected float bonusSampleChance() {
         return 0.0F;
     }
@@ -35,20 +42,45 @@ public class TissueScraperItem extends Item {
 
     @Override
     public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity interactionTarget, InteractionHand usedHand) {
-        GenePool pool = GenePoolRegistry.get(interactionTarget.getType());
-        if (pool == null || pool.tier() > maxTier()) {
+        Level level = player.level();
+        long now = level.getGameTime();
+        long lastScraped = interactionTarget.getData(ChimeraAttachments.LAST_SCRAPED_TIME.get());
+        if (lastScraped != 0L && now - lastScraped < SCRAPE_COOLDOWN_TICKS) {
+            if (!level.isClientSide) {
+                player.displayClientMessage(Component.translatable("message.chimera.scrape_cooldown"), true);
+            }
             return InteractionResult.PASS;
         }
 
-        Level level = player.level();
+        GenePool pool = GenePoolRegistry.get(interactionTarget.getType());
+        boolean tierEligible = pool != null && pool.tier() <= maxTier();
+        // Stress Plasma requires a deliberate Potion of Stress splash (see ChimeraMobEffects,
+        // ChimeraPotions) rather than ambient combat state - any scraper tier that successfully
+        // reads this mob can harvest it, since the gate is the potion setup, not tool tier.
+        boolean stressed = interactionTarget.hasEffect(ChimeraMobEffects.STRESSED);
+
+        if (!tierEligible && !stressed) {
+            return InteractionResult.PASS;
+        }
+
         if (level.isClientSide) {
             return InteractionResult.SUCCESS;
         }
 
-        giveSample(player, interactionTarget);
-        if (level.random.nextFloat() < bonusSampleChance()) {
+        if (tierEligible) {
             giveSample(player, interactionTarget);
+            if (level.random.nextFloat() < bonusSampleChance()) {
+                giveSample(player, interactionTarget);
+            }
         }
+        if (stressed) {
+            giveStressPlasma(player);
+            if (level.random.nextFloat() < bonusSampleChance()) {
+                giveStressPlasma(player);
+            }
+        }
+
+        interactionTarget.setData(ChimeraAttachments.LAST_SCRAPED_TIME.get(), now);
 
         EquipmentSlot slot = usedHand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
         stack.hurtAndBreak(1, player, slot);
@@ -61,6 +93,13 @@ public class TissueScraperItem extends Item {
         sample.set(ChimeraDataComponents.SPECIES.get(), EntityType.getKey(target.getType()));
         if (!player.getInventory().add(sample)) {
             player.drop(sample, false);
+        }
+    }
+
+    private void giveStressPlasma(Player player) {
+        ItemStack plasma = new ItemStack(ChimeraItems.STRESS_PLASMA.get());
+        if (!player.getInventory().add(plasma)) {
+            player.drop(plasma, false);
         }
     }
 }

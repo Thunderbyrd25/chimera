@@ -167,6 +167,36 @@ public class ChimeraRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_refined_culture", has(ChimeraItems.REFINED_CULTURE.get()))
                 .save(output);
 
+        // Hunt gate (v0.2 tier-2 work order Milestone 3): brewing ingredient for the Potion of
+        // Stress (see ChimeraMod's RegisterBrewingRecipesEvent listener) - cheap on purpose, the
+        // real gate on Stress Plasma farming is the per-mob scrape cooldown (TissueScraperItem).
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ChimeraItems.ADRENAL_EXTRACT.get())
+                .requires(ChimeraItems.CELL_CULTURE.get())
+                .requires(ChimeraItems.CELL_CULTURE.get())
+                .requires(ChimeraItems.NUCLEOTIDE_SLURRY.get())
+                .unlockedBy("has_cell_culture", has(ChimeraItems.CELL_CULTURE.get()))
+                .save(output);
+
+        // Stress Plasma only comes from scraping a Potion-of-Stress-marked mob (see
+        // TissueScraperItem), refines here into Combat Stimulant, tying the resource spine to
+        // Refined Culture per the work order's own suggestion.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ChimeraItems.COMBAT_STIMULANT.get())
+                .requires(ChimeraItems.STRESS_PLASMA.get())
+                .requires(ChimeraItems.STRESS_PLASMA.get())
+                .requires(ChimeraItems.STRESS_PLASMA.get())
+                .requires(ChimeraItems.REFINED_CULTURE.get())
+                .unlockedBy("has_stress_plasma", has(ChimeraItems.STRESS_PLASMA.get()))
+                .save(output);
+
+        // Tier-3 unlock, mirroring the Apex Scraper recipe shape exactly one tier up.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.TOOLS, ChimeraItems.PREDATOR_TISSUE_SCRAPER.get())
+                .requires(ChimeraItems.COMBAT_STIMULANT.get())
+                .requires(ChimeraItems.COMBAT_STIMULANT.get())
+                .requires(Items.DIAMOND)
+                .requires(Items.IRON_INGOT)
+                .unlockedBy("has_combat_stimulant", has(ChimeraItems.COMBAT_STIMULANT.get()))
+                .save(output);
+
         // Machine upgrades (v0.2): kit grows a machine's upgrade slot count; Speed/Yield each
         // build up through 3 tiers, every tier consuming 2 of the previous one plus more raw
         // material, ending in Refined Culture - same "each tier consumes the last" shape

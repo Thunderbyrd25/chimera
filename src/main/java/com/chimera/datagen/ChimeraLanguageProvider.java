@@ -20,7 +20,11 @@ public class ChimeraLanguageProvider extends LanguageProvider {
         addItem(ChimeraItems.TISSUE_SCRAPER, "Tissue Scraper");
         addItem(ChimeraItems.REINFORCED_TISSUE_SCRAPER, "Reinforced Tissue Scraper");
         addItem(ChimeraItems.APEX_TISSUE_SCRAPER, "Apex Tissue Scraper");
+        addItem(ChimeraItems.PREDATOR_TISSUE_SCRAPER, "Predator Tissue Scraper");
         addItem(ChimeraItems.TISSUE_SAMPLE, "Tissue Sample");
+        addItem(ChimeraItems.STRESS_PLASMA, "Stress Plasma");
+        addItem(ChimeraItems.COMBAT_STIMULANT, "Combat Stimulant");
+        addItem(ChimeraItems.ADRENAL_EXTRACT, "Adrenal Extract");
         addItem(ChimeraItems.SEQUENCED_GENOME, "Sequenced Genome");
         addItem(ChimeraItems.BIOMASS, "Biomass");
         addItem(ChimeraItems.CELL_CULTURE, "Cell Culture");
@@ -55,6 +59,15 @@ public class ChimeraLanguageProvider extends LanguageProvider {
         add("item.chimera.splice_core.named", "Splice Core: %s");
         add("tooltip.chimera.splice_core.slots", "%s / %s gene slots filled");
         add("gui.chimera.genome_analyzer.analyzing", "Analyzing...");
+        add("message.chimera.scrape_cooldown", "This creature needs time to recover before it can be scraped again.");
+
+        // Potion of Stress (Hunt gate, Milestone 3) - MobEffect display name, plus the potion
+        // item's name across all three container forms (Potion.getName() keys off the vanilla
+        // container item's own description id, not our mod namespace - see Potion.java).
+        add("effect.chimera.stressed", "Stressed");
+        add("item.minecraft.potion.effect.stress", "Potion of Stress");
+        add("item.minecraft.splash_potion.effect.stress", "Splash Potion of Stress");
+        add("item.minecraft.lingering_potion.effect.stress", "Lingering Potion of Stress");
 
         // Gene display names, keyed by gene id (see data/chimera/genes/*.json) - shown on
         // identified genomes and, later, gene cassettes.

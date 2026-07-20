@@ -2,6 +2,7 @@ package com.chimera;
 
 import com.chimera.item.ApexTissueScraperItem;
 import com.chimera.item.GeneCassetteItem;
+import com.chimera.item.PredatorTissueScraperItem;
 import com.chimera.item.ReinforcedTissueScraperItem;
 import com.chimera.item.SequencedGenomeItem;
 import com.chimera.item.SpliceCoreItem;
@@ -36,8 +37,29 @@ public class ChimeraItems {
     public static final DeferredItem<Item> APEX_TISSUE_SCRAPER = ITEMS.register("apex_tissue_scraper",
             () -> new ApexTissueScraperItem(new Item.Properties().durability(192)));
 
+    // Tier-3 unlock (Hunt gate, v0.2 tier-2 work order Milestone 3) - see PredatorTissueScraperItem.
+    public static final DeferredItem<Item> PREDATOR_TISSUE_SCRAPER = ITEMS.register("predator_tissue_scraper",
+            () -> new PredatorTissueScraperItem(new Item.Properties().durability(320)));
+
     public static final DeferredItem<Item> TISSUE_SAMPLE = ITEMS.register("tissue_sample",
             () -> new TissueSampleItem(new Item.Properties()));
+
+    // Hunt gate (v0.2 tier-2 work order Milestone 3): combat-only bonus drop from scraping a
+    // mob that's actively targeting the player, or bloodied and last hurt by the player - see
+    // TissueScraperItem.isCombatEligible(). Refines into Combat Stimulant.
+    public static final DeferredItem<Item> STRESS_PLASMA = ITEMS.register("stress_plasma",
+            () -> new Item(new Item.Properties()));
+
+    // Crafted from Stress Plasma + Refined Culture; the ingredient for the Predator Tissue
+    // Scraper, mirroring how Refined Culture itself is the ingredient for the Apex Scraper.
+    public static final DeferredItem<Item> COMBAT_STIMULANT = ITEMS.register("combat_stimulant",
+            () -> new Item(new Item.Properties()));
+
+    // Brewing ingredient for the Potion of Stress (see ChimeraMod's RegisterBrewingRecipesEvent
+    // listener and ChimeraPotions.STRESS) - crafted from common byproducts, since the real gate
+    // on Stress Plasma farming is the per-mob scrape cooldown, not ingredient scarcity.
+    public static final DeferredItem<Item> ADRENAL_EXTRACT = ITEMS.register("adrenal_extract",
+            () -> new Item(new Item.Properties()));
 
     public static final DeferredItem<Item> SEQUENCED_GENOME = ITEMS.register("sequenced_genome",
             () -> new SequencedGenomeItem(new Item.Properties()));

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_combat_stimulant": {
+      "conditions": {
+        "items": [
+          {
+            "items": "chimera:combat_stimulant"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "chimera:predator_tissue_scraper"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_combat_stimulant"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "chimera:predator_tissue_scraper"
+    ]
+  }
+}

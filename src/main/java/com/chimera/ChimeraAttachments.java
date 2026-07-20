@@ -1,6 +1,7 @@
 package com.chimera;
 
 import com.chimera.gene.PlayerGeneData;
+import com.mojang.serialization.Codec;
 
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -18,5 +19,15 @@ public class ChimeraAttachments {
             ATTACHMENT_TYPES.register("player_gene_data", () -> AttachmentType.builder(() -> PlayerGeneData.EMPTY)
                     .serialize(PlayerGeneData.CODEC)
                     .copyOnDeath()
+                    .build());
+
+    // Hunt gate (v0.2 tier-2 work order Milestone 3): attached to the *scraped mob*, not the
+    // player - NeoForge attachments are entity-agnostic. Game time (ticks) of the mob's last
+    // successful scrape, checked in TissueScraperItem against a one-day cooldown. Default 0L
+    // ("never scraped") always passes the cooldown check. No copyOnDeath - irrelevant for a
+    // mob's own cooldown.
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Long>> LAST_SCRAPED_TIME =
+            ATTACHMENT_TYPES.register("last_scraped_time", () -> AttachmentType.builder(() -> 0L)
+                    .serialize(Codec.LONG)
                     .build());
 }
