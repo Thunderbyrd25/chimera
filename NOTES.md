@@ -298,3 +298,23 @@ Running log of API gotchas, version quirks, and things that surprised us during 
     class. The exact same `entity.getData(...)`/`.setData(...)` calls already used for
     `PlayerGeneData` work unchanged on any `LivingEntity` (used here for a per-mob scrape
     cooldown attached to the scraped mob itself, not the player).
+
+## Biopedia + The Oath, Milestone 1 (player identity state)
+
+- Identification (`GenomeAnalyzerBlockEntity.process()`) is entirely per-item today - it flips
+  an `IDENTIFIED` data component and rolls `TRAITS` onto the item stack being processed, never
+  touching the player. There is no player-scoped "discovered genes" state anywhere in the
+  codebase before this milestone, despite the Biopedia spec assuming one exists to "reuse."
+  Flagged to the user; folded a new `DISCOVERED_GENES` attachment into this milestone rather
+  than deferring it, so the Biopedia milestone doesn't need a second attachment migration.
+- **Nothing writes to `DISCOVERED_GENES` yet** - this milestone is schema only. The real design
+  question for whichever milestone wires up the write side: `AbstractMachineBlockEntity` ticks
+  with no player reference at all (machines process automatically regardless of whether anyone
+  has the GUI open), so "the Analyzer finished" doesn't naturally answer "who gets credited with
+  discovering this gene." Installing a trait into a Splice Core (a genuinely player-driven
+  action with a real `Player` reference already in hand) is the leading candidate for the actual
+  credit-attribution moment - not machine-tick completion.
+- `AttachmentType.builder(...)` is overloaded on `Supplier<T>` vs. `Function<IAttachmentHolder,
+  T>`, and a bare method reference for an immutable-empty-collection default (e.g. `Set::of`)
+  is ambiguous between them - the compiler can't tell which shape you mean. Use an explicit
+  lambda (`() -> Set.<T>of()`) to force the `Supplier` overload instead of a method reference.

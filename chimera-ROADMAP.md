@@ -2,7 +2,7 @@
 
 > Open this first each modding session to reorient. It tracks three things: **where the build actually is**, **what work orders are queued and what they depend on**, and **the locked design decisions** that live across many conversations and would otherwise evaporate. Update the "Current state" section whenever a milestone commits.
 
-_Last updated: after Tier 2 Milestone 3 (the Hunt gate) was hands-on verified and committed - the entire `chimera-v0.2-tier2-spec` work order is now done._
+_Last updated: after Biopedia+Oath Milestone 1 (player identity state) was hands-on verified and committed._
 
 ---
 
@@ -27,6 +27,11 @@ _Last updated: after Tier 2 Milestone 3 (the Hunt gate) was hands-on verified an
   - **M2 — Tier 2 mob kits.** Horse/zombie/skeleton/spider/wolf/goat/fox/cave spider (`equine_gait`, `undying_hunger`, `steady_aim`, `arachnid_climb`, `pack_instinct`, `ramming_charge`, `silent_step`, `venom_glands`); creeper's `volatile_cells` deferred to its own mini-milestone per the spec's own allowance. Drawback direction convention landed on "ease to 0 at 3★ by default, worsen only for a deliberate power-gamble trait" (see NOTES.md). Also fixed a real bug found during verification: `TissueScraperItem` relied on `Item#interactLivingEntity` alone, which doesn't reliably win against vanilla entities with nontrivial `mobInteract` overrides (horses mounting instead of being scraped) - fixed via a `PlayerInteractEvent.EntityInteract` listener.
   - **M3 — the Hunt gate.** Went through a real design revision mid-milestone: the spec's aggro/low-HP detection was too permissive (most hostiles aggro without being attacked), so Stress Plasma eligibility became a deliberate **Potion of Stress** (new MobEffect + Potion + brewing recipe, brewed from Awkward Potion + Adrenal Extract) instead. Also added two systems beyond the original spec: a one-day per-mob scrape cooldown (entity Data Attachment, proven to generalize cleanly from the existing player-attachment pattern) and tier-scaling yield (`bonusSampleChance()` now escalates Reinforced 25% → Apex 40% → Predator 55%, rolled independently for samples and Stress Plasma). Tier 3 itself is `PredatorTissueScraperItem`, crafted from Combat Stimulant, mirroring the Apex gate's exact shape - confirmed via Enderman placeholder pool (tier 3, no kit yet).
 
+**In flight — Biopedia + Oath work order (`chimera-biopedia-oath-spec`):**
+- ✅ **Milestone 1 — player identity state.** New `com.chimera.oath` package: `PlayerOathData` (`hasOath`, dormant `oathBroken`, dormant `path` enum NONE/SCIENTIST/REAPER/SERAPH) and a separate `DISCOVERED_GENES` attachment (`Set<ResourceLocation>`, empty for now - nothing writes to it yet). Real contradiction found and resolved: the spec assumed player-level trait-discovery state already existed to "reuse" for the Biopedia; it didn't (identification is 100% per-item today, see `GenomeAnalyzerBlockEntity`) - folded a new attachment into this milestone rather than deferring it. Hands-on verified on both a fresh save and an existing pre-update save: both load the same sane defaults, no crash. Flagged for M2/M3: machines have no player reference during tick-based processing, so "who gets credited with discovering a gene" still needs real design when the write side gets built.
+- ⬜ **Milestone 2 — taking the Oath** (self-sample, the Oath item + confirmation prompt, the mechanical boon). Not started.
+- ⬜ **Milestone 3 — the Biopedia** (the catalog book/screen). Not started.
+
 **Note:** most recent real-world time has gone to the day job, not the mod. Design has run ahead of implementation on purpose — the orders below are *drafts pending reality*, not final. Each assumes the ones before it are in; reread an order before starting it to check its assumptions survived.
 
 ---
@@ -36,7 +41,7 @@ _Last updated: after Tier 2 Milestone 3 (the Hunt gate) was hands-on verified an
 | # | Work order | Status | Depends on | File |
 |---|---|---|---|---|
 | 1 | Tier 2 kits + drawbacks + hunt gate | **done** | v0.2 | `chimera-v0.2-tier2-spec` |
-| 2 | Biopedia + The Oath | **queued, ready to start** | #1's drawback system (hedged — degrades gracefully if absent) | `chimera-biopedia-oath-spec` |
+| 2 | Biopedia + The Oath | **in flight (M1 done)** | #1's drawback system (hedged — degrades gracefully if absent) | `chimera-biopedia-oath-spec` |
 | 3 | Byproduct economy | **not yet written** | #1 (mob roster), ideally #2 | — |
 | 4 | The Vat cluster (spliced mobs + DNA eggs + multiblock Gestation Vat) | not yet written | #1, #3 | — |
 | 5 | The Break (Endarachnid → oath-break → Necronomicon → Scythe) | not yet written | #2, #4 | — |

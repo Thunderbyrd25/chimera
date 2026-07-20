@@ -25,6 +25,7 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.brewing.RegisterBrewingRecipesEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -128,6 +129,16 @@ public class ChimeraMod {
         // container-upgrade recipes - no extra registration needed for those.
         NeoForge.EVENT_BUS.addListener((RegisterBrewingRecipesEvent event) ->
                 event.getBuilder().addMix(Potions.AWKWARD, ChimeraItems.ADRENAL_EXTRACT.get(), ChimeraPotions.STRESS));
+
+        // Biopedia+Oath work order Milestone 1 checkpoint: log the new player-identity
+        // attachments on join, to verify persistence and old-save defaults by hand.
+        NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerLoggedInEvent event) -> {
+            var oathData = event.getEntity().getData(ChimeraAttachments.PLAYER_OATH_DATA.get());
+            var discoveredGenes = event.getEntity().getData(ChimeraAttachments.DISCOVERED_GENES.get());
+            LOGGER.info("[oath-debug] {} joined: hasOath={}, oathBroken={}, path={}, discoveredGenes={}",
+                    event.getEntity().getName().getString(), oathData.hasOath(), oathData.oathBroken(),
+                    oathData.path(), discoveredGenes);
+        });
 
         // Deferred to common setup so registries are populated before ChimeraCuriosCompat
         // calls ChimeraItems.SPLICE_CORE.get() - Curios is a soft dependency (CLAUDE.md
