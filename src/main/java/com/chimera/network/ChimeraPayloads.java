@@ -1,6 +1,7 @@
 package com.chimera.network;
 
 import com.chimera.gene.GeneEffectHandlers;
+import com.chimera.oath.OathEffects;
 
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
@@ -10,6 +11,8 @@ public final class ChimeraPayloads {
 
     public static void register(RegisterPayloadHandlersEvent event) {
         event.registrar("1").playToServer(GrassFedUsePayload.TYPE, GrassFedUsePayload.STREAM_CODEC,
-                (payload, context) -> GeneEffectHandlers.handleGrassFedUse(context.player()));
+                        (payload, context) -> GeneEffectHandlers.handleGrassFedUse(context.player()))
+                .playToServer(OathResponsePayload.TYPE, OathResponsePayload.STREAM_CODEC,
+                        (payload, context) -> OathEffects.handleResponse(context.player(), payload));
     }
 }

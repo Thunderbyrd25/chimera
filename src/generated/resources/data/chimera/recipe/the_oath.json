@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:book"
+    },
+    {
+      "item": "chimera:self_tissue_sample"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "chimera:the_oath"
+  }
+}

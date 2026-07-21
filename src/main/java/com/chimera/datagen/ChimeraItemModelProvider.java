@@ -20,6 +20,9 @@ public class ChimeraItemModelProvider extends ItemModelProvider {
         handheldItem(ChimeraItems.APEX_TISSUE_SCRAPER.get());
         handheldItem(ChimeraItems.PREDATOR_TISSUE_SCRAPER.get());
         basicItem(ChimeraItems.TISSUE_SAMPLE.get());
+        basicItem(ChimeraItems.SELF_TISSUE_SAMPLE.get());
+        basicItem(ChimeraItems.THE_OATH.get());
+        basicItem(ChimeraItems.THE_BIOPEDIA.get());
         basicItem(ChimeraItems.STRESS_PLASMA.get());
         basicItem(ChimeraItems.COMBAT_STIMULANT.get());
         basicItem(ChimeraItems.ADRENAL_EXTRACT.get());

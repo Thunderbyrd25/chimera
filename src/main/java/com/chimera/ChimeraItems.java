@@ -6,6 +6,8 @@ import com.chimera.item.PredatorTissueScraperItem;
 import com.chimera.item.ReinforcedTissueScraperItem;
 import com.chimera.item.SequencedGenomeItem;
 import com.chimera.item.SpliceCoreItem;
+import com.chimera.item.TheBiopediaItem;
+import com.chimera.item.TheOathItem;
 import com.chimera.item.TissueSampleItem;
 import com.chimera.item.TissueScraperItem;
 
@@ -43,6 +45,21 @@ public class ChimeraItems {
 
     public static final DeferredItem<Item> TISSUE_SAMPLE = ITEMS.register("tissue_sample",
             () -> new TissueSampleItem(new Item.Properties()));
+
+    // Biopedia+Oath work order Milestone 2: right-click-air with any scraper (see
+    // TissueScraperItem.use()). Deliberately its own item id, not TISSUE_SAMPLE, so it can't
+    // accidentally enter the Sequencer/Analyzer pipeline (both gate on exact item identity).
+    public static final DeferredItem<Item> SELF_TISSUE_SAMPLE = ITEMS.register("self_tissue_sample",
+            () -> new TissueSampleItem(new Item.Properties()));
+
+    // The Oath: crafted from a Book + Self Tissue Sample. Right-click opens a confirmation
+    // prompt - accept sets PlayerOathData and grants THE_BIOPEDIA, decline is a no-op.
+    public static final DeferredItem<Item> THE_OATH = ITEMS.register("the_oath",
+            () -> new TheOathItem(new Item.Properties().stacksTo(1)));
+
+    // Placeholder this milestone - Milestone 3 replaces this with the real paginated catalog.
+    public static final DeferredItem<Item> THE_BIOPEDIA = ITEMS.register("the_biopedia",
+            () -> new TheBiopediaItem(new Item.Properties().stacksTo(1)));
 
     // Hunt gate (v0.2 tier-2 work order Milestone 3): combat-only bonus drop from scraping a
     // mob that's actively targeting the player, or bloodied and last hurt by the player - see

@@ -2,7 +2,7 @@
 
 > Open this first each modding session to reorient. It tracks three things: **where the build actually is**, **what work orders are queued and what they depend on**, and **the locked design decisions** that live across many conversations and would otherwise evaporate. Update the "Current state" section whenever a milestone commits.
 
-_Last updated: after Biopedia+Oath Milestone 1 (player identity state) was hands-on verified and committed._
+_Last updated: after Biopedia+Oath Milestone 2 (taking the Oath) was hands-on verified and committed._
 
 ---
 
@@ -29,7 +29,7 @@ _Last updated: after Biopedia+Oath Milestone 1 (player identity state) was hands
 
 **In flight — Biopedia + Oath work order (`chimera-biopedia-oath-spec`):**
 - ✅ **Milestone 1 — player identity state.** New `com.chimera.oath` package: `PlayerOathData` (`hasOath`, dormant `oathBroken`, dormant `path` enum NONE/SCIENTIST/REAPER/SERAPH) and a separate `DISCOVERED_GENES` attachment (`Set<ResourceLocation>`, empty for now - nothing writes to it yet). Real contradiction found and resolved: the spec assumed player-level trait-discovery state already existed to "reuse" for the Biopedia; it didn't (identification is 100% per-item today, see `GenomeAnalyzerBlockEntity`) - folded a new attachment into this milestone rather than deferring it. Hands-on verified on both a fresh save and an existing pre-update save: both load the same sane defaults, no crash. Flagged for M2/M3: machines have no player reference during tick-based processing, so "who gets credited with discovering a gene" still needs real design when the write side gets built.
-- ⬜ **Milestone 2 — taking the Oath** (self-sample, the Oath item + confirmation prompt, the mechanical boon). Not started.
+- ✅ **Milestone 2 — taking the Oath.** Self Tissue Sample (right-click air with any scraper), The Oath (Book + Self Tissue Sample, `stacksTo(1)`), vanilla `ConfirmScreen` for the accept/decline prompt, a placeholder `TheBiopediaItem` granted on accept. Boon fork resolved directly with the user (the spec and ROADMAP disagreed) - went with **diligent study**: concrete Analyzer-time auto-populate hook vs. "humane sampling," which had nothing to attach to since scraping never angered mobs to begin with. The boon's *condition* (`OathEffects.diligentStudyActive`) is built; the write-hook into `DISCOVERED_GENES` is deferred to M3 alongside the Biopedia that actually reads it. Hit and fixed a real dedicated-server crash: `TheOathItem` originally referenced `ConfirmScreen`/`Minecraft` directly inside an `isClientSide` guard, which NeoForge's `RuntimeDistCleaner` rejects at class-load time regardless of runtime branching - fixed via a plain `OpenOathPromptEvent` bridging to `ChimeraModClient` (see NOTES.md). Also fixed two bugs found during verification: the species tooltip showed "Pig" for the player sentinel (`BuiltInRegistries.ENTITY_TYPE` is a `DefaultedRegistry`, `.get()` never returns null) and reworked all scraper drops (tissue samples, Stress Plasma, self-samples) to drop on the ground instead of going straight to inventory.
 - ⬜ **Milestone 3 — the Biopedia** (the catalog book/screen). Not started.
 
 **Note:** most recent real-world time has gone to the day job, not the mod. Design has run ahead of implementation on purpose — the orders below are *drafts pending reality*, not final. Each assumes the ones before it are in; reread an order before starting it to check its assumptions survived.

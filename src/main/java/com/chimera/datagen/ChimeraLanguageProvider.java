@@ -22,6 +22,9 @@ public class ChimeraLanguageProvider extends LanguageProvider {
         addItem(ChimeraItems.APEX_TISSUE_SCRAPER, "Apex Tissue Scraper");
         addItem(ChimeraItems.PREDATOR_TISSUE_SCRAPER, "Predator Tissue Scraper");
         addItem(ChimeraItems.TISSUE_SAMPLE, "Tissue Sample");
+        addItem(ChimeraItems.SELF_TISSUE_SAMPLE, "Self Tissue Sample");
+        addItem(ChimeraItems.THE_OATH, "The Oath");
+        addItem(ChimeraItems.THE_BIOPEDIA, "The Biopedia");
         addItem(ChimeraItems.STRESS_PLASMA, "Stress Plasma");
         addItem(ChimeraItems.COMBAT_STIMULANT, "Combat Stimulant");
         addItem(ChimeraItems.ADRENAL_EXTRACT, "Adrenal Extract");
@@ -54,12 +57,22 @@ public class ChimeraLanguageProvider extends LanguageProvider {
         addBlock(ChimeraBlocks.BIOREACTOR, "Bioreactor");
 
         add("tooltip.chimera.species", "Species: %s");
+        add("tooltip.chimera.species.player", "You");
         add("tooltip.chimera.unidentified", "Unidentified");
         add("item.chimera.gene_cassette.named", "Gene Cassette: %s");
         add("item.chimera.splice_core.named", "Splice Core: %s");
         add("tooltip.chimera.splice_core.slots", "%s / %s gene slots filled");
         add("gui.chimera.genome_analyzer.analyzing", "Analyzing...");
         add("message.chimera.scrape_cooldown", "This creature needs time to recover before it can be scraped again.");
+
+        // Biopedia+Oath work order Milestone 2. Clinical, lab-ethics tone throughout - "the
+        // mysticism budget is spent later, on the break" (see chimera-ROADMAP.md).
+        add("tooltip.chimera.the_oath.1", "A pledge, written in your own hand: to study life without causing it needless harm.");
+        add("tooltip.chimera.the_oath.2", "Right-click to read and decide.");
+        add("screen.chimera.the_oath.title", "The Oath");
+        add("screen.chimera.the_oath.message",
+                "I pledge to study life without causing it needless harm. This vow will shape how I work, and is not undone lightly. Do you accept?");
+        add("tooltip.chimera.the_biopedia.placeholder", "A record of what you have learned. (Under construction.)");
 
         // Potion of Stress (Hunt gate, Milestone 3) - MobEffect display name, plus the potion
         // item's name across all three container forms (Potion.getName() keys off the vanilla

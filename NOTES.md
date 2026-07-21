@@ -318,3 +318,32 @@ Running log of API gotchas, version quirks, and things that surprised us during 
   T>`, and a bare method reference for an immutable-empty-collection default (e.g. `Set::of`)
   is ambiguous between them - the compiler can't tell which shape you mean. Use an explicit
   lambda (`() -> Set.<T>of()`) to force the `Supplier` overload instead of a method reference.
+
+## Biopedia + The Oath, Milestone 2 (taking the Oath)
+
+- **A client-only class reference anywhere in a common item's bytecode crashes dedicated-server
+  loading outright - not just when the referencing branch executes.** `TheOathItem.use()`
+  originally opened `net.minecraft.client.gui.screens.ConfirmScreen` directly inside an
+  `if (level.isClientSide)` guard, on the (wrong) assumption that JVM bytecode verification is
+  lazy per-branch, so the server-side path would never need to resolve `Screen`/`ConfirmScreen`.
+  `./gradlew runServer` crashed immediately at mod registration time -
+  `RuntimeDistCleaner: Attempted to load class net/minecraft/client/gui/screens/Screen for
+  invalid dist DEDICATED_SERVER`. NeoForge's `RuntimeDistCleaner` verifies a class's *entire*
+  bytecode against dist restrictions the moment that class is loaded for any reason (here,
+  simply constructing `TheOathItem` during item registration, which happens on both sides) -
+  runtime `isClientSide` guards don't help, because the class fails to load before any branch
+  ever executes.
+  **Fix (the general pattern for "server-agnostic item triggers a client screen"):** the
+  common-sided class must have *zero* client-only symbols in its bytecode, full stop. Bridge via
+  a plain custom event (`OpenOathPromptEvent extends net.neoforged.bus.api.Event`, posted on
+  `NeoForge.EVENT_BUS` - no client types in its own signature either) from the common item, with
+  the actual `Minecraft`/`ConfirmScreen` code living entirely inside `ChimeraModClient`
+  (`@Mod(dist = Dist.CLIENT)`) as the event's only listener - that class is never loaded on a
+  dedicated server at all, by construction, so it's the one safe place for those references.
+  This session's own `./gradlew runServer` habit (a genuine dedicated-server classpath, not just
+  the integrated server inside `runClient`) caught this immediately - worth remembering as the
+  reason that smoke-test step exists, not just gene-pool-loading sanity.
+- `net.minecraft.client.gui.screens.ConfirmScreen` (vanilla) is a ready-made yes/no dialog -
+  `BooleanConsumer` callback, title `Component`, message `Component`, optional custom
+  yes/no button label components. No custom `Screen` subclass needed for a simple confirm
+  prompt.

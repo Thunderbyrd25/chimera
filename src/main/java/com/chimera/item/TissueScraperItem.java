@@ -10,6 +10,7 @@ import com.chimera.gene.GenePoolRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -38,6 +39,26 @@ public class TissueScraperItem extends Item {
     // adding a new mob (at any tier) never touches this class (CLAUDE.md architecture rule #1).
     protected int maxTier() {
         return 1;
+    }
+
+    // Biopedia+Oath work order Milestone 2: right-clicking air (no entity target) samples the
+    // player's own DNA. Only fires here since interactLivingEntity above already claims every
+    // entity-target right-click - this is purely the empty-air fallback.
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+        ItemStack stack = player.getItemInHand(usedHand);
+        if (level.isClientSide) {
+            return InteractionResultHolder.success(stack);
+        }
+
+        ItemStack sample = new ItemStack(ChimeraItems.SELF_TISSUE_SAMPLE.get());
+        sample.set(ChimeraDataComponents.SPECIES.get(), TissueSampleItem.PLAYER_SPECIES);
+        player.drop(sample, false);
+
+        EquipmentSlot slot = usedHand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
+        stack.hurtAndBreak(1, player, slot);
+
+        return InteractionResultHolder.success(stack);
     }
 
     @Override
@@ -88,18 +109,17 @@ public class TissueScraperItem extends Item {
         return InteractionResult.CONSUME;
     }
 
+    // Scraped materials drop on the ground rather than going straight to the player's
+    // inventory (explicit design call - makes the "you had to go pick this up" beat of
+    // harvesting visible instead of silent).
     private void giveSample(Player player, LivingEntity target) {
         ItemStack sample = new ItemStack(ChimeraItems.TISSUE_SAMPLE.get());
         sample.set(ChimeraDataComponents.SPECIES.get(), EntityType.getKey(target.getType()));
-        if (!player.getInventory().add(sample)) {
-            player.drop(sample, false);
-        }
+        player.drop(sample, false);
     }
 
     private void giveStressPlasma(Player player) {
         ItemStack plasma = new ItemStack(ChimeraItems.STRESS_PLASMA.get());
-        if (!player.getInventory().add(plasma)) {
-            player.drop(plasma, false);
-        }
+        player.drop(plasma, false);
     }
 }

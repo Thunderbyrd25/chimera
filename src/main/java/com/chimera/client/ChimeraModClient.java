@@ -11,9 +11,14 @@ import com.chimera.machine.GeneSequencerScreen;
 import com.chimera.machine.GenomeAnalyzerScreen;
 import com.chimera.machine.GenomeSplicerScreen;
 import com.chimera.network.GrassFedUsePayload;
+import com.chimera.network.OathResponsePayload;
+import com.chimera.network.OpenOathPromptEvent;
 import com.chimera.splice.SpliceCoreScreen;
 
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.ConfirmScreen;
+import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -34,6 +39,7 @@ public class ChimeraModClient {
         modEventBus.addListener(this::registerKeyMappings);
 
         NeoForge.EVENT_BUS.addListener(this::onClientTick);
+        NeoForge.EVENT_BUS.addListener(this::onOpenOathPrompt);
     }
 
     private void registerScreens(RegisterMenuScreensEvent event) {
@@ -54,5 +60,18 @@ public class ChimeraModClient {
         while (GRASS_FED_KEY.consumeClick()) {
             PacketDistributor.sendToServer(new GrassFedUsePayload());
         }
+    }
+
+    // Biopedia+Oath work order Milestone 2 - see OpenOathPromptEvent for why this indirection
+    // exists (TheOathItem itself must never reference Screen/ConfirmScreen/Minecraft).
+    private void onOpenOathPrompt(OpenOathPromptEvent event) {
+        Minecraft minecraft = Minecraft.getInstance();
+        minecraft.setScreen(new ConfirmScreen(
+                accepted -> {
+                    PacketDistributor.sendToServer(new OathResponsePayload(event.hand(), accepted));
+                    minecraft.setScreen(null);
+                },
+                Component.translatable("screen.chimera.the_oath.title"),
+                Component.translatable("screen.chimera.the_oath.message")));
     }
 }

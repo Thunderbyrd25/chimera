@@ -252,5 +252,22 @@ public class ChimeraRecipeProvider extends RecipeProvider {
                 .requires(ChimeraItems.REFINED_CULTURE.get())
                 .unlockedBy("has_yield_upgrade_2", has(ChimeraItems.YIELD_UPGRADE_2.get()))
                 .save(output);
+
+        // Biopedia+Oath work order Milestone 2: no "ritual" crafting pattern exists anywhere in
+        // this mod (Splice Core, Apex/Predator Scraper, Machine Upgrade Kit all use plain
+        // crafting-table recipes) - The Oath follows the same convention.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ChimeraItems.THE_OATH.get())
+                .requires(Items.BOOK)
+                .requires(ChimeraItems.SELF_TISSUE_SAMPLE.get())
+                .unlockedBy("has_self_tissue_sample", has(ChimeraItems.SELF_TISSUE_SAMPLE.get()))
+                .save(output);
+
+        // Also (re)craftable directly - the spec explicitly asks that losing the book not block
+        // progression.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ChimeraItems.THE_BIOPEDIA.get())
+                .requires(Items.BOOK)
+                .requires(ChimeraItems.REFINED_CULTURE.get())
+                .unlockedBy("has_refined_culture", has(ChimeraItems.REFINED_CULTURE.get()))
+                .save(output);
     }
 }

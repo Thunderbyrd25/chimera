@@ -56,6 +56,9 @@ public class ChimeraMod {
                         output.accept(ChimeraItems.APEX_TISSUE_SCRAPER.get());
                         output.accept(ChimeraItems.PREDATOR_TISSUE_SCRAPER.get());
                         output.accept(ChimeraItems.TISSUE_SAMPLE.get());
+                        output.accept(ChimeraItems.SELF_TISSUE_SAMPLE.get());
+                        output.accept(ChimeraItems.THE_OATH.get());
+                        output.accept(ChimeraItems.THE_BIOPEDIA.get());
                         output.accept(ChimeraItems.STRESS_PLASMA.get());
                         output.accept(ChimeraItems.COMBAT_STIMULANT.get());
                         output.accept(ChimeraItems.ADRENAL_EXTRACT.get());
