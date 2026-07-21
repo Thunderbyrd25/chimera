@@ -347,3 +347,68 @@ Running log of API gotchas, version quirks, and things that surprised us during 
   `BooleanConsumer` callback, title `Component`, message `Component`, optional custom
   yes/no button label components. No custom `Screen` subclass needed for a simple confirm
   prompt.
+
+## Biopedia + The Oath, Milestone 3 (the Biopedia)
+
+- **Book-GUI choice (logged per the spec's own instruction): reused vanilla
+  `net.minecraft.client.gui.screens.inventory.BookViewScreen`** rather than writing a custom
+  `Screen`. It takes a `BookAccess(List<Component>)` record - a bare data holder, not tied to
+  actual written-book NBT - so a fully dynamic catalog just means building one `Component` per
+  page and handing them to `new BookViewScreen(new BookViewScreen.BookAccess(pages))`. Comes
+  with page-turn buttons/sounds and the classic book texture for free. No reason to hand-roll
+  pagination for a read-only catalog.
+- **The `RuntimeDistCleaner` lesson from Milestone 2 generalizes past `if`-branches to lambdas
+  too.** `ChimeraPayloads.register()` is a *common* method (called on both sides via
+  `modEventBus.addListener(ChimeraPayloads::register)`), so its `playToClient` handler lambda
+  for `OpenBiopediaPayload` must not reference `Minecraft`/`BookViewScreen` either - Java lambdas
+  compile to synthetic methods *inside* the enclosing class, so a client-only reference there is
+  exactly as dangerous as one in a plain method body. Same fix, one hop further: the handler
+  posts a plain `OpenBiopediaScreenEvent` (no client types in its signature) on
+  `NeoForge.EVENT_BUS`; only `ChimeraModClient` listens to it and actually opens the screen.
+- **Resolved the discovery-write-hook question flagged in M1 and deferred again in M2.**
+  `AbstractMachineBlockEntity` still has no player reference during tick-based processing, so
+  the two write-hook sites are both in *Menus* instead, where a real `Player` always exists:
+  - Normal path: `SpliceCoreMenu.syncCassettesToCore()` (already "a single catch-all
+    interception point" per its own comment) - every installed cassette's traits get marked
+    discovered on every `broadcastChanges()`. Idempotent (`DISCOVERED_GENES` is a `Set`), so no
+    "is this actually new" diffing needed.
+  - Diligent study boon: `Slot#onTake(Player, ItemStack)` overridden on `GenomeAnalyzerMenu`'s
+    output slot (mirrors how `SpliceCoreMenu`'s cassette slots already override `mayPlace`) -
+    discovers a trait the moment it's taken from the Analyzer, without needing to also splice it
+    in. `Slot#onTake` is public, non-final, and already called by every `quickMoveStack` in this
+    codebase at the end of a successful transfer - the right general hook for "a player took X
+    out of this specific slot," not just a `GenomeAnalyzerMenu`-specific trick.
+- **`BuiltInRegistries.ENTITY_TYPE` being a `DefaultedRegistry` (see Milestone 2's "Pig" bug)
+  applies just as much when reverse-indexing gene pools for the catalog's mob list** -
+  `containsKey()` before `get()` again, same fix, different call site (`TheBiopediaItem`,
+  `ChimeraModClient`'s page builder).
+- `Slot#onTake` and the whole discovery/catalog design assume a `Player` is always reachable at
+  the actual moment of "using" a trait (splicing or studying) - deliberately never tried to
+  solve this from inside a `BlockEntity#tick()`, where there is no such guarantee.
+- **Found during hands-on verification: `quickMoveStack`'s own `slot.onTake(player, slotStack)`
+  call (present in every machine `Menu` in this codebase, inherited from the same template) was
+  passing the wrong `ItemStack`.** By the time that line runs, `slotStack` has already been
+  drained to empty by the preceding `moveItemStackTo(slotStack, ...)` call - data components
+  included, not just count. `result` (the `.copy()` taken *before* the move) is the one that
+  still has the real data. This went unnoticed for every existing `quickMoveStack` in the mod
+  because nothing previously overrode `onTake` in a way that read the taken stack's data - only
+  the diligent-study hook (this milestone) exposed it: normal single-item clicks worked (vanilla's
+  own `doClick` doesn't have this bug), shift-click silently never discovered anything. Fixed at
+  the one call site that matters (`GenomeAnalyzerMenu`), but worth checking `slot.onTake(player,
+  slotStack)` specifically (not `result`) if any *other* menu ever grows an `onTake` override
+  that needs the taken item's actual data.
+- **Star-scaling direction correction:** Bovine Vigor's slowness drawback was the one
+  deliberate "worsen" exception from Milestone 1 of the tier-2 work order (a power-gamble
+  framing, confirmed with the user at the time). Reversed per explicit new instruction: drawbacks
+  should ease at higher star by default, full stop - Bovine Vigor was the only remaining "worsen"
+  trait in the mod, so this removes the exception rather than adding another one.
+- **Pagination needed real font measurement, and even that needed a second pass.** An initial
+  attempt summed each paragraph's `Font#split(text, width).size()` separately against a
+  13-line/114px budget (matching `BookViewScreen`'s own protected `TEXT_WIDTH`/`TEXT_HEIGHT`
+  constants) - in practice one page came back visibly underfull while the very next page still
+  overflowed and got clipped. Fixed by (a) measuring the *actual combined candidate page* each
+  time a paragraph is tentatively added, rather than summing independent estimates, and (b)
+  backing off to a deliberately conservative 100px/10-line budget instead of trying to match
+  `BookViewScreen`'s real numbers exactly. Also split the long inert-notice paragraph into
+  individual sentences rather than one atomic block, so pagination has room to pack partial
+  content instead of being forced to move the whole notice to a fresh page.

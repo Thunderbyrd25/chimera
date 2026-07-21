@@ -19,7 +19,7 @@
         "amount": -0.03,
         "operation": "add_multiplied_base"
       },
-      "per_level_amount": -0.03,
+      "per_level_amount": 0.015,
       "drawback": true
     }
   ]

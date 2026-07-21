@@ -1,8 +1,13 @@
 package com.chimera.machine;
 
+import java.util.List;
+
 import com.chimera.ChimeraBlocks;
+import com.chimera.ChimeraDataComponents;
 import com.chimera.ChimeraItems;
 import com.chimera.ChimeraMenus;
+import com.chimera.gene.GeneInstance;
+import com.chimera.oath.OathEffects;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -46,7 +51,22 @@ public class GenomeAnalyzerMenu extends AbstractContainerMenu {
         this.hotbarEnd = playerInvEnd + 9;
 
         addSlot(new SlotItemHandler(blockEntity.getInventory(), GenomeAnalyzerBlockEntity.SLOT_INPUT, 44, 32));
-        addSlot(new SlotItemHandler(blockEntity.getInventory(), GenomeAnalyzerBlockEntity.SLOT_OUTPUT, 116, 32));
+        addSlot(new SlotItemHandler(blockEntity.getInventory(), GenomeAnalyzerBlockEntity.SLOT_OUTPUT, 116, 32) {
+            // Biopedia+Oath work order Milestone 3: diligent study boon - discover a trait as
+            // soon as it's studied (taken from the Analyzer), without needing to also splice it
+            // into a Splice Core (the normal discovery path - see SpliceCoreMenu).
+            @Override
+            public void onTake(Player player, ItemStack stack) {
+                if (OathEffects.diligentStudyActive(player)
+                        && Boolean.TRUE.equals(stack.get(ChimeraDataComponents.IDENTIFIED.get()))) {
+                    List<GeneInstance> traits = stack.get(ChimeraDataComponents.TRAITS.get());
+                    if (traits != null) {
+                        OathEffects.discoverGenes(player, traits.stream().map(GeneInstance::gene).toList());
+                    }
+                }
+                super.onTake(player, stack);
+            }
+        });
 
         addSlot(new SlotItemHandler(blockEntity.getFuelInventory(), 0, FUEL_X, FUEL_Y));
         for (int i = 0; i < upgradeSlotCount; i++) {
@@ -132,7 +152,15 @@ public class GenomeAnalyzerMenu extends AbstractContainerMenu {
             return ItemStack.EMPTY;
         }
 
-        slot.onTake(player, slotStack);
+        // result (a copy taken before the move above) is what onTake needs, not slotStack -
+        // moveItemStackTo drains slotStack down to empty in place (data components included),
+        // so by this point slotStack has already lost the very data our onTake override reads
+        // (IDENTIFIED/TRAITS). Confirmed via diagnostic logging: normal single-item clicks go
+        // through a different vanilla path that doesn't have this problem, which is why the
+        // diligent-study boon only triggered on drag-pickup, never on shift-click, before this
+        // fix - this quickMoveStack shape predates Milestone 3 and nothing needed the taken
+        // stack's data until now.
+        slot.onTake(player, result);
         return result;
     }
 }

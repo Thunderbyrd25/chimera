@@ -11,7 +11,7 @@
       "behavior_id": "arachnid_climb_frailty",
       "base_value": 30.0,
       "per_level_value": -15.0,
-      "description": "Takes %s%% more damage from poison and other magic effects",
+      "description": "Takes %s% more damage from poison and other magic effects",
       "drawback": true
     }
   ]

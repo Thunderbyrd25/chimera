@@ -43,4 +43,12 @@ public class GenePoolRegistry extends SimpleJsonResourceReloadListener {
                 ChimeraMod.MODID, speciesId.getNamespace() + "/" + speciesId.getPath());
         return pools.get(poolId);
     }
+
+    // Biopedia+Oath work order Milestone 3: for reverse-indexing "which mobs carry gene X" -
+    // keyed by pool id (chimera:<mob_namespace>/<mob_path>), not species id. Callers that need
+    // the species back out of a pool id should split its path on the first "/" (mirrors get()'s
+    // own construction the other direction).
+    public static Map<ResourceLocation, GenePool> getAll() {
+        return pools;
+    }
 }

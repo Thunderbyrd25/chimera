@@ -1,11 +1,16 @@
 package com.chimera.oath;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import com.chimera.ChimeraAttachments;
 import com.chimera.ChimeraItems;
 import com.chimera.ChimeraMod;
 import com.chimera.item.TheOathItem;
 import com.chimera.network.OathResponsePayload;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -53,11 +58,27 @@ public final class OathEffects {
                 player.getName().getString());
     }
 
-    // The boon's reusable gate (Milestone 2 builds this; the actual write-hook that reads it
-    // lands in Milestone 3, alongside the Biopedia that consumes DISCOVERED_GENES - see
-    // NOTES.md for why that's deferred rather than solved here).
+    // The boon's reusable gate, built in Milestone 2. Milestone 3 finally wires up both
+    // write-hook call sites (SpliceCoreMenu for the normal path, GenomeAnalyzerMenu's output
+    // slot for this boon specifically) - see discoverGenes below.
     public static boolean diligentStudyActive(Player player) {
         PlayerOathData data = player.getData(ChimeraAttachments.PLAYER_OATH_DATA.get());
         return data.hasOath() && !data.oathBroken();
+    }
+
+    // Biopedia+Oath work order Milestone 3: the shared discovery-write helper both hook sites
+    // call. DISCOVERED_GENES is a Set, so unioning in already-known ids is a harmless no-op -
+    // no "is this actually new" diffing needed at either call site.
+    public static void discoverGenes(Player player, Collection<ResourceLocation> geneIds) {
+        if (geneIds.isEmpty()) {
+            return;
+        }
+        Set<ResourceLocation> current = player.getData(ChimeraAttachments.DISCOVERED_GENES.get());
+        if (current.containsAll(geneIds)) {
+            return;
+        }
+        Set<ResourceLocation> updated = new HashSet<>(current);
+        updated.addAll(geneIds);
+        player.setData(ChimeraAttachments.DISCOVERED_GENES.get(), Set.copyOf(updated));
     }
 }

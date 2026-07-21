@@ -1,4 +1,8 @@
 {
+  "biopedia.chimera.inert_notice": "Trait sequenced successfully. Expression: null. The helix is complete, yet the behavior does not manifest. Hypothesis: this property is not encoded in the flesh. Further study inadvisable.",
+  "biopedia.chimera.mobs": "Found in: %s",
+  "biopedia.chimera.tier": "Tier %s",
+  "biopedia.chimera.unidentified": "??? UNIDENTIFIED",
   "block.chimera.bioreactor": "Bioreactor",
   "block.chimera.centrifuge": "Centrifuge",
   "block.chimera.gene_extractor": "Gene Extractor",
@@ -6,6 +10,7 @@
   "block.chimera.genome_analyzer": "Genome Analyzer",
   "block.chimera.genome_splicer": "Genome Splicer",
   "effect.chimera.stressed": "Stressed",
+  "gene.chimera.anima_trace": "Anima Trace",
   "gene.chimera.arachnid_climb": "Arachnid Climb",
   "gene.chimera.bovine_vigor": "Bovine Vigor",
   "gene.chimera.equine_gait": "Equine Gait",
@@ -66,7 +71,6 @@
   "tooltip.chimera.species": "Species: %s",
   "tooltip.chimera.species.player": "You",
   "tooltip.chimera.splice_core.slots": "%s / %s gene slots filled",
-  "tooltip.chimera.the_biopedia.placeholder": "A record of what you have learned. (Under construction.)",
   "tooltip.chimera.the_oath.1": "A pledge, written in your own hand: to study life without causing it needless harm.",
   "tooltip.chimera.the_oath.2": "Right-click to read and decide.",
   "tooltip.chimera.unidentified": "Unidentified"

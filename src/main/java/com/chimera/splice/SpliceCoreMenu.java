@@ -7,6 +7,8 @@ import java.util.Objects;
 import com.chimera.ChimeraDataComponents;
 import com.chimera.ChimeraItems;
 import com.chimera.ChimeraMenus;
+import com.chimera.gene.GeneInstance;
+import com.chimera.oath.OathEffects;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.InteractionHand;
@@ -102,7 +104,18 @@ public class SpliceCoreMenu extends AbstractContainerMenu {
 
         List<ItemStack> slotItems = new ArrayList<>(slotCount);
         for (int i = 0; i < slotCount; i++) {
-            slotItems.add(container.getItem(i));
+            ItemStack cassette = container.getItem(i);
+            slotItems.add(cassette);
+
+            // Biopedia+Oath work order Milestone 3: installing a cassette is "you used it, so
+            // now you know it" - the normal discovery path (independent of the Oath/diligent
+            // study boon, which discovers earlier at the Analyzer instead - see
+            // GenomeAnalyzerMenu). discoverGenes no-ops on already-known ids, so this being
+            // called every broadcastChanges() tick is harmless.
+            List<GeneInstance> traits = cassette.get(ChimeraDataComponents.TRAITS.get());
+            if (traits != null) {
+                OathEffects.discoverGenes(player, traits.stream().map(GeneInstance::gene).toList());
+            }
         }
         ItemContainerContents newContents = ItemContainerContents.fromItems(slotItems);
 

@@ -72,7 +72,16 @@ public class ChimeraLanguageProvider extends LanguageProvider {
         add("screen.chimera.the_oath.title", "The Oath");
         add("screen.chimera.the_oath.message",
                 "I pledge to study life without causing it needless harm. This vow will shape how I work, and is not undone lightly. Do you accept?");
-        add("tooltip.chimera.the_biopedia.placeholder", "A record of what you have learned. (Under construction.)");
+
+        // Biopedia+Oath work order Milestone 3 - the catalog itself. Undiscovered entries show
+        // only "biopedia.chimera.unidentified" + tier; discovered entries add mobs/upside/
+        // drawback lines built server-side (see TheBiopediaItem) and, for requires_anima genes,
+        // the inert notice (the spec's own foreshadowing wording, load-bearing narrative).
+        add("biopedia.chimera.unidentified", "??? UNIDENTIFIED");
+        add("biopedia.chimera.tier", "Tier %s");
+        add("biopedia.chimera.mobs", "Found in: %s");
+        add("biopedia.chimera.inert_notice",
+                "Trait sequenced successfully. Expression: null. The helix is complete, yet the behavior does not manifest. Hypothesis: this property is not encoded in the flesh. Further study inadvisable.");
 
         // Potion of Stress (Hunt gate, Milestone 3) - MobEffect display name, plus the potion
         // item's name across all three container forms (Potion.getName() keys off the vanilla
@@ -98,6 +107,7 @@ public class ChimeraLanguageProvider extends LanguageProvider {
         add("gene.chimera.ramming_charge", "Ramming Charge");
         add("gene.chimera.silent_step", "Silent Step");
         add("gene.chimera.venom_glands", "Venom Glands");
+        add("gene.chimera.anima_trace", "Anima Trace");
 
         add("key.categories.chimera", "Chimera");
         add("key.chimera.grass_fed", "Grass Fed Ability");

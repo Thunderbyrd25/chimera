@@ -3,6 +3,7 @@
   "genes": [
     { "gene": "chimera:bovine_vigor", "chance": 1.0, "star_weights": [70, 25, 5] },
     { "gene": "chimera:grass_fed", "chance": 1.0, "star_weights": [70, 25, 5] },
-    { "gene": "chimera:raging_bull", "chance": 1.0, "star_weights": [70, 25, 5] }
+    { "gene": "chimera:raging_bull", "chance": 1.0, "star_weights": [70, 25, 5] },
+    { "gene": "chimera:anima_trace", "chance": 1.0, "star_weights": [70, 25, 5] }
   ]
 }
