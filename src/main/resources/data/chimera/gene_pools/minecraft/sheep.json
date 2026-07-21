@@ -1,5 +1,6 @@
 {
   "tier": 1,
+  "specific_byproduct": "chimera:lanolin_concentrate",
   "genes": [
     { "gene": "chimera:thick_fleece", "chance": 1.0, "star_weights": [70, 25, 5] }
   ]

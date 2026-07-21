@@ -1,5 +1,6 @@
 {
   "tier": 2,
+  "specific_byproduct": "chimera:tendon_fiber",
   "genes": [
     { "gene": "chimera:equine_gait", "chance": 1.0, "star_weights": [50, 35, 15] }
   ]

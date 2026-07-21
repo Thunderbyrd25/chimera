@@ -1,5 +1,6 @@
 {
   "tier": 2,
+  "specific_byproduct": "chimera:horn_plate",
   "genes": [
     { "gene": "chimera:ramming_charge", "chance": 1.0, "star_weights": [70, 25, 5] }
   ]

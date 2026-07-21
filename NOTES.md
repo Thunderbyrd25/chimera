@@ -412,3 +412,56 @@ Running log of API gotchas, version quirks, and things that surprised us during 
   `BookViewScreen`'s real numbers exactly. Also split the long inert-notice paragraph into
   individual sentences rather than one atomic block, so pagination has room to pack partial
   content instead of being forced to move the whole notice to a fresh page.
+
+## Byproduct Economy, Milestone 1 (the item set + both acquisition points)
+
+- **Two byproduct tiers, discovered mid-design rather than built from scratch.** Initial research
+  mistook `GeneSequencerBlockEntity`'s existing `rollByproduct()` (a weighted roll among Mutagen/
+  Chromatin Strand/Cell Culture/Nucleotide Slurry, biased by `yieldBias()`) for plain fuel/
+  intermediate stock. It's actually the *generic* (mob-agnostic) byproduct axis, half-built
+  already. *Specific* (mob-unique) items were the actual net-new piece this milestone - 12 items,
+  one per mob with a real gene kit, added via a new optional `specific_byproduct` field on
+  `GenePool` (mirrors the existing `tier` field's codec pattern exactly).
+- **Both tiers now come from both acquisition points, per explicit user correction to the first
+  draft** (which only wired scraping). Sequencing (`GeneSequencerBlockEntity`) is the *reliable*
+  source - both its byproduct slots roll every cycle, same guarantee the generic slot already
+  had. Scraping (`TissueScraperItem`) is the *opportunistic* source - both rolls gated by
+  `bonusSampleChance()`, the same tier-escalating chance already used for bonus Tissue Samples,
+  which means the base scraper (0% bonus chance) yields no byproducts from scraping at all, only
+  Reinforced/Apex/Predator do. This required zero changes to the three tier subclasses - they
+  only override `bonusSampleChance()`/`maxTier()`, and this reuses `bonusSampleChance()` as-is.
+- **Extracted `rollByproduct()`'s weighted table into a shared `gene/ByproductRoller`** so both
+  `GeneSequencerBlockEntity` and `TissueScraperItem` call the same logic instead of duplicating
+  it - the sequencer passes its real `yieldBias()`, the scraper (a hand tool, no upgrade concept)
+  passes `0`.
+- **New GUI slot placement had a real collision to avoid.** The upgrade rail column sits at
+  `x=152`, with up to 3 slots stacked at `y=8/26/44` (`MAX_UPGRADE_SLOTS=3`), covering `y=7-61`
+  continuously - any new slot within ~18px of `x=152` collides with the rail at *any* y in that
+  band, not just where a rail slot happens to be, since the boxes are edge-to-edge. The original
+  placement (`140,47`, next to the existing byproduct slot) collided.
+- **Final layout, per your feedback after the first hands-on pass: both byproduct slots side by
+  side, centered as a pair under the output slot** (`116,17`, visual center `x=124`) rather than
+  stacked - `x=107`/`x=125` at `y=47`. Centering the pair meant the generic slot could no longer
+  stay at its original baked-in-texture position (`116,47`), so both slots are now drawn
+  dynamically (`MachineScreenUtil.drawSlotBox`, same treatment the fuel slot already got) instead
+  of relying on the background PNG - the old baked-in box was erased from
+  `gene_sequencer.png` (painted over with the background's own flat grey) to match. Worth
+  remembering for any future machine GUI edit: `GuiGraphics#fill`'s bottom-right bound turned out
+  to be inclusive in practice, not exclusive - erasing a slot's fill region at its "expected"
+  `x-1..x+17` bounds left a 1px border remnant until the erase rectangle was widened by one on
+  the right/bottom edge.
+- **The 12 new item textures reuse `cell_culture.png`'s exact silhouette/shading mask** (a simple
+  2-tone organic blob, extracted pixel-by-pixel via a PowerShell+GDI+ script), remapped to a
+  different light/dark color pair per item. Placeholder tier, consistent with the rest of the
+  mod's procedural art - shape variety wasn't worth the effort at this stage.
+- **Byproduct rates dialed down per user feedback after the first hands-on pass** - sequencing's
+  rolls were guaranteed every cycle and scraping reused `bonusSampleChance()` directly (55% for
+  Predator on both generic and specific, ~80% chance of at least one per scrape), which read as
+  "byproducts basically every time." Sequencing (`GeneSequencerBlockEntity`) now gates both rolls
+  behind their own flat chances - `GENERIC_BYPRODUCT_CHANCE = 0.5F`, `SPECIFIC_BYPRODUCT_CHANCE =
+  0.35F` - independent of `yieldBias()`, which still only affects *which* generic item you get,
+  not whether you get one. Scraping (`TissueScraperItem`) keeps scaling off `bonusSampleChance()`
+  (so the base scraper still yields nothing) but through a new `BYPRODUCT_CHANCE_MULTIPLIER =
+  0.4F` applied on top, rather than reusing that rate directly - decoupled instead of just
+  lowering `bonusSampleChance()` itself, so the bonus-Tissue-Sample rate stays untouched. Predator
+  now sits at 22% per roll (55% x 0.4) instead of 55%.

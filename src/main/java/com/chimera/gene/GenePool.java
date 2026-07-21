@@ -2,6 +2,7 @@ package com.chimera.gene;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -9,11 +10,15 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 
-public record GenePool(int tier, List<GenePool.Entry> genes) {
+// specificByproduct: byproduct-economy work order Milestone 1 - the mob-unique item scraping
+// and sequencing can yield alongside the generic byproduct roll. Optional since not every pool
+// has a kit yet (e.g. enderman.json, tier 3 placeholder with no byproduct assigned).
+public record GenePool(int tier, List<GenePool.Entry> genes, Optional<ResourceLocation> specificByproduct) {
 
     public static final Codec<GenePool> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("tier").forGetter(GenePool::tier),
-            Entry.CODEC.listOf().fieldOf("genes").forGetter(GenePool::genes)
+            Entry.CODEC.listOf().fieldOf("genes").forGetter(GenePool::genes),
+            ResourceLocation.CODEC.optionalFieldOf("specific_byproduct").forGetter(GenePool::specificByproduct)
     ).apply(instance, GenePool::new));
 
     // Every entry rolls independently (its own inclusion chance), not one exclusive pick among

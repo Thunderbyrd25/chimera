@@ -46,5 +46,17 @@ public class ChimeraItemModelProvider extends ItemModelProvider {
         basicItem(ChimeraItems.YIELD_UPGRADE_1.get());
         basicItem(ChimeraItems.YIELD_UPGRADE_2.get());
         basicItem(ChimeraItems.YIELD_UPGRADE_3.get());
+        basicItem(ChimeraItems.MARROW_EXTRACT.get());
+        basicItem(ChimeraItems.ADIPOSE_RESERVE.get());
+        basicItem(ChimeraItems.KERATIN_DOWN.get());
+        basicItem(ChimeraItems.LANOLIN_CONCENTRATE.get());
+        basicItem(ChimeraItems.TENDON_FIBER.get());
+        basicItem(ChimeraItems.HORN_PLATE.get());
+        basicItem(ChimeraItems.VESTIBULAR_GLAND.get());
+        basicItem(ChimeraItems.ADRENAL_MUSK_GLAND.get());
+        basicItem(ChimeraItems.NECROTIC_ICHOR.get());
+        basicItem(ChimeraItems.OSSEIN_POWDER.get());
+        basicItem(ChimeraItems.CHITIN_RESIN.get());
+        basicItem(ChimeraItems.VENOM_SAC.get());
     }
 }

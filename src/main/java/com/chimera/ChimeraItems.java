@@ -149,4 +149,44 @@ public class ChimeraItems {
 
     public static final DeferredItem<Item> YIELD_UPGRADE_3 = ITEMS.register("yield_upgrade_3",
             () -> new Item(new Item.Properties()));
+
+    // Byproduct economy work order Milestone 1: specific (mob-unique) byproducts, one per mob
+    // with a real gene kit - see each mob's gene_pools JSON "specific_byproduct" field and
+    // ByproductRoller for the generic (mob-agnostic) counterpart. Passive-mob items feed the
+    // future utility/husbandry sink (M2); hostile-mob items feed the future combat sink (M3).
+    public static final DeferredItem<Item> MARROW_EXTRACT = ITEMS.register("marrow_extract",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> ADIPOSE_RESERVE = ITEMS.register("adipose_reserve",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> KERATIN_DOWN = ITEMS.register("keratin_down",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> LANOLIN_CONCENTRATE = ITEMS.register("lanolin_concentrate",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> TENDON_FIBER = ITEMS.register("tendon_fiber",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> HORN_PLATE = ITEMS.register("horn_plate",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> VESTIBULAR_GLAND = ITEMS.register("vestibular_gland",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> ADRENAL_MUSK_GLAND = ITEMS.register("adrenal_musk_gland",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> NECROTIC_ICHOR = ITEMS.register("necrotic_ichor",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> OSSEIN_POWDER = ITEMS.register("ossein_powder",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> CHITIN_RESIN = ITEMS.register("chitin_resin",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> VENOM_SAC = ITEMS.register("venom_sac",
+            () -> new Item(new Item.Properties()));
 }

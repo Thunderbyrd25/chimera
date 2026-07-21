@@ -15,12 +15,21 @@ import net.neoforged.neoforge.items.SlotItemHandler;
 
 public class GeneSequencerMenu extends AbstractContainerMenu {
 
-    // Below the input slot, left side, on the same row as the byproduct output slot (116,47) -
-    // decoupled from the upgrade rail entirely.
+    // Below the input slot, left side - decoupled from the upgrade rail entirely.
     static final int FUEL_X = 44;
     static final int FUEL_Y = 47;
 
-    private static final int MAIN_SLOT_COUNT = 3;
+    // The two byproduct slots sit side by side, centered as a pair under the output slot above
+    // (116,17, visual center x=124) rather than stacked - both drawn dynamically (see
+    // GeneSequencerScreen) since centering them meant moving off the output slot's own baked-in
+    // column, and the old byproduct slot's baked-in background box was erased to match.
+    static final int BYPRODUCT_GENERIC_X = 107;
+    static final int BYPRODUCT_SPECIFIC_X = 125;
+    static final int BYPRODUCT_Y = 47;
+
+    // Byproduct-economy work order Milestone 1: was 3 (input/output/generic byproduct), now 4
+    // with the specific byproduct slot alongside it.
+    private static final int MAIN_SLOT_COUNT = 4;
 
     private final int fuelSlot;
     private final int upgradeSlotCount;
@@ -46,7 +55,8 @@ public class GeneSequencerMenu extends AbstractContainerMenu {
 
         addSlot(new SlotItemHandler(blockEntity.getInventory(), GeneSequencerBlockEntity.SLOT_INPUT, 44, 17));
         addSlot(new SlotItemHandler(blockEntity.getInventory(), GeneSequencerBlockEntity.SLOT_OUTPUT, 116, 17));
-        addSlot(new SlotItemHandler(blockEntity.getInventory(), GeneSequencerBlockEntity.SLOT_BYPRODUCT, 116, 47));
+        addSlot(new SlotItemHandler(blockEntity.getInventory(), GeneSequencerBlockEntity.SLOT_BYPRODUCT_GENERIC, BYPRODUCT_GENERIC_X, BYPRODUCT_Y));
+        addSlot(new SlotItemHandler(blockEntity.getInventory(), GeneSequencerBlockEntity.SLOT_BYPRODUCT_SPECIFIC, BYPRODUCT_SPECIFIC_X, BYPRODUCT_Y));
 
         addSlot(new SlotItemHandler(blockEntity.getFuelInventory(), 0, FUEL_X, FUEL_Y));
         for (int i = 0; i < upgradeSlotCount; i++) {

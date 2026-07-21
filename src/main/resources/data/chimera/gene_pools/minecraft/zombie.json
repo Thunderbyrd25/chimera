@@ -1,5 +1,6 @@
 {
   "tier": 2,
+  "specific_byproduct": "chimera:necrotic_ichor",
   "genes": [
     { "gene": "chimera:undying_hunger", "chance": 1.0, "star_weights": [70, 25, 5] }
   ]

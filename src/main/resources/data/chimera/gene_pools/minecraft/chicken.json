@@ -1,5 +1,6 @@
 {
   "tier": 1,
+  "specific_byproduct": "chimera:keratin_down",
   "genes": [
     { "gene": "chimera:hollow_bones", "chance": 1.0, "star_weights": [70, 25, 5] }
   ]

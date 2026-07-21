@@ -48,6 +48,18 @@ public class ChimeraLanguageProvider extends LanguageProvider {
         addItem(ChimeraItems.YIELD_UPGRADE_1, "Yield Upgrade I");
         addItem(ChimeraItems.YIELD_UPGRADE_2, "Yield Upgrade II");
         addItem(ChimeraItems.YIELD_UPGRADE_3, "Yield Upgrade III");
+        addItem(ChimeraItems.MARROW_EXTRACT, "Marrow Extract");
+        addItem(ChimeraItems.ADIPOSE_RESERVE, "Adipose Reserve");
+        addItem(ChimeraItems.KERATIN_DOWN, "Keratin Down");
+        addItem(ChimeraItems.LANOLIN_CONCENTRATE, "Lanolin Concentrate");
+        addItem(ChimeraItems.TENDON_FIBER, "Tendon Fiber");
+        addItem(ChimeraItems.HORN_PLATE, "Horn Plate");
+        addItem(ChimeraItems.VESTIBULAR_GLAND, "Vestibular Gland");
+        addItem(ChimeraItems.ADRENAL_MUSK_GLAND, "Adrenal Musk Gland");
+        addItem(ChimeraItems.NECROTIC_ICHOR, "Necrotic Ichor");
+        addItem(ChimeraItems.OSSEIN_POWDER, "Ossein Powder");
+        addItem(ChimeraItems.CHITIN_RESIN, "Chitin Resin");
+        addItem(ChimeraItems.VENOM_SAC, "Venom Sac");
 
         addBlock(ChimeraBlocks.GENE_SEQUENCER, "Gene Sequencer");
         addBlock(ChimeraBlocks.GENOME_ANALYZER, "Genome Analyzer");

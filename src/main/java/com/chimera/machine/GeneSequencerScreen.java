@@ -32,6 +32,12 @@ public class GeneSequencerScreen extends AbstractContainerScreen<GeneSequencerMe
 
         MachineScreenUtil.drawProgressBar(guiGraphics, leftPos + 76, topPos + 38, 24, 4, menu.getProgress(), menu.getMaxProgress(), 0xFF63C43A);
         MachineScreenUtil.drawSlotBox(guiGraphics, leftPos + GeneSequencerMenu.FUEL_X, topPos + GeneSequencerMenu.FUEL_Y);
+        // Byproduct economy work order Milestone 1: both byproduct slot outlines are drawn
+        // dynamically (like the fuel slot always has been) rather than baked into the background
+        // PNG, since centering them as a pair under the output slot moved them off the old
+        // baked-in position - the old baked box was erased from the texture to match.
+        MachineScreenUtil.drawSlotBox(guiGraphics, leftPos + GeneSequencerMenu.BYPRODUCT_GENERIC_X, topPos + GeneSequencerMenu.BYPRODUCT_Y);
+        MachineScreenUtil.drawSlotBox(guiGraphics, leftPos + GeneSequencerMenu.BYPRODUCT_SPECIFIC_X, topPos + GeneSequencerMenu.BYPRODUCT_Y);
         MachineScreenUtil.drawUpgradeRail(guiGraphics, leftPos, topPos, menu.getUpgradeSlotCount());
     }
 }

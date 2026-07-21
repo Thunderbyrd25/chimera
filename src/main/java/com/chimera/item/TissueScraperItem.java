@@ -4,10 +4,13 @@ import com.chimera.ChimeraAttachments;
 import com.chimera.ChimeraDataComponents;
 import com.chimera.ChimeraItems;
 import com.chimera.ChimeraMobEffects;
+import com.chimera.gene.ByproductRoller;
 import com.chimera.gene.GenePool;
 import com.chimera.gene.GenePoolRegistry;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -93,6 +96,7 @@ public class TissueScraperItem extends Item {
             if (level.random.nextFloat() < bonusSampleChance()) {
                 giveSample(player, interactionTarget);
             }
+            giveByproducts(player, pool);
         }
         if (stressed) {
             giveStressPlasma(player);
@@ -121,5 +125,29 @@ public class TissueScraperItem extends Item {
     private void giveStressPlasma(Player player) {
         ItemStack plasma = new ItemStack(ChimeraItems.STRESS_PLASMA.get());
         player.drop(plasma, false);
+    }
+
+    // Byproduct economy work order Milestone 1: opportunistic source, unlike sequencing's rolls.
+    // Scales off bonusSampleChance() (so the base scraper, 0% bonus chance, still never yields
+    // byproducts from scraping alone, only Reinforced/Apex/Predator do) but dialed well below it
+    // via BYPRODUCT_CHANCE_MULTIPLIER - a flat reuse of bonusSampleChance() felt too generous at
+    // Predator tier per user feedback after the first hands-on pass. Decoupled from
+    // bonusSampleChance() itself (rather than lowering that) so the bonus-Tissue-Sample rate is
+    // untouched - this only tunes byproducts.
+    private static final float BYPRODUCT_CHANCE_MULTIPLIER = 0.4F;
+
+    private float byproductChance() {
+        return bonusSampleChance() * BYPRODUCT_CHANCE_MULTIPLIER;
+    }
+
+    private void giveByproducts(Player player, GenePool pool) {
+        Level level = player.level();
+        if (level.random.nextFloat() < byproductChance()) {
+            player.drop(ByproductRoller.rollGeneric(level.random, 0), false);
+        }
+        if (level.random.nextFloat() < byproductChance() && pool.specificByproduct().isPresent()) {
+            ResourceLocation byproductId = pool.specificByproduct().get();
+            player.drop(new ItemStack(BuiltInRegistries.ITEM.get(byproductId)), false);
+        }
     }
 }

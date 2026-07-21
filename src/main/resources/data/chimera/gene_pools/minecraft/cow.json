@@ -1,5 +1,6 @@
 {
   "tier": 1,
+  "specific_byproduct": "chimera:marrow_extract",
   "genes": [
     { "gene": "chimera:bovine_vigor", "chance": 1.0, "star_weights": [70, 25, 5] },
     { "gene": "chimera:grass_fed", "chance": 1.0, "star_weights": [70, 25, 5] },
