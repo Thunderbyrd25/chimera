@@ -81,6 +81,7 @@ public class ChimeraMod {
                         output.accept(ChimeraItems.CENTRIFUGE.get());
                         output.accept(ChimeraItems.GENOME_SPLICER.get());
                         output.accept(ChimeraItems.BIOREACTOR.get());
+                        output.accept(ChimeraItems.SYNTHESIZER.get());
                         output.accept(ChimeraItems.MACHINE_UPGRADE_KIT.get());
                         output.accept(ChimeraItems.SPEED_UPGRADE_1.get());
                         output.accept(ChimeraItems.SPEED_UPGRADE_2.get());
@@ -88,6 +89,11 @@ public class ChimeraMod {
                         output.accept(ChimeraItems.YIELD_UPGRADE_1.get());
                         output.accept(ChimeraItems.YIELD_UPGRADE_2.get());
                         output.accept(ChimeraItems.YIELD_UPGRADE_3.get());
+                        output.accept(ChimeraItems.LEATHER_SCRAP.get());
+                        output.accept(ChimeraItems.BEEF_SCRAP.get());
+                        output.accept(ChimeraItems.PORK_SCRAP.get());
+                        output.accept(ChimeraItems.CHICKEN_SCRAP.get());
+                        output.accept(ChimeraItems.MUTTON_SCRAP.get());
                     }).build());
 
     public ChimeraMod(IEventBus modEventBus, ModContainer modContainer) {
@@ -116,6 +122,8 @@ public class ChimeraMod {
             event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ChimeraBlockEntities.GENOME_SPLICER.get(),
                     (blockEntity, side) -> blockEntity.getInventory());
             event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ChimeraBlockEntities.BIOREACTOR.get(),
+                    (blockEntity, side) -> blockEntity.getInventory());
+            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ChimeraBlockEntities.SYNTHESIZER.get(),
                     (blockEntity, side) -> blockEntity.getInventory());
         });
 

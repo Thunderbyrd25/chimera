@@ -21,5 +21,6 @@ public class ChimeraBlockStateProvider extends BlockStateProvider {
         simpleBlockWithItem(ChimeraBlocks.CENTRIFUGE.get(), cubeAll(ChimeraBlocks.CENTRIFUGE.get()));
         simpleBlockWithItem(ChimeraBlocks.GENOME_SPLICER.get(), cubeAll(ChimeraBlocks.GENOME_SPLICER.get()));
         simpleBlockWithItem(ChimeraBlocks.BIOREACTOR.get(), cubeAll(ChimeraBlocks.BIOREACTOR.get()));
+        simpleBlockWithItem(ChimeraBlocks.SYNTHESIZER.get(), cubeAll(ChimeraBlocks.SYNTHESIZER.get()));
     }
 }

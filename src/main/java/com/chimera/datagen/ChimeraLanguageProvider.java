@@ -60,6 +60,11 @@ public class ChimeraLanguageProvider extends LanguageProvider {
         addItem(ChimeraItems.OSSEIN_POWDER, "Ossein Powder");
         addItem(ChimeraItems.CHITIN_RESIN, "Chitin Resin");
         addItem(ChimeraItems.VENOM_SAC, "Venom Sac");
+        addItem(ChimeraItems.LEATHER_SCRAP, "Leather Scrap");
+        addItem(ChimeraItems.BEEF_SCRAP, "Beef Scrap");
+        addItem(ChimeraItems.PORK_SCRAP, "Pork Scrap");
+        addItem(ChimeraItems.CHICKEN_SCRAP, "Chicken Scrap");
+        addItem(ChimeraItems.MUTTON_SCRAP, "Mutton Scrap");
 
         addBlock(ChimeraBlocks.GENE_SEQUENCER, "Gene Sequencer");
         addBlock(ChimeraBlocks.GENOME_ANALYZER, "Genome Analyzer");
@@ -67,6 +72,7 @@ public class ChimeraLanguageProvider extends LanguageProvider {
         addBlock(ChimeraBlocks.CENTRIFUGE, "Centrifuge");
         addBlock(ChimeraBlocks.GENOME_SPLICER, "Genome Splicer");
         addBlock(ChimeraBlocks.BIOREACTOR, "Bioreactor");
+        addBlock(ChimeraBlocks.SYNTHESIZER, "Synthesizer");
 
         add("tooltip.chimera.species", "Species: %s");
         add("tooltip.chimera.species.player", "You");

@@ -465,3 +465,61 @@ Running log of API gotchas, version quirks, and things that surprised us during 
   0.4F` applied on top, rather than reusing that rate directly - decoupled instead of just
   lowering `bonusSampleChance()` itself, so the bonus-Tissue-Sample rate stays untouched. Predator
   now sits at 22% per roll (55% x 0.4) instead of 55%.
+
+## Byproduct Economy, Milestone 2a (material synthesis - the Synthesizer)
+
+- **A crafted-potion draft for the passive-byproduct sink was rejected as too generic** - per
+  user feedback, replaced with "synthesizing resources" (their own framing): the 5 domesticated-
+  mob byproducts (Marrow Extract/Adipose Reserve/Keratin Down/Lanolin Concentrate/Tendon Fiber)
+  turn into real vanilla materials instead, "the science route to farming." Goat/Fox/Wolf's
+  byproducts are deferred to a separate Milestone 2b as Curios trinkets/tools - a genuinely
+  different mechanic (equippable passives vs. a machine), not worth cramming into one milestone.
+- **Chance-based synthesis needed a real machine, not a crafting recipe** - the user's own
+  example (synthesizing a cow sometimes gives Leather, sometimes Beef) can't be expressed as a
+  plain vanilla recipe (fixed output only). New machine, the **Synthesizer** - seventh machine,
+  built on the same `AbstractMachineBlockEntity` base as the other six, fueled by Biomass (no new
+  fuel type - confirmed directly with the user rather than assumed, since a bespoke fuel would
+  have undone the "one universal fuel" rule from the v0.2 work order).
+- **Two-stage nugget-style balancing, per explicit user request** - the Synthesizer doesn't
+  output the real material directly; it rolls a "Scrap" item (`leather_scrap`/`beef_scrap`/
+  `pork_scrap`/`chicken_scrap`/`mutton_scrap`), and a *separate* ordinary crafting recipe
+  assembles 4 Scraps into the real thing. Already-granular vanilla items (Feather, String) skip
+  the Scrap tier entirely and come straight out of the machine - gating those further would just
+  be busywork, not balance.
+- **`GenePool` extended a second time** (see Milestone 1's `specificByproduct`) with
+  `synthesisOutputs` (a new nested `SynthesisOutput(item, weight)` record) and
+  `rollSynthesisOutput()`, a cumulative-weight pick mirroring the existing `rollStarLevel` logic
+  almost exactly - reusing an established pattern rather than inventing a new one. Defaults to an
+  empty list (`optionalFieldOf("synthesis_outputs", List.of())`), so the 8 mobs without one
+  (goat/fox/wolf, all hostiles, enderman) need no JSON change at all.
+- **The Synthesizer resolves "which mob does this byproduct belong to" by reverse-indexing
+  `GenePoolRegistry.getAll()`**, comparing each pool's `specificByproduct()` against the input
+  stack's registry id - the same reverse-lookup shape `TheBiopediaItem` already uses for "which
+  mobs carry gene X" (Biopedia Milestone 3). No new registry needed.
+- **Known, accepted edge case**: `canProcess()` pre-checks room using only the *first* of a
+  pool's synthesis candidates as a representative probe (the real output isn't known until the
+  roll in `process()`). For the three 2-candidate pools (cow/chicken/sheep), if the output slot
+  already holds a full/mismatched stack of the *other* candidate, the pre-check can pass but the
+  roll then silently fails to insert - input and fuel are still spent that cycle. Not engineered
+  around; matches this codebase's own existing stance on bonus-roll misses
+  (`GeneSequencerBlockEntity`'s byproduct comment says the same thing).
+- **Confirmed Gene Extractor's own "No fuel." comment is stale documentation, not current
+  behavior** - every one of the six existing machines requires Biomass via the shared
+  `AbstractMachineBlockEntity.hasFuel()`/`tick()` gate (confirmed by reading its Menu, which does
+  wire a real fuel slot bound to `getFuelInventory()`), and the v0.2 changelog already says so
+  explicitly ("universal fuel across all six machines"). The comment just never got updated when
+  Biomass became universal - harmless, but worth remembering if that file is touched again.
+- **Recipe category note**: used `RecipeCategory.FOOD` for the Beef/Porkchop/Chicken/Mutton
+  assembly recipes and `RecipeCategory.MISC` for Leather - no prior example of `FOOD` in this
+  mod's own recipe provider, but it's a standard vanilla category, used the same way vanilla's
+  own food recipes do.
+- **Found during hands-on verification: shift-clicking Biomass (or a byproduct) from the player
+  inventory did nothing.** `SynthesizerMenu.quickMoveStack` was written from the fueled-menu
+  template but the item-type routing branches (the `slotStack.is(...)` checks every other machine
+  menu uses to route a shift-clicked item into its correct machine slot, not just shuffle it
+  within the player's own inventory/hotbar) were dropped in the process. Fixed by adding both
+  back: Biomass routes to the fuel slot, and any item `SynthesizerBlockEntity.findSynthesisPool()`
+  recognizes routes to `SLOT_INPUT` - reusing that reverse-lookup instead of duplicating an item
+  list, so a future byproduct only needs a `synthesis_outputs` JSON entry to also shift-click
+  correctly, no Menu change required. Worth a mental checklist item for any *future* new machine
+  menu: don't drop the per-item routing branches when adapting an existing menu as a template.

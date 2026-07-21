@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "chimera:chicken_scrap"
+    },
+    {
+      "item": "chimera:chicken_scrap"
+    },
+    {
+      "item": "chimera:chicken_scrap"
+    },
+    {
+      "item": "chimera:chicken_scrap"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:chicken"
+  }
+}

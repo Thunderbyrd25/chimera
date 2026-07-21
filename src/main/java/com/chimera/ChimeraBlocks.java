@@ -6,6 +6,7 @@ import com.chimera.machine.GeneExtractorBlock;
 import com.chimera.machine.GeneSequencerBlock;
 import com.chimera.machine.GenomeAnalyzerBlock;
 import com.chimera.machine.GenomeSplicerBlock;
+import com.chimera.machine.SynthesizerBlock;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -34,4 +35,7 @@ public class ChimeraBlocks {
 
     public static final DeferredBlock<Block> BIOREACTOR = BLOCKS.register("bioreactor",
             () -> new BioreactorBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.5F).requiresCorrectToolForDrops()));
+
+    public static final DeferredBlock<Block> SYNTHESIZER = BLOCKS.register("synthesizer",
+            () -> new SynthesizerBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.5F).requiresCorrectToolForDrops()));
 }

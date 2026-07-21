@@ -12,6 +12,8 @@ import com.chimera.machine.GenomeAnalyzerBlockEntity;
 import com.chimera.machine.GenomeAnalyzerMenu;
 import com.chimera.machine.GenomeSplicerBlockEntity;
 import com.chimera.machine.GenomeSplicerMenu;
+import com.chimera.machine.SynthesizerBlockEntity;
+import com.chimera.machine.SynthesizerMenu;
 import com.chimera.item.SpliceCoreItem;
 import com.chimera.splice.SpliceCoreMenu;
 
@@ -63,6 +65,12 @@ public class ChimeraMenus {
             MENU_TYPES.register("bioreactor", () -> new MenuType<>((IContainerFactory<BioreactorMenu>) (containerId, inventory, buf) -> {
                 BioreactorBlockEntity blockEntity = (BioreactorBlockEntity) inventory.player.level().getBlockEntity(buf.readBlockPos());
                 return new BioreactorMenu(containerId, inventory, blockEntity, buf.readVarInt());
+            }, FeatureFlags.VANILLA_SET));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<SynthesizerMenu>> SYNTHESIZER =
+            MENU_TYPES.register("synthesizer", () -> new MenuType<>((IContainerFactory<SynthesizerMenu>) (containerId, inventory, buf) -> {
+                SynthesizerBlockEntity blockEntity = (SynthesizerBlockEntity) inventory.player.level().getBlockEntity(buf.readBlockPos());
+                return new SynthesizerMenu(containerId, inventory, blockEntity, buf.readVarInt());
             }, FeatureFlags.VANILLA_SET));
 
     public static final DeferredHolder<MenuType<?>, MenuType<SpliceCoreMenu>> SPLICE_CORE =

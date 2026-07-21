@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "chimera:mutton_scrap"
+    },
+    {
+      "item": "chimera:mutton_scrap"
+    },
+    {
+      "item": "chimera:mutton_scrap"
+    },
+    {
+      "item": "chimera:mutton_scrap"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:mutton"
+  }
+}

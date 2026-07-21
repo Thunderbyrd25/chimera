@@ -30,6 +30,10 @@ public class ChimeraItems {
 
     public static final DeferredItem<BlockItem> BIOREACTOR = ITEMS.registerSimpleBlockItem(ChimeraBlocks.BIOREACTOR);
 
+    // Byproduct economy work order Milestone 2a: synthesizes a mob's specific byproduct into a
+    // real vanilla material - see SynthesizerBlockEntity.
+    public static final DeferredItem<BlockItem> SYNTHESIZER = ITEMS.registerSimpleBlockItem(ChimeraBlocks.SYNTHESIZER);
+
     public static final DeferredItem<Item> TISSUE_SCRAPER = ITEMS.register("tissue_scraper",
             () -> new TissueScraperItem(new Item.Properties().durability(32)));
 
@@ -188,5 +192,24 @@ public class ChimeraItems {
             () -> new Item(new Item.Properties()));
 
     public static final DeferredItem<Item> VENOM_SAC = ITEMS.register("venom_sac",
+            () -> new Item(new Item.Properties()));
+
+    // Byproduct economy work order Milestone 2a: chance-rolled Synthesizer output for the
+    // "chunky" vanilla materials (Leather/Beef/Porkchop/Chicken/Mutton) - assembled 4-to-1 via
+    // crafting recipes (see ChimeraRecipeProvider). Small already-granular vanilla items
+    // (Feather, String) skip this tier entirely and come out of the Synthesizer directly.
+    public static final DeferredItem<Item> LEATHER_SCRAP = ITEMS.register("leather_scrap",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> BEEF_SCRAP = ITEMS.register("beef_scrap",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> PORK_SCRAP = ITEMS.register("pork_scrap",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> CHICKEN_SCRAP = ITEMS.register("chicken_scrap",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> MUTTON_SCRAP = ITEMS.register("mutton_scrap",
             () -> new Item(new Item.Properties()));
 }

@@ -1,6 +1,9 @@
 {
   "tier": 1,
   "specific_byproduct": "chimera:adipose_reserve",
+  "synthesis_outputs": [
+    { "item": "chimera:pork_scrap", "weight": 1 }
+  ],
   "genes": [
     { "gene": "chimera:ruminant_gut", "chance": 1.0, "star_weights": [70, 25, 5] }
   ]

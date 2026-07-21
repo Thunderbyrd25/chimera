@@ -6,6 +6,7 @@ import com.chimera.machine.GeneExtractorBlockEntity;
 import com.chimera.machine.GeneSequencerBlockEntity;
 import com.chimera.machine.GenomeAnalyzerBlockEntity;
 import com.chimera.machine.GenomeSplicerBlockEntity;
+import com.chimera.machine.SynthesizerBlockEntity;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -40,4 +41,8 @@ public class ChimeraBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BioreactorBlockEntity>> BIOREACTOR =
             BLOCK_ENTITY_TYPES.register("bioreactor", () -> BlockEntityType.Builder.of(
                     BioreactorBlockEntity::new, ChimeraBlocks.BIOREACTOR.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SynthesizerBlockEntity>> SYNTHESIZER =
+            BLOCK_ENTITY_TYPES.register("synthesizer", () -> BlockEntityType.Builder.of(
+                    SynthesizerBlockEntity::new, ChimeraBlocks.SYNTHESIZER.get()).build(null));
 }

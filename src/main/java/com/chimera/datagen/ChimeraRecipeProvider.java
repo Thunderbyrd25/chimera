@@ -269,5 +269,61 @@ public class ChimeraRecipeProvider extends RecipeProvider {
                 .requires(ChimeraItems.REFINED_CULTURE.get())
                 .unlockedBy("has_refined_culture", has(ChimeraItems.REFINED_CULTURE.get()))
                 .save(output);
+
+        // Byproduct economy work order Milestone 2a: the Synthesizer, tied to its own fuel
+        // (Biomass) in its own recipe, mirroring the Gene Sequencer's iron-frame shape.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ChimeraItems.SYNTHESIZER.get())
+                .pattern("III")
+                .pattern("IBI")
+                .pattern("IRI")
+                .define('I', Items.IRON_INGOT)
+                .define('B', ChimeraItems.BIOMASS.get())
+                .define('R', Items.REDSTONE)
+                .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
+                .save(output);
+
+        // Synthesizer Scrap assembly - the "chunky" vanilla materials are gated behind 4 chance-
+        // rolled Scraps rather than coming straight out of the machine, so scraping/sequencing
+        // isn't just a strictly-easier replacement for farming. Feather/String skip this tier
+        // entirely (see GenePool.synthesisOutputs on chicken.json/sheep.json).
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.LEATHER)
+                .requires(ChimeraItems.LEATHER_SCRAP.get())
+                .requires(ChimeraItems.LEATHER_SCRAP.get())
+                .requires(ChimeraItems.LEATHER_SCRAP.get())
+                .requires(ChimeraItems.LEATHER_SCRAP.get())
+                .unlockedBy("has_leather_scrap", has(ChimeraItems.LEATHER_SCRAP.get()))
+                .save(output);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, Items.BEEF)
+                .requires(ChimeraItems.BEEF_SCRAP.get())
+                .requires(ChimeraItems.BEEF_SCRAP.get())
+                .requires(ChimeraItems.BEEF_SCRAP.get())
+                .requires(ChimeraItems.BEEF_SCRAP.get())
+                .unlockedBy("has_beef_scrap", has(ChimeraItems.BEEF_SCRAP.get()))
+                .save(output);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, Items.PORKCHOP)
+                .requires(ChimeraItems.PORK_SCRAP.get())
+                .requires(ChimeraItems.PORK_SCRAP.get())
+                .requires(ChimeraItems.PORK_SCRAP.get())
+                .requires(ChimeraItems.PORK_SCRAP.get())
+                .unlockedBy("has_pork_scrap", has(ChimeraItems.PORK_SCRAP.get()))
+                .save(output);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, Items.CHICKEN)
+                .requires(ChimeraItems.CHICKEN_SCRAP.get())
+                .requires(ChimeraItems.CHICKEN_SCRAP.get())
+                .requires(ChimeraItems.CHICKEN_SCRAP.get())
+                .requires(ChimeraItems.CHICKEN_SCRAP.get())
+                .unlockedBy("has_chicken_scrap", has(ChimeraItems.CHICKEN_SCRAP.get()))
+                .save(output);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, Items.MUTTON)
+                .requires(ChimeraItems.MUTTON_SCRAP.get())
+                .requires(ChimeraItems.MUTTON_SCRAP.get())
+                .requires(ChimeraItems.MUTTON_SCRAP.get())
+                .requires(ChimeraItems.MUTTON_SCRAP.get())
+                .unlockedBy("has_mutton_scrap", has(ChimeraItems.MUTTON_SCRAP.get()))
+                .save(output);
     }
 }

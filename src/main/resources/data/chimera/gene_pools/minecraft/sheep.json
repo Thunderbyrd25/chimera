@@ -1,6 +1,10 @@
 {
   "tier": 1,
   "specific_byproduct": "chimera:lanolin_concentrate",
+  "synthesis_outputs": [
+    { "item": "minecraft:string", "weight": 1 },
+    { "item": "chimera:mutton_scrap", "weight": 1 }
+  ],
   "genes": [
     { "gene": "chimera:thick_fleece", "chance": 1.0, "star_weights": [70, 25, 5] }
   ]
