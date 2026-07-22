@@ -1,5 +1,6 @@
 package com.chimera;
 
+import com.chimera.item.AdrenalineDraughtItem;
 import com.chimera.item.ApexTissueScraperItem;
 import com.chimera.item.GeneCassetteItem;
 import com.chimera.item.PredatorTissueScraperItem;
@@ -212,4 +213,16 @@ public class ChimeraItems {
 
     public static final DeferredItem<Item> MUTTON_SCRAP = ITEMS.register("mutton_scrap",
             () -> new Item(new Item.Properties()));
+
+    // Byproduct economy work order Milestone 2b: Curios trinkets from the goat/fox byproducts
+    // (plain Items - all Curios-specific behavior lives in curios/ChimeraCuriosCompat, see its
+    // own comment for why) and a bonemeal-style husbandry tool from the wolf byproduct.
+    public static final DeferredItem<Item> HORN_PLATE_CHARM = ITEMS.register("horn_plate_charm",
+            () -> new Item(new Item.Properties().stacksTo(1)));
+
+    public static final DeferredItem<Item> VESTIBULAR_CHARM = ITEMS.register("vestibular_charm",
+            () -> new Item(new Item.Properties().stacksTo(1)));
+
+    public static final DeferredItem<Item> ADRENALINE_DRAUGHT = ITEMS.register("adrenaline_draught",
+            () -> new AdrenalineDraughtItem(new Item.Properties().durability(32)));
 }

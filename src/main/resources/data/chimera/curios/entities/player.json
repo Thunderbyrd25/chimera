@@ -3,6 +3,8 @@
     "minecraft:player"
   ],
   "slots": [
-    "splice_core"
+    "splice_core",
+    "horn_plate_charm",
+    "vestibular_charm"
   ]
 }

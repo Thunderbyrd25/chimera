@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_adrenal_musk_gland": {
+      "conditions": {
+        "items": [
+          {
+            "items": "chimera:adrenal_musk_gland"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "chimera:adrenaline_draught"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_adrenal_musk_gland"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "chimera:adrenaline_draught"
+    ]
+  }
+}

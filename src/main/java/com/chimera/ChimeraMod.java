@@ -94,6 +94,9 @@ public class ChimeraMod {
                         output.accept(ChimeraItems.PORK_SCRAP.get());
                         output.accept(ChimeraItems.CHICKEN_SCRAP.get());
                         output.accept(ChimeraItems.MUTTON_SCRAP.get());
+                        output.accept(ChimeraItems.HORN_PLATE_CHARM.get());
+                        output.accept(ChimeraItems.VESTIBULAR_CHARM.get());
+                        output.accept(ChimeraItems.ADRENALINE_DRAUGHT.get());
                     }).build());
 
     public ChimeraMod(IEventBus modEventBus, ModContainer modContainer) {

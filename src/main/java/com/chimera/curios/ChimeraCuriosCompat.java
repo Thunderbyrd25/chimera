@@ -21,6 +21,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
 import top.theillusivec4.curios.api.CuriosApi;
@@ -40,6 +41,41 @@ public final class ChimeraCuriosCompat {
         CuriosApi.registerCurio(ChimeraItems.SPLICE_CORE.get(), curio);
         CuriosApi.registerCurio(ChimeraItems.SPLICE_CORE_MK2.get(), curio);
         CuriosApi.registerCurio(ChimeraItems.SPLICE_CORE_MK3.get(), curio);
+
+        // Byproduct economy work order Milestone 2b: fixed (non-stack-dependent) trinkets, so
+        // unlike SpliceCoreCurio these only need getAttributeModifiers - no equip/unequip
+        // bookkeeping at all.
+        CuriosApi.registerCurio(ChimeraItems.HORN_PLATE_CHARM.get(), new HornPlateCharmCurio());
+        CuriosApi.registerCurio(ChimeraItems.VESTIBULAR_CHARM.get(), new VestibularCharmCurio());
+    }
+
+    private static class HornPlateCharmCurio implements ICurioItem {
+        @Override
+        public Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiers(SlotContext slotContext, ResourceLocation id, ItemStack stack) {
+            Multimap<Holder<Attribute>, AttributeModifier> modifiers = HashMultimap.create();
+            modifiers.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(
+                    ResourceLocation.fromNamespaceAndPath("chimera", "horn_plate_charm_knockback_resistance"),
+                    0.1, AttributeModifier.Operation.ADD_VALUE));
+            modifiers.put(Attributes.ATTACK_KNOCKBACK, new AttributeModifier(
+                    ResourceLocation.fromNamespaceAndPath("chimera", "horn_plate_charm_attack_knockback"),
+                    1.0, AttributeModifier.Operation.ADD_VALUE));
+            return modifiers;
+        }
+    }
+
+    private static class VestibularCharmCurio implements ICurioItem {
+        @Override
+        public Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiers(SlotContext slotContext, ResourceLocation id, ItemStack stack) {
+            Multimap<Holder<Attribute>, AttributeModifier> modifiers = HashMultimap.create();
+            // Default FALL_DAMAGE_MULTIPLIER is 1.0 - this cancels it to 0, full fall immunity
+            // while worn, the same value GeneEffectHandlers.onLivingFall uses for silent_step
+            // (via event.setDamageMultiplier(0.0F)) - expressed here as a plain attribute
+            // instead, since this trinket isn't tied to a spliced gene.
+            modifiers.put(Attributes.FALL_DAMAGE_MULTIPLIER, new AttributeModifier(
+                    ResourceLocation.fromNamespaceAndPath("chimera", "vestibular_charm_fall_immunity"),
+                    -1.0, AttributeModifier.Operation.ADD_VALUE));
+            return modifiers;
+        }
     }
 
     private static class SpliceCoreCurio implements ICurioItem {

@@ -65,6 +65,9 @@ public class ChimeraLanguageProvider extends LanguageProvider {
         addItem(ChimeraItems.PORK_SCRAP, "Pork Scrap");
         addItem(ChimeraItems.CHICKEN_SCRAP, "Chicken Scrap");
         addItem(ChimeraItems.MUTTON_SCRAP, "Mutton Scrap");
+        addItem(ChimeraItems.HORN_PLATE_CHARM, "Horn Plate Charm");
+        addItem(ChimeraItems.VESTIBULAR_CHARM, "Vestibular Charm");
+        addItem(ChimeraItems.ADRENALINE_DRAUGHT, "Adrenaline Draught");
 
         addBlock(ChimeraBlocks.GENE_SEQUENCER, "Gene Sequencer");
         addBlock(ChimeraBlocks.GENOME_ANALYZER, "Genome Analyzer");

@@ -523,3 +523,52 @@ Running log of API gotchas, version quirks, and things that surprised us during 
   list, so a future byproduct only needs a `synthesis_outputs` JSON entry to also shift-click
   correctly, no Menu change required. Worth a mental checklist item for any *future* new machine
   menu: don't drop the per-item routing branches when adapting an existing menu as a template.
+
+## Byproduct Economy, Milestone 2b (trinkets & tools - goat/fox/wolf)
+
+- **Reworked mid-design, per user feedback: an initial "wild-wolf lure" tool idea was called too
+  niche.** Replaced with Adrenaline Draught, a bonemeal-style tool usable on *any* vanilla animal
+  (`AgeableMob#setAge(0)` to instantly grow a baby, `Animal#setInLove(player)` to instantly ready
+  an adult for breeding) - genuinely broad rather than tied to one mob, closer to what "byproduct
+  economy" should feel like at this tier.
+- **Verified the real Curios and vanilla jars directly (decompiled from the Gradle cache) before
+  designing the trinkets**, rather than assuming API shapes. This paid off: vanilla 1.21.1
+  already has `Attributes.FALL_DAMAGE_MULTIPLIER` (default 1.0) and `Attributes.ATTACK_KNOCKBACK`
+  alongside the already-known `Attributes.KNOCKBACK_RESISTANCE`. That meant the Vestibular
+  Charm's fall-immunity effect could be a **plain attribute modifier** (`ADD_VALUE, -1.0`,
+  canceling the default to 0) instead of the originally-planned `LivingFallEvent` listener
+  querying Curios equipped-state - simpler, and consistent with the mod's own existing preference
+  (`GeneEffectHandlers.java`'s own comment: attribute-modifier Curios effects need nothing beyond
+  `getAttributeModifiers`). Confirmed `ICuriosHelper.findFirstCurio(LivingEntity, Item)` as the
+  fallback API shape too, in case a future trinket ever needs a live equipped-check instead of a
+  static attribute.
+- **Two new `ICurioItem`s in `ChimeraCuriosCompat` are meaningfully simpler than `SpliceCoreCurio`**
+  - fixed, non-stack-dependent modifiers, so no `onEquip`/`onUnequip` bookkeeping at all, just
+  `getAttributeModifiers` returning constants.
+- **New Curios slot per trinket** (not a shared slot) - `data/chimera/curios/slots/*.json` (size
+  1 each) + an entry in `data/chimera/curios/entities/player.json`'s `"slots"` array + a
+  `data/curios/tags/item/*.json` tag, mirroring Splice Core's own 3-file pattern exactly. Kept
+  separate (not combined into one shared "charm" slot) so wearing one never competes with the
+  other, and so a player can't stack two of the same charm for a doubled effect.
+- **Trinket textures reuse `splice_core.png`'s own medallion mask** (dark ring + glowing core),
+  recoloring only the core per charm - visually signals "this is a Curios accessory," consistent
+  with the mod's other equippable. Adrenaline Draught reuses `mutagen.png`'s vial mask instead,
+  recolored to a bright yellow-green liquid (distinct from Mutagen's own toxic green).
+- **Found during hands-on verification: Adrenaline Draught didn't actually behave like
+  "reusable bone meal" - it was a single-use consumable (`stack.shrink(1)`), consumed same as
+  the item it was modeled after conceptually, but the user's original ask was for the item
+  itself to be reusable, not just its *effect* to be bonemeal-like.** Fixed by switching it to a
+  durability tool exactly like `TissueScraperItem` - `Item.Properties().durability(32)` +
+  `stack.hurtAndBreak(1, player, slot)` instead of `shrink`/a plain `Properties()`. Worth
+  remembering: "bonemeal-style effect" and "reusable like a tool" are two separate design axes -
+  this mod already had a durability-tool precedent (the scrapers) that should have been the
+  template from the start rather than a consumable.
+- **Second correction on the same item: "bonemeal-style" meant real bonemeal's actual effect
+  (instant crop/sapling growth on blocks), not just an animal-growth analogy.** Added a
+  `useOn(UseOnContext)` override that reuses vanilla's own `BoneMealItem.growCrop(ItemStack,
+  Level, BlockPos)` directly rather than reimplementing `BonemealableBlock`'s
+  `isValidBonemealTarget`/`isBonemealSuccess`/`performBonemeal` orchestration - the animal-growth
+  `interactLivingEntity` path from the first pass stays too, as this item's own extension beyond
+  what real bonemeal does. `growCrop` is `@Deprecated` in vanilla (common for many Mojang-mapped
+  helpers, not a real warning to act on) - left a comment explaining why it's still the right
+  call, so a future pass doesn't "fix" it into a reimplementation of the same logic.

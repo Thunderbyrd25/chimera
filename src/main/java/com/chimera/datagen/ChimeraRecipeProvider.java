@@ -325,5 +325,26 @@ public class ChimeraRecipeProvider extends RecipeProvider {
                 .requires(ChimeraItems.MUTTON_SCRAP.get())
                 .unlockedBy("has_mutton_scrap", has(ChimeraItems.MUTTON_SCRAP.get()))
                 .save(output);
+
+        // Byproduct economy work order Milestone 2b: trinkets and a husbandry tool from the
+        // goat/fox/wolf byproducts.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, ChimeraItems.HORN_PLATE_CHARM.get())
+                .requires(ChimeraItems.HORN_PLATE.get())
+                .requires(Items.IRON_INGOT)
+                .unlockedBy("has_horn_plate", has(ChimeraItems.HORN_PLATE.get()))
+                .save(output);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, ChimeraItems.VESTIBULAR_CHARM.get())
+                .requires(ChimeraItems.VESTIBULAR_GLAND.get())
+                .requires(Items.IRON_INGOT)
+                .unlockedBy("has_vestibular_gland", has(ChimeraItems.VESTIBULAR_GLAND.get()))
+                .save(output);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ChimeraItems.ADRENALINE_DRAUGHT.get())
+                .requires(ChimeraItems.ADRENAL_MUSK_GLAND.get())
+                .requires(Items.GLASS_BOTTLE)
+                .requires(Items.SUGAR)
+                .unlockedBy("has_adrenal_musk_gland", has(ChimeraItems.ADRENAL_MUSK_GLAND.get()))
+                .save(output);
     }
 }

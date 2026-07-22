@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "chimera:vestibular_charm"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_vestibular_gland": {
+      "conditions": {
+        "items": [
+          {
+            "items": "chimera:vestibular_gland"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_vestibular_gland"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "chimera:vestibular_charm"
+    ]
+  }
+}

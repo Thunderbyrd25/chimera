@@ -63,5 +63,8 @@ public class ChimeraItemModelProvider extends ItemModelProvider {
         basicItem(ChimeraItems.PORK_SCRAP.get());
         basicItem(ChimeraItems.CHICKEN_SCRAP.get());
         basicItem(ChimeraItems.MUTTON_SCRAP.get());
+        basicItem(ChimeraItems.HORN_PLATE_CHARM.get());
+        basicItem(ChimeraItems.VESTIBULAR_CHARM.get());
+        basicItem(ChimeraItems.ADRENALINE_DRAUGHT.get());
     }
 }
