@@ -340,11 +340,29 @@ public class ChimeraRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_vestibular_gland", has(ChimeraItems.VESTIBULAR_GLAND.get()))
                 .save(output);
 
+        // Byproduct economy work order Milestone 3: Ossein Powder (skeleton, hostile byproduct)
+        // added per explicit user direction - no strict rule that a passive-sink item can only
+        // use passive-mob byproducts. Bone powder in an instant-growth tool is arguably a more
+        // literal "bone meal" than the original wolf-only recipe was anyway.
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ChimeraItems.ADRENALINE_DRAUGHT.get())
                 .requires(ChimeraItems.ADRENAL_MUSK_GLAND.get())
+                .requires(ChimeraItems.OSSEIN_POWDER.get())
                 .requires(Items.GLASS_BOTTLE)
                 .requires(Items.SUGAR)
                 .unlockedBy("has_adrenal_musk_gland", has(ChimeraItems.ADRENAL_MUSK_GLAND.get()))
+                .save(output);
+
+        // Byproduct economy work order Milestone 3a: Necrotic Ichor (zombie) + Venom Sac (cave
+        // spider) form the blade itself, iron/stick for the rest - see NecroticVenomBladeItem.
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ChimeraItems.NECROTIC_VENOM_BLADE.get())
+                .pattern("NV")
+                .pattern("II")
+                .pattern(" S")
+                .define('N', ChimeraItems.NECROTIC_ICHOR.get())
+                .define('V', ChimeraItems.VENOM_SAC.get())
+                .define('I', Items.IRON_INGOT)
+                .define('S', Items.STICK)
+                .unlockedBy("has_necrotic_ichor", has(ChimeraItems.NECROTIC_ICHOR.get()))
                 .save(output);
     }
 }

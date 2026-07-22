@@ -572,3 +572,36 @@ Running log of API gotchas, version quirks, and things that surprised us during 
   what real bonemeal does. `growCrop` is `@Deprecated` in vanilla (common for many Mojang-mapped
   helpers, not a real warning to act on) - left a comment explaining why it's still the right
   call, so a future pass doesn't "fix" it into a reimplementation of the same logic.
+- **Adrenaline Draught's recipe now also requires Ossein Powder** (skeleton's hostile byproduct,
+  Milestone 3's own material), per explicit user direction that a sink item doesn't need to stay
+  confined to its own milestone's mob set - bone powder in a growth tool is arguably more
+  literally "bone meal" than the wolf-only original anyway.
+
+## Byproduct Economy, Milestone 3a (the Necrotic Venom Blade)
+
+- **Poison has no vanilla "who caused this" tracking at all - confirmed by decompiling, not
+  assumed.** NeoForge's poison-tick `DamageSource` (`NeoForgeMod.POISON_DAMAGE`) is built with
+  `new DamageSource(type)` - no entity argument - and `MobEffectInstance` itself carries no
+  cause/source field. `GeneEffectHandlers.onLivingDamagePost` already proves the event shape
+  (zombie's `undying_hunger_lifesteal` heals the attacker from real post-armor damage in the same
+  handler that applies cave spider's `venom_glands` Poison), but that pattern reads
+  `source.getEntity()`, which is always `null` for a poison tick specifically - a lifesteal-from-
+  poison-tick mechanic genuinely can't be built that way. Fixed with a new entity Data Attachment,
+  `ChimeraAttachments.POISON_BLADE_ATTACKER` (`UUID`, default `Util.NIL_UUID`), mirroring
+  `LAST_SCRAPED_TIME`'s exact shape - set on the target when `NecroticVenomBladeItem.hurtEnemy`
+  poisons it, read back in the new `combat/NecroticVenomHandler`'s own `onLivingDamagePost` (a
+  separate handler class, not folded into `GeneEffectHandlers` - this is real combat gear, not a
+  spliced gene effect, a genuinely different category worth its own home).
+- **New `combat` package** - first non-gene, non-machine gameplay system in the mod. Registered
+  in `ChimeraMod.java` the same way `GeneEffectHandlers` already is
+  (`NeoForge.EVENT_BUS.register(new NecroticVenomHandler())`), no new pattern needed.
+- **Blade texture reuses `tissue_scraper.png`'s own diagonal tool mask** (blade + wooden handle),
+  recolored to a venom-tinted steel tone - same reuse convention as every prior milestone's
+  textures.
+- **Confirmed emergent quirk, kept intentionally per explicit user call**: `POISON_BLADE_ATTACKER`
+  never expires or clears on its own - once a mob has been hit by the blade, *any* later poison
+  on it (a splash potion, a different player's blade) still heals whoever's UUID is currently
+  tagged, even after the blade's own 80-tick Poison would have worn off. Flagged during hands-on
+  verification and deliberately left as-is ("could be cool to have") rather than adding an expiry
+  tick to the attachment - reads as a fun perk of the weapon (mark a target, benefit from
+  whatever poisons it afterward) rather than a bug worth closing.

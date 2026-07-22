@@ -3,6 +3,7 @@ package com.chimera;
 import com.chimera.item.AdrenalineDraughtItem;
 import com.chimera.item.ApexTissueScraperItem;
 import com.chimera.item.GeneCassetteItem;
+import com.chimera.item.NecroticVenomBladeItem;
 import com.chimera.item.PredatorTissueScraperItem;
 import com.chimera.item.ReinforcedTissueScraperItem;
 import com.chimera.item.SequencedGenomeItem;
@@ -14,6 +15,7 @@ import com.chimera.item.TissueScraperItem;
 
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Tiers;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -225,4 +227,9 @@ public class ChimeraItems {
 
     public static final DeferredItem<Item> ADRENALINE_DRAUGHT = ITEMS.register("adrenaline_draught",
             () -> new AdrenalineDraughtItem(new Item.Properties().durability(32)));
+
+    // Byproduct economy work order Milestone 3a: crafted from Necrotic Ichor + Venom Sac. See
+    // NecroticVenomBladeItem and combat/NecroticVenomHandler.
+    public static final DeferredItem<Item> NECROTIC_VENOM_BLADE = ITEMS.register("necrotic_venom_blade",
+            () -> new NecroticVenomBladeItem(new Item.Properties().durability(Tiers.IRON.getUses())));
 }

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "N": {
+      "item": "chimera:necrotic_ichor"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    },
+    "V": {
+      "item": "chimera:venom_sac"
+    }
+  },
+  "pattern": [
+    "NV",
+    "II",
+    " S"
+  ],
+  "result": {
+    "count": 1,
+    "id": "chimera:necrotic_venom_blade"
+  }
+}

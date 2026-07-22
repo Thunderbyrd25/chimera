@@ -2,11 +2,14 @@ package com.chimera;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import com.chimera.gene.PlayerGeneData;
 import com.chimera.oath.PlayerOathData;
 import com.mojang.serialization.Codec;
 
+import net.minecraft.Util;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -56,5 +59,16 @@ public class ChimeraAttachments {
             ATTACHMENT_TYPES.register("discovered_genes", () -> AttachmentType.builder(() -> Set.<ResourceLocation>of())
                     .serialize(RESOURCE_LOCATION_SET_CODEC)
                     .copyOnDeath()
+                    .build());
+
+    // Byproduct economy work order Milestone 3a: attached to the *poisoned mob*, not the player -
+    // same entity-agnostic pattern as LAST_SCRAPED_TIME. Poison's own periodic damage carries no
+    // source entity at all (confirmed: NeoForge's poison DamageSource is built with no attacker),
+    // so "who gets the lifesteal credit" has to be tracked here instead. Default Util.NIL_UUID
+    // ("nobody") always fails the credit check safely. No copyOnDeath - irrelevant once the
+    // poisoned mob dies.
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<UUID>> POISON_BLADE_ATTACKER =
+            ATTACHMENT_TYPES.register("poison_blade_attacker", () -> AttachmentType.builder(() -> Util.NIL_UUID)
+                    .serialize(UUIDUtil.CODEC)
                     .build());
 }

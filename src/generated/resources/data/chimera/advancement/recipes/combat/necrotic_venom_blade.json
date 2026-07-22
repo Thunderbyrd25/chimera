@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_necrotic_ichor": {
+      "conditions": {
+        "items": [
+          {
+            "items": "chimera:necrotic_ichor"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "chimera:necrotic_venom_blade"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_necrotic_ichor"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "chimera:necrotic_venom_blade"
+    ]
+  }
+}

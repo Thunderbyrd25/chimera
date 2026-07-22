@@ -2,6 +2,7 @@ package com.chimera;
 
 import org.slf4j.Logger;
 
+import com.chimera.combat.NecroticVenomHandler;
 import com.chimera.datagen.ChimeraDataGenerators;
 import com.chimera.gene.GeneEffectHandlers;
 import com.chimera.gene.GenePoolRegistry;
@@ -97,6 +98,7 @@ public class ChimeraMod {
                         output.accept(ChimeraItems.HORN_PLATE_CHARM.get());
                         output.accept(ChimeraItems.VESTIBULAR_CHARM.get());
                         output.accept(ChimeraItems.ADRENALINE_DRAUGHT.get());
+                        output.accept(ChimeraItems.NECROTIC_VENOM_BLADE.get());
                     }).build());
 
     public ChimeraMod(IEventBus modEventBus, ModContainer modContainer) {
@@ -136,6 +138,7 @@ public class ChimeraMod {
         });
 
         NeoForge.EVENT_BUS.register(new GeneEffectHandlers());
+        NeoForge.EVENT_BUS.register(new NecroticVenomHandler());
         NeoForge.EVENT_BUS.register(new TissueScraperEventHandler());
 
         // Hunt gate (v0.2 tier-2 work order Milestone 3): Awkward Potion + Adrenal Extract ->
