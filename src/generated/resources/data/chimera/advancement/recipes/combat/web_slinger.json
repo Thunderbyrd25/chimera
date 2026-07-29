@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_chitin_resin": {
+      "conditions": {
+        "items": [
+          {
+            "items": "chimera:chitin_resin"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "chimera:web_slinger"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_chitin_resin"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "chimera:web_slinger"
+    ]
+  }
+}

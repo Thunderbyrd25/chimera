@@ -364,5 +364,18 @@ public class ChimeraRecipeProvider extends RecipeProvider {
                 .define('S', Items.STICK)
                 .unlockedBy("has_necrotic_ichor", has(ChimeraItems.NECROTIC_ICHOR.get()))
                 .save(output);
+
+        // Byproduct economy work order Milestone 3b: Chitin Resin (spider) forms the housing,
+        // string for the web itself - see WebSlingerItem/entity/WebHookEntity.
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ChimeraItems.WEB_SLINGER.get())
+                .pattern("ICI")
+                .pattern("STS")
+                .pattern("I I")
+                .define('I', Items.IRON_INGOT)
+                .define('C', ChimeraItems.CHITIN_RESIN.get())
+                .define('S', Items.STRING)
+                .define('T', Items.TRIPWIRE_HOOK)
+                .unlockedBy("has_chitin_resin", has(ChimeraItems.CHITIN_RESIN.get()))
+                .save(output);
     }
 }

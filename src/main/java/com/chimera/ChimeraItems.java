@@ -12,6 +12,7 @@ import com.chimera.item.TheBiopediaItem;
 import com.chimera.item.TheOathItem;
 import com.chimera.item.TissueSampleItem;
 import com.chimera.item.TissueScraperItem;
+import com.chimera.item.WebSlingerItem;
 
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -232,4 +233,9 @@ public class ChimeraItems {
     // NecroticVenomBladeItem and combat/NecroticVenomHandler.
     public static final DeferredItem<Item> NECROTIC_VENOM_BLADE = ITEMS.register("necrotic_venom_blade",
             () -> new NecroticVenomBladeItem(new Item.Properties().durability(Tiers.IRON.getUses())));
+
+    // Byproduct economy work order Milestone 3b: crafted from Chitin Resin. See WebSlingerItem
+    // and entity/WebHookEntity.
+    public static final DeferredItem<Item> WEB_SLINGER = ITEMS.register("web_slinger",
+            () -> new WebSlingerItem(new Item.Properties().durability(64)));
 }

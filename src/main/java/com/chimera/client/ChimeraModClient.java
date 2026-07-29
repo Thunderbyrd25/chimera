@@ -5,9 +5,12 @@ import java.util.List;
 
 import org.lwjgl.glfw.GLFW;
 
+import com.chimera.ChimeraEntityTypes;
 import com.chimera.ChimeraMenus;
 import com.chimera.ChimeraMod;
+import com.chimera.entity.WebHookRenderer;
 import com.chimera.gene.TraitDisplay;
+import com.chimera.item.WebSlingerItem;
 import com.chimera.machine.BioreactorScreen;
 import com.chimera.machine.CentrifugeScreen;
 import com.chimera.machine.GeneExtractorScreen;
@@ -21,6 +24,7 @@ import com.chimera.network.GrassFedUsePayload;
 import com.chimera.network.OathResponsePayload;
 import com.chimera.network.OpenBiopediaScreenEvent;
 import com.chimera.network.OpenOathPromptEvent;
+import com.chimera.network.RetractWebSlingerPayload;
 import com.chimera.splice.SpliceCoreScreen;
 
 import net.minecraft.ChatFormatting;
@@ -33,10 +37,13 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -51,10 +58,37 @@ public class ChimeraModClient {
     public ChimeraModClient(IEventBus modEventBus) {
         modEventBus.addListener(this::registerScreens);
         modEventBus.addListener(this::registerKeyMappings);
+        modEventBus.addListener(this::registerEntityRenderers);
 
         NeoForge.EVENT_BUS.addListener(this::onClientTick);
         NeoForge.EVENT_BUS.addListener(this::onOpenOathPrompt);
         NeoForge.EVENT_BUS.addListener(this::onOpenBiopedia);
+        NeoForge.EVENT_BUS.addListener(this::onAttackKey);
+    }
+
+    // Byproduct economy work order Milestone 3b: WebHookRenderer delegates the spinning-icon
+    // rendering to a held ThrownItemRenderer and additionally draws the string - see that class.
+    private void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(ChimeraEntityTypes.WEB_HOOK.get(), WebHookRenderer::new);
+    }
+
+    // Byproduct economy work order Milestone 3b: left-click retract. isAttack() fires for every
+    // left-click regardless of target (block, entity, or empty air) - PlayerInteractEvent.
+    // LeftClickEmpty was considered first but is explicitly client-only and empty-air-only per
+    // its own javadoc, insufficient here. Doesn't cancel the event or suppress the vanilla swing
+    // - retracting is additive, so punching something while holding the Web Slinger still works
+    // normally and also retracts any active hook.
+    private void onAttackKey(InputEvent.InteractionKeyMappingTriggered event) {
+        if (!event.isAttack()) {
+            return;
+        }
+        Player player = Minecraft.getInstance().player;
+        if (player == null) {
+            return;
+        }
+        if (player.getMainHandItem().getItem() instanceof WebSlingerItem || player.getOffhandItem().getItem() instanceof WebSlingerItem) {
+            PacketDistributor.sendToServer(new RetractWebSlingerPayload());
+        }
     }
 
     private void registerScreens(RegisterMenuScreensEvent event) {

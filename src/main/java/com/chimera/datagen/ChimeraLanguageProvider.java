@@ -69,6 +69,7 @@ public class ChimeraLanguageProvider extends LanguageProvider {
         addItem(ChimeraItems.VESTIBULAR_CHARM, "Vestibular Charm");
         addItem(ChimeraItems.ADRENALINE_DRAUGHT, "Adrenaline Draught");
         addItem(ChimeraItems.NECROTIC_VENOM_BLADE, "Necrotic Venom Blade");
+        addItem(ChimeraItems.WEB_SLINGER, "Web Slinger");
 
         addBlock(ChimeraBlocks.GENE_SEQUENCER, "Gene Sequencer");
         addBlock(ChimeraBlocks.GENOME_ANALYZER, "Genome Analyzer");

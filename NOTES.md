@@ -605,3 +605,107 @@ Running log of API gotchas, version quirks, and things that surprised us during 
   verification and deliberately left as-is ("could be cool to have") rather than adding an expiry
   tick to the attachment - reads as a fun perk of the weapon (mark a target, benefit from
   whatever poisons it afterward) rather than a bug worth closing.
+
+## Byproduct Economy, Milestone 3b (the Web Slinger - the mod's first custom entity)
+
+- **You explicitly chose the bigger build over the safer one.** The original recommendation was
+  an instant raycast grapple (no new entity, far less risk) - you picked a real thrown hook with
+  travel time and a multi-tick reel instead, so this is genuinely the mod's first custom
+  `Entity`/`EntityType`, first custom renderer registration, and first system living outside the
+  gene/machine/Curios architecture entirely.
+- **Nothing here was guessed - every API was decompiled and read directly** (both the renamed
+  bytecode jar and, for real method *bodies* rather than just signatures, a `decompile_*` output
+  jar also present in the Gradle cache under `neoformruntime/intermediate_results`, which turned
+  out to hold genuine readable `.java` sources, not just javap signatures - worth remembering
+  next time a body-level check is needed, not just a signature check).
+- **The key insight that shaped the whole design**: `Entity#push(x, y, z)` (confirmed by reading
+  `Entity.java` directly) does `setDeltaMovement(getDeltaMovement().add(...))` *and* sets
+  `hasImpulse = true` - and `ServerEntity.sendChanges()` broadcasts a impulse-triggered motion
+  packet to every tracking client, **including the affected entity's own controlling
+  connection**. This is the same mechanism vanilla knockback already uses to shove a player from
+  server code. It means the multi-tick "reel" (pulling the owner toward a stuck point, or a
+  hooked entity toward the owner) needed **zero custom networking** - just calling `.push(...)`
+  from the hook's own `tick()` once per tick while stuck.
+- **`EntityType.Builder.build(String)` takes the real registry name, not `null`** - this differs
+  from `BlockEntityType.Builder.build(Type<?>)`'s nullable-DFU-type parameter, which looks
+  superficially similar but isn't the same method shape at all. Caught this by reading the real
+  source rather than assuming the block-entity pattern would transfer directly.
+- **`WebHookEntity extends ThrowableItemProjectile`** specifically (not the more general
+  `ThrowableProjectile`) purely to get `ThrownItemRenderer` for free via already implementing
+  `ItemSupplier` - the hook's `getDefaultItem()`/`getItem()` just returns the Web Slinger tool's
+  own icon, reusing an existing texture rather than authoring a dedicated "hook" visual for a
+  first pass.
+- **Overriding `tick()` to branch on a `stuck` state (block pos or hooked entity set) was the
+  cleanest way to separate "still flying" from "now reeling"** - `ThrowableProjectile.tick()`
+  itself already runs collision detection *and* continues to apply gravity/movement in the same
+  call even after a hit is detected, so `onHitBlock`/`onHitEntity` additionally zero the
+  velocity immediately to prevent a one-tick overshoot past the impact point, and the very next
+  tick skips calling `super.tick()` at all once stuck, switching entirely to the custom reel
+  logic instead.
+- **`ChimeraEntityTypes.java` is a new top-level registry class**, mirroring
+  `ChimeraAttachments`/`ChimeraMenus`'s own `DeferredRegister.create(...)` shape rather than the
+  `.createBlocks()`/`.createItems()` convenience helpers - no entity-specific convenience helper
+  exists in NeoForge's `DeferredRegister`.
+- **Found during hands-on verification, via diagnostic logging: pulling a mob worked, pulling
+  the *player* did nothing at all** - the log showed the owner's velocity growing every single
+  tick exactly as expected, but `owner.position()` never changed across 50+ ticks. Root cause,
+  confirmed by reading `ServerEntity.sendChanges()` directly rather than re-guessing: `push()`
+  (via `hasImpulse`) only makes that method `broadcast` the motion packet to *observing* clients
+  - for a mob, that's irrelevant since the server directly drives its position anyway, so it
+  visibly moves regardless. For the entity's own *controlling* player, the client only receives
+  the updated velocity if `Entity#hurtMarked` is separately set, which triggers a distinct
+  `broadcastAndSend` call at the very end of that same method - the earlier research summary
+  ("push() broadcasts to every tracking client including the entity's own controlling
+  connection") turned out to be an incomplete read of that method, missing this exact
+  broadcast-vs-broadcastAndSend distinction. Fixed by setting `hurtMarked = true` right after
+  every `push()` call in `WebHookEntity`, on both the owner and the hooked-entity branch (only
+  strictly required for the player case, but harmless either way, so applied uniformly rather
+  than special-casing by entity type).
+- **Second bug in the same feature, found right after the first was fixed: the hook itself kept
+  visibly falling after impact.** Root cause: `onHitBlock`/`onHitEntity` only set the "stuck"
+  fields when `!level().isClientSide` - but `tick()` runs independently on *both* the server and
+  the client's own local copy of the entity. The client-side copy never learned it was stuck, so
+  it kept calling `super.tick()` (full flight/gravity simulation) forever, re-detecting the same
+  block collision every tick without ever freezing - a client-side physics loop invisible to the
+  server, which really was frozen correctly the whole time. Fixed by letting *both* sides set the
+  stuck fields and zero velocity in `onHitBlock`/`onHitEntity` (purely a local, cosmetic
+  freeze on the client - harmless to compute twice), while gating the actual pull side effects
+  (`push`/`hurtMarked`/`discard`) inside `reelTick()` itself to server-only, since only the
+  server is authoritative for moving other entities. General lesson for any future entity work
+  in this mod: "stuck"/state-machine flags on a networked entity need to make sense when set
+  independently on each side, not just once from the server's perspective.
+- **String visual + left-click retract, added after the core mechanic was confirmed working.**
+  No shared "line between two points" helper exists in vanilla - both the fishing line
+  (`FishingHookRenderer`) and the leash line (`EntityRenderer#renderLeash`, gated behind real
+  `Leashable` semantics) hand-roll their own vertex-buffer code. Ported `FishingHookRenderer`'s
+  approach directly (confirmed by reading its full source, not guessed) into a new
+  `entity/WebHookRenderer.java`, which delegates the actual icon rendering to a held
+  `ThrownItemRenderer` instance (keeps the exact prior look) and additionally draws a
+  quadratic-sag string from the firing player's hand to the hook via the same `stringVertex`
+  math, `RenderType.lineStrip()`.
+- **Left-click retract needed the same client-input-to-server-payload shape `GRASS_FED_KEY`
+  already uses**, not a new pattern - confirmed by reading that whole chain first
+  (`GrassFedUsePayload`, its `ChimeraPayloads` registration, the keybind consumption in
+  `ChimeraModClient.onClientTick`, `GeneEffectHandlers.handleGrassFedUse`). Considered
+  `PlayerInteractEvent.LeftClickEmpty` first, but its own javadoc says it's client-only and
+  fires only for true empty-air clicks - insufficient, since punching a block/mob while holding
+  the Web Slinger should also retract. Used `InputEvent.InteractionKeyMappingTriggered` instead
+  (`isAttack()`, fires for every left-click regardless of target), sending a new
+  `RetractWebSlingerPayload` (identical empty-record shape to `GrassFedUsePayload`). The
+  server-side handler lives on `WebSlingerItem` itself as a static method reading a small
+  per-player `Map<UUID, WebHookEntity>` populated in `use()` - mirrors the per-player cooldown-map
+  shape `GeneEffectHandlers` already uses for Raging Bull/Ramming Charge, avoids needing a
+  world-scan to find "this player's active hook."
+- **One-hook-at-a-time + a max range (started at 15 blocks, bumped to 25 after hands-on testing
+  felt too short), per user feedback** - right-clicking with an already-active hook now retracts
+  it instead of firing another (mirrors the fishing rod's own right-click-again-to-reel-in
+  convention, reusing `retractActiveHook` rather than duplicating that logic), fixing the ability
+  to spam out an unbounded number of hooks at once. The range cap lives in `WebHookEntity.tick()`
+  itself (discards once `position().distanceTo(spawnPos) > MAX_RANGE` while still in flight) -
+  deliberately server-only,
+  since `spawnPos` is only ever known on the side that actually threw the hook (the
+  `(LivingEntity, Level)` constructor call in `WebSlingerItem`; the client's own copy of the
+  entity is built through the plain `(EntityType, Level)` factory constructor used for network
+  spawning, with no `spawnPos` at all) and `discard()` already syncs entity removal to every
+  client automatically, so there was nothing useful for the client side to compute here itself -
+  the same "don't assume both sides have the same state" lesson as the earlier stuck-flag bug.

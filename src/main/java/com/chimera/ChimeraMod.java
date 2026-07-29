@@ -99,11 +99,13 @@ public class ChimeraMod {
                         output.accept(ChimeraItems.VESTIBULAR_CHARM.get());
                         output.accept(ChimeraItems.ADRENALINE_DRAUGHT.get());
                         output.accept(ChimeraItems.NECROTIC_VENOM_BLADE.get());
+                        output.accept(ChimeraItems.WEB_SLINGER.get());
                     }).build());
 
     public ChimeraMod(IEventBus modEventBus, ModContainer modContainer) {
         ChimeraBlocks.BLOCKS.register(modEventBus);
         ChimeraBlockEntities.BLOCK_ENTITY_TYPES.register(modEventBus);
+        ChimeraEntityTypes.ENTITY_TYPES.register(modEventBus);
         ChimeraMenus.MENU_TYPES.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
         ChimeraItems.ITEMS.register(modEventBus);

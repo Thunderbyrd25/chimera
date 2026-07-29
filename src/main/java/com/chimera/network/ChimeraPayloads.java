@@ -1,6 +1,7 @@
 package com.chimera.network;
 
 import com.chimera.gene.GeneEffectHandlers;
+import com.chimera.item.WebSlingerItem;
 import com.chimera.oath.OathEffects;
 
 import net.neoforged.neoforge.common.NeoForge;
@@ -15,6 +16,10 @@ public final class ChimeraPayloads {
                         (payload, context) -> GeneEffectHandlers.handleGrassFedUse(context.player()))
                 .playToServer(OathResponsePayload.TYPE, OathResponsePayload.STREAM_CODEC,
                         (payload, context) -> OathEffects.handleResponse(context.player(), payload))
+                // Byproduct economy work order Milestone 3b: left-click retract - see
+                // WebSlingerItem.retractActiveHook and ChimeraModClient's InteractionKeyMappingTriggered listener.
+                .playToServer(RetractWebSlingerPayload.TYPE, RetractWebSlingerPayload.STREAM_CODEC,
+                        (payload, context) -> WebSlingerItem.retractActiveHook(context.player()))
                 // Biopedia+Oath work order Milestone 3: this handler lambda only touches
                 // common-safe types (NeoForge.EVENT_BUS, the plain OpenBiopediaScreenEvent) -
                 // see OpenBiopediaScreenEvent's own comment for why that indirection exists.

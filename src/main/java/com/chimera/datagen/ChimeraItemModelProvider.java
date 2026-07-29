@@ -67,5 +67,6 @@ public class ChimeraItemModelProvider extends ItemModelProvider {
         basicItem(ChimeraItems.VESTIBULAR_CHARM.get());
         basicItem(ChimeraItems.ADRENALINE_DRAUGHT.get());
         handheldItem(ChimeraItems.NECROTIC_VENOM_BLADE.get());
+        handheldItem(ChimeraItems.WEB_SLINGER.get());
     }
 }
