@@ -7,6 +7,7 @@ import com.chimera.datagen.ChimeraDataGenerators;
 import com.chimera.gene.GeneEffectHandlers;
 import com.chimera.gene.GenePoolRegistry;
 import com.chimera.gene.GeneRegistry;
+import com.chimera.gene.SpliceRecipeRegistry;
 import com.chimera.item.TissueScraperEventHandler;
 import com.chimera.network.ChimeraPayloads;
 import com.mojang.logging.LogUtils;
@@ -100,6 +101,8 @@ public class ChimeraMod {
                         output.accept(ChimeraItems.ADRENALINE_DRAUGHT.get());
                         output.accept(ChimeraItems.NECROTIC_VENOM_BLADE.get());
                         output.accept(ChimeraItems.WEB_SLINGER.get());
+                        output.accept(ChimeraItems.GESTATION_VAT.get());
+                        output.accept(ChimeraItems.DNA_EGG.get());
                     }).build());
 
     public ChimeraMod(IEventBus modEventBus, ModContainer modContainer) {
@@ -132,11 +135,14 @@ public class ChimeraMod {
                     (blockEntity, side) -> blockEntity.getInventory());
             event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ChimeraBlockEntities.SYNTHESIZER.get(),
                     (blockEntity, side) -> blockEntity.getInventory());
+            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ChimeraBlockEntities.GESTATION_VAT.get(),
+                    (blockEntity, side) -> blockEntity.getInventory());
         });
 
         NeoForge.EVENT_BUS.addListener((AddReloadListenerEvent event) -> {
             event.addListener(new GeneRegistry());
             event.addListener(new GenePoolRegistry());
+            event.addListener(new SpliceRecipeRegistry());
         });
 
         NeoForge.EVENT_BUS.register(new GeneEffectHandlers());

@@ -12,6 +12,8 @@ import com.chimera.machine.GenomeAnalyzerBlockEntity;
 import com.chimera.machine.GenomeAnalyzerMenu;
 import com.chimera.machine.GenomeSplicerBlockEntity;
 import com.chimera.machine.GenomeSplicerMenu;
+import com.chimera.machine.GestationVatBlockEntity;
+import com.chimera.machine.GestationVatMenu;
 import com.chimera.machine.SynthesizerBlockEntity;
 import com.chimera.machine.SynthesizerMenu;
 import com.chimera.item.SpliceCoreItem;
@@ -71,6 +73,12 @@ public class ChimeraMenus {
             MENU_TYPES.register("synthesizer", () -> new MenuType<>((IContainerFactory<SynthesizerMenu>) (containerId, inventory, buf) -> {
                 SynthesizerBlockEntity blockEntity = (SynthesizerBlockEntity) inventory.player.level().getBlockEntity(buf.readBlockPos());
                 return new SynthesizerMenu(containerId, inventory, blockEntity, buf.readVarInt());
+            }, FeatureFlags.VANILLA_SET));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<GestationVatMenu>> GESTATION_VAT =
+            MENU_TYPES.register("gestation_vat", () -> new MenuType<>((IContainerFactory<GestationVatMenu>) (containerId, inventory, buf) -> {
+                GestationVatBlockEntity blockEntity = (GestationVatBlockEntity) inventory.player.level().getBlockEntity(buf.readBlockPos());
+                return new GestationVatMenu(containerId, inventory, blockEntity, buf.readVarInt());
             }, FeatureFlags.VANILLA_SET));
 
     public static final DeferredHolder<MenuType<?>, MenuType<SpliceCoreMenu>> SPLICE_CORE =

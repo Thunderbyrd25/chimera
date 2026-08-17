@@ -709,3 +709,37 @@ Running log of API gotchas, version quirks, and things that surprised us during 
   spawning, with no `spawnPos` at all) and `discard()` already syncs entity removal to every
   client automatically, so there was nothing useful for the client side to compute here itself -
   the same "don't assume both sides have the same state" lesson as the earlier stuck-flag bug.
+
+## The Vat Cluster (work order #4), Milestone 1a: the splice pipeline
+
+- **No multiblock framework exists anywhere in NeoForge or vanilla** - confirmed by searching the
+  decompiled sources directly for `multiblock`/`MultiblockPattern` (zero hits); `StructureTemplate`/
+  `.nbt` is for world-gen structures, not a live "is this player-built thing still intact" check.
+  `BeaconBlockEntity` is the closest vanilla precedent, throttling its own pyramid-base scan to
+  once every 80 ticks - but every existing machine in this mod already re-evaluates `canProcess()`
+  every tick unthrottled, so `GestationVatBlockEntity.isStructureFormed()` (a small fixed 16-offset
+  glass-ring check, not an expanding scan) just lives inside `canProcess()` and runs every tick
+  too, consistent with this codebase's own pattern rather than importing Beacon's optimization for
+  a problem this mod doesn't have at this scale.
+- Structure requirement is a 2-tall hollow glass ring: 8 vanilla Glass blocks at the controller's
+  own Y level (the 3x3 ring around it, center is the controller itself) plus 8 more at Y+1 (same
+  ring shape, center left open so the tank is visibly hollow from above) - 16 fixed relative
+  offsets total, reusing vanilla Glass rather than adding a new "frame" block/texture.
+- `GestationVatBlockEntity extends AbstractMachineBlockEntity` directly, same as all six prior
+  machines - a multiblock controller needed no new registration shape, just a 7th
+  `DeferredBlock`/`DeferredHolder<BlockEntityType<?>>` entry.
+- `SpliceRecipeRegistry` mirrors `GeneRegistry`'s exact shape (not `GenePoolRegistry`'s) - keyed
+  by the JSON file's own id rather than reconstructed from either parent species, since a splice
+  recipe isn't "owned" by one side. `SpliceRecipe.matches()` checks both `(A,B)` and `(B,A)` so
+  recipe authors don't need to worry about parent order.
+- `DNA_EGG_RESULT` (the tagged hybrid's `EntityType` id) mirrors `SPECIES`'s own shape exactly -
+  plain `ResourceLocation` data component, blank = absent, rather than an `Optional`-typed codec.
+  Consistent with how `SequencedGenomeItem`/`TissueSampleItem` already distinguish "not yet
+  identified" from "identified" without a separate item registration per state.
+- Test recipe (`splice_recipes/test_chicken_cow.json`, cow + chicken -> `minecraft:chicken`) is a
+  deliberate throwaway, mirroring the `anima_trace` placeholder-gene precedent - exercises the
+  full pipeline (structure check, species matching, egg tagging) without pre-building any real
+  hybrid content. The real curated recipe (the Endarachnid) is Milestone 2's job.
+- This milestone deliberately stops at "you're holding a filled egg" - `DnaEggItem` is a plain
+  `Item` for now (tooltip only), not yet a `BlockItem`. Placement, the hatch-tick `BlockEntity`,
+  and the blank-egg-placement-refusal all belong to Milestone 1b.

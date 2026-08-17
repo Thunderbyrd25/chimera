@@ -1,0 +1,5 @@
+{
+  "parent_a": "minecraft:cow",
+  "parent_b": "minecraft:chicken",
+  "result": "minecraft:chicken"
+}

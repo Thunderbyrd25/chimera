@@ -2,6 +2,7 @@ package com.chimera;
 
 import com.chimera.item.AdrenalineDraughtItem;
 import com.chimera.item.ApexTissueScraperItem;
+import com.chimera.item.DnaEggItem;
 import com.chimera.item.GeneCassetteItem;
 import com.chimera.item.NecroticVenomBladeItem;
 import com.chimera.item.PredatorTissueScraperItem;
@@ -37,6 +38,9 @@ public class ChimeraItems {
     // Byproduct economy work order Milestone 2a: synthesizes a mob's specific byproduct into a
     // real vanilla material - see SynthesizerBlockEntity.
     public static final DeferredItem<BlockItem> SYNTHESIZER = ITEMS.registerSimpleBlockItem(ChimeraBlocks.SYNTHESIZER);
+
+    // The Vat cluster work order Milestone 1a: the mod's first multiblock controller.
+    public static final DeferredItem<BlockItem> GESTATION_VAT = ITEMS.registerSimpleBlockItem(ChimeraBlocks.GESTATION_VAT);
 
     public static final DeferredItem<Item> TISSUE_SCRAPER = ITEMS.register("tissue_scraper",
             () -> new TissueScraperItem(new Item.Properties().durability(32)));
@@ -238,4 +242,9 @@ public class ChimeraItems {
     // and entity/WebHookEntity.
     public static final DeferredItem<Item> WEB_SLINGER = ITEMS.register("web_slinger",
             () -> new WebSlingerItem(new Item.Properties().durability(64)));
+
+    // The Vat cluster work order Milestone 1a: blank until filled by the Gestation Vat - see
+    // DnaEggItem and ChimeraDataComponents.DNA_EGG_RESULT. stacksTo(16) mirrors vanilla Egg.
+    public static final DeferredItem<Item> DNA_EGG = ITEMS.register("dna_egg",
+            () -> new DnaEggItem(new Item.Properties().stacksTo(16)));
 }

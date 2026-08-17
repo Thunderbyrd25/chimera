@@ -17,6 +17,7 @@ import com.chimera.machine.GeneExtractorScreen;
 import com.chimera.machine.GeneSequencerScreen;
 import com.chimera.machine.GenomeAnalyzerScreen;
 import com.chimera.machine.GenomeSplicerScreen;
+import com.chimera.machine.GestationVatScreen;
 import com.chimera.machine.SynthesizerScreen;
 import com.chimera.network.BiopediaEntry;
 import com.chimera.network.BiopediaEntry.BiopediaEntryDetails;
@@ -99,6 +100,7 @@ public class ChimeraModClient {
         event.register(ChimeraMenus.GENOME_SPLICER.get(), GenomeSplicerScreen::new);
         event.register(ChimeraMenus.BIOREACTOR.get(), BioreactorScreen::new);
         event.register(ChimeraMenus.SYNTHESIZER.get(), SynthesizerScreen::new);
+        event.register(ChimeraMenus.GESTATION_VAT.get(), GestationVatScreen::new);
         event.register(ChimeraMenus.SPLICE_CORE.get(), SpliceCoreScreen::new);
     }
 

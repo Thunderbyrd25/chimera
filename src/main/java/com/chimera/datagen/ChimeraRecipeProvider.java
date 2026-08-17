@@ -377,5 +377,27 @@ public class ChimeraRecipeProvider extends RecipeProvider {
                 .define('T', Items.TRIPWIRE_HOOK)
                 .unlockedBy("has_chitin_resin", has(ChimeraItems.CHITIN_RESIN.get()))
                 .save(output);
+
+        // The Vat cluster work order Milestone 1a: the mod's first multiblock controller -
+        // glass-heavy, mirroring how the block's own structure requirement uses vanilla Glass.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ChimeraItems.GESTATION_VAT.get())
+                .pattern("GGG")
+                .pattern("IHI")
+                .pattern("IRI")
+                .define('G', Items.GLASS)
+                .define('I', Items.IRON_INGOT)
+                .define('H', Items.HOPPER)
+                .define('R', Items.REDSTONE)
+                .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
+                .save(output);
+
+        // Blank DNA Egg - flavor-only ingredients (egg + slime ball for the "gestational" gel,
+        // iron for the shell), filled later by the Gestation Vat (see GestationVatBlockEntity).
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ChimeraItems.DNA_EGG.get())
+                .requires(Items.EGG)
+                .requires(Items.SLIME_BALL)
+                .requires(Items.IRON_INGOT)
+                .unlockedBy("has_slime_ball", has(Items.SLIME_BALL))
+                .save(output);
     }
 }

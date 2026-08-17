@@ -25,11 +25,13 @@ public class ChimeraBlockLootSubProvider extends BlockLootSubProvider {
         dropSelf(ChimeraBlocks.GENOME_SPLICER.get());
         dropSelf(ChimeraBlocks.BIOREACTOR.get());
         dropSelf(ChimeraBlocks.SYNTHESIZER.get());
+        dropSelf(ChimeraBlocks.GESTATION_VAT.get());
     }
 
     @Override
     protected Iterable<Block> getKnownBlocks() {
         return List.of(ChimeraBlocks.GENE_SEQUENCER.get(), ChimeraBlocks.GENOME_ANALYZER.get(), ChimeraBlocks.GENE_EXTRACTOR.get(),
-                ChimeraBlocks.CENTRIFUGE.get(), ChimeraBlocks.GENOME_SPLICER.get(), ChimeraBlocks.BIOREACTOR.get(), ChimeraBlocks.SYNTHESIZER.get());
+                ChimeraBlocks.CENTRIFUGE.get(), ChimeraBlocks.GENOME_SPLICER.get(), ChimeraBlocks.BIOREACTOR.get(), ChimeraBlocks.SYNTHESIZER.get(),
+                ChimeraBlocks.GESTATION_VAT.get());
     }
 }

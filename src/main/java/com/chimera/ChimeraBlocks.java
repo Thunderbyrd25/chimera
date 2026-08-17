@@ -6,6 +6,7 @@ import com.chimera.machine.GeneExtractorBlock;
 import com.chimera.machine.GeneSequencerBlock;
 import com.chimera.machine.GenomeAnalyzerBlock;
 import com.chimera.machine.GenomeSplicerBlock;
+import com.chimera.machine.GestationVatBlock;
 import com.chimera.machine.SynthesizerBlock;
 
 import net.minecraft.world.level.block.Block;
@@ -38,4 +39,9 @@ public class ChimeraBlocks {
 
     public static final DeferredBlock<Block> SYNTHESIZER = BLOCKS.register("synthesizer",
             () -> new SynthesizerBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.5F).requiresCorrectToolForDrops()));
+
+    // The Vat cluster work order Milestone 1a: the mod's first multiblock controller - see
+    // GestationVatBlockEntity for the surrounding glass-ring structure requirement.
+    public static final DeferredBlock<Block> GESTATION_VAT = BLOCKS.register("gestation_vat",
+            () -> new GestationVatBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.5F).requiresCorrectToolForDrops()));
 }

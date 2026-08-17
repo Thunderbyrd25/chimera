@@ -6,6 +6,7 @@ import com.chimera.machine.GeneExtractorBlockEntity;
 import com.chimera.machine.GeneSequencerBlockEntity;
 import com.chimera.machine.GenomeAnalyzerBlockEntity;
 import com.chimera.machine.GenomeSplicerBlockEntity;
+import com.chimera.machine.GestationVatBlockEntity;
 import com.chimera.machine.SynthesizerBlockEntity;
 
 import net.minecraft.core.registries.Registries;
@@ -45,4 +46,8 @@ public class ChimeraBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SynthesizerBlockEntity>> SYNTHESIZER =
             BLOCK_ENTITY_TYPES.register("synthesizer", () -> BlockEntityType.Builder.of(
                     SynthesizerBlockEntity::new, ChimeraBlocks.SYNTHESIZER.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<GestationVatBlockEntity>> GESTATION_VAT =
+            BLOCK_ENTITY_TYPES.register("gestation_vat", () -> BlockEntityType.Builder.of(
+                    GestationVatBlockEntity::new, ChimeraBlocks.GESTATION_VAT.get()).build(null));
 }

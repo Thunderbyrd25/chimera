@@ -70,6 +70,7 @@ public class ChimeraLanguageProvider extends LanguageProvider {
         addItem(ChimeraItems.ADRENALINE_DRAUGHT, "Adrenaline Draught");
         addItem(ChimeraItems.NECROTIC_VENOM_BLADE, "Necrotic Venom Blade");
         addItem(ChimeraItems.WEB_SLINGER, "Web Slinger");
+        addItem(ChimeraItems.DNA_EGG, "DNA Egg");
 
         addBlock(ChimeraBlocks.GENE_SEQUENCER, "Gene Sequencer");
         addBlock(ChimeraBlocks.GENOME_ANALYZER, "Genome Analyzer");
@@ -78,10 +79,13 @@ public class ChimeraLanguageProvider extends LanguageProvider {
         addBlock(ChimeraBlocks.GENOME_SPLICER, "Genome Splicer");
         addBlock(ChimeraBlocks.BIOREACTOR, "Bioreactor");
         addBlock(ChimeraBlocks.SYNTHESIZER, "Synthesizer");
+        addBlock(ChimeraBlocks.GESTATION_VAT, "Gestation Vat");
 
         add("tooltip.chimera.species", "Species: %s");
         add("tooltip.chimera.species.player", "You");
         add("tooltip.chimera.unidentified", "Unidentified");
+        add("tooltip.chimera.dna_egg.blank", "Blank");
+        add("tooltip.chimera.dna_egg.result", "Hatches: %s");
         add("item.chimera.gene_cassette.named", "Gene Cassette: %s");
         add("item.chimera.splice_core.named", "Splice Core: %s");
         add("tooltip.chimera.splice_core.slots", "%s / %s gene slots filled");

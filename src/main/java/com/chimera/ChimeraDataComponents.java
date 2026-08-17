@@ -53,4 +53,13 @@ public class ChimeraDataComponents {
             DATA_COMPONENTS.registerComponentType("installed_cassettes", builder -> builder
                     .persistent(ItemContainerContents.CODEC)
                     .networkSynchronized(ItemContainerContents.STREAM_CODEC));
+
+    // The Vat cluster work order Milestone 1a: the hybrid EntityType a DNA Egg is tagged to hatch
+    // into. Mirrors SPECIES's own shape (plain ResourceLocation, absence = untagged) rather than
+    // an Optional wrapper - a blank egg simply has no component set, same as an un-sequenced
+    // Tissue Sample has no SPECIES.
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceLocation>> DNA_EGG_RESULT =
+            DATA_COMPONENTS.registerComponentType("dna_egg_result", builder -> builder
+                    .persistent(ResourceLocation.CODEC)
+                    .networkSynchronized(ResourceLocation.STREAM_CODEC));
 }
